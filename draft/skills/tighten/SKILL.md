@@ -15,7 +15,6 @@ description: >-
   `critique` instead. Don't reach for this when the request is to write
   something new, brainstorm, or restructure unprompted; it edits prose that
   already exists, it doesn't ghostwrite.
-disallowed-tools: AskUserQuestion
 ---
 
 # Tighten a document
@@ -50,7 +49,7 @@ apply step.
    The one exception: an edit that flattens emotional meaning or kills a deliberate cadence
    (see "protect the emotional and rhythmic lines" in the shared method file) — skip that one
    and note it in the report instead of applying it. Nothing else waits for approval; this
-   skill has no `AskUserQuestion` to ask with.
+   skill never asks, it applies.
 6. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
    (`MM-DD-YYYY`). Skip files without frontmatter.
 7. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
@@ -72,5 +71,5 @@ apply step.
 Preserves all original meaning, with one named exception path (skip, don't apply, edits that
 flatten emotion or kill a deliberate cadence). Editing local markdown is automatic in this
 project — this skill always applies its edits, both surgical and substantive, with no approval
-step and no `AskUserQuestion`. Never sends, posts, or touches anything outside the local
+step and no asking first. Never sends, posts, or touches anything outside the local
 file(s) it's given.

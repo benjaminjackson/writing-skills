@@ -9,7 +9,6 @@ description: >-
   opinion on this", or "/critique <file>". This is a read-only pass — it never
   edits the file. If the user wants the writing actually fixed, not just
   assessed, use `tighten` instead.
-disallowed-tools: Edit Write MultiEdit NotebookEdit
 ---
 
 # Critique a document
