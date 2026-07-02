@@ -1,0 +1,23 @@
+{
+  "name": "writing-skills",
+  "owner": {
+    "name": "Benjamin Jackson",
+    "email": "ben@benjaminjackson.co"
+  },
+  "metadata": {
+    "description": "Prose-editing skills for Claude Code, built on Deirdre McCloskey's Economical Writing",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "draft",
+      "description": "Prose editing built on Deirdre McCloskey's Economical Writing: the editor agent critiques a draft line by line and refuses to rewrite it, the critique skill runs a document through editor and reports the findings with no edits made, and the tighten skill runs the same process but applies every safe and structural edit automatically, no approval step.",
+      "source": "./draft"
+    },
+    {
+      "name": "pitch",
+      "description": "Editorial tools for developing and stress-testing story pitches: the managing-editor agent gives a single Socratic editorial read (green light / revise / kill), the sharpen skill runs a pitch through that one editor for a quick verdict, and the page-one-meeting skill simulates a full multi-persona page-one meeting that debates a pitch and delivers a verdict.",
+      "source": "./pitch"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "draft",
+  "description": "Prose editing built on Deirdre McCloskey's Economical Writing: the editor agent critiques a draft line by line and refuses to rewrite it, the critique skill runs a document through editor and reports the findings with no edits made, and the tighten skill runs the same process but applies every safe and structural edit automatically, no approval step.",
+  "author": {
+    "name": "Benjamin Jackson",
+    "email": "ben@benjaminjackson.co"
+  }
+}
