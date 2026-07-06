@@ -16,12 +16,21 @@ Planned files:
 ```text
 .agents/plugins/marketplace.json
 draft/.codex-plugin/plugin.json
+draft/skills/critique/agents/openai.yaml
+draft/skills/tighten/agents/openai.yaml
+draft/references/editor-persona.md
+draft/scripts/chunk-markdown.js
 pitch/.codex-plugin/plugin.json
+pitch/skills/sharpen/agents/openai.yaml
+pitch/skills/page-one-meeting/agents/openai.yaml
+pitch/references/managing-editor.md
 docs/codex-compatibility-plan.md
 docs/agent-portability.md
 scenarios/fixtures/*.md
 scenarios/snippets/*.md
 scenarios/traces/README.md
+scripts/check-codex-compat.js
+.github/workflows/check-codex-compat.yml
 ```
 
 Each plugin manifest should point at its existing skill directory:
@@ -34,6 +43,18 @@ Each plugin manifest should point at its existing skill directory:
   "skills": "./skills/"
 }
 ```
+
+Preserve the current Claude files:
+
+```text
+.claude-plugin/marketplace.json
+draft/.claude-plugin/plugin.json
+draft/agents/editor.md
+pitch/.claude-plugin/plugin.json
+pitch/agents/managing-editor.md
+```
+
+The root Claude marketplace remains the Claude install surface. The root `.agents/plugins/marketplace.json` is the Codex marketplace surface. They are intentionally separate files because Claude and Codex read different marketplace formats.
 
 Use Ponytail's Codex adapter pattern as the model:
 
@@ -48,15 +69,17 @@ Codex and Claude do not expose identical runtime capabilities. Rewrite skill ins
 
 | Claude concept | Codex-compatible approach |
 | --- | --- |
-| `/critique`, `/tighten`, `/sharpen`, `/page-one-meeting` | Skill invocation through `$critique`, `$tighten`, `$sharpen`, `$page-one-meeting`, or `@plugin-skill` in plugin contexts. |
+| `/critique`, `/tighten`, `/sharpen`, `/page-one-meeting` | Canonical Codex CLI/IDE skill invocation is `$critique`, `$tighten`, `$sharpen`, and `$page-one-meeting`. Plugin UI may also expose `@` invocation; record the exact installed names during the Codex install trace before documenting them as supported. |
 | `Read` | Read files using Codex's available file/shell tools. |
 | `Write`, `Edit`, `MultiEdit` | Apply local file edits with Codex editing tools, normally `apply_patch`. |
 | `WebSearch`, `WebFetch` | Use available web/search/browser tools when present; otherwise mark research-sensitive claims as unverified. |
 | `AskUserQuestion` | Ask the user in chat only when the missing answer is blocking. |
 | `Agent` / `Task` | Optional Codex subagents only when the user explicitly asks for parallel agent work or the session exposes a suitable subagent tool. |
 | `SendMessage` | No direct Codex equivalent. The main agent acts as chair and routes each round explicitly. |
-| `model: opus` | Do not hard-code in portable skill text. For optional Codex custom agents, use `gpt-5.5` for demanding editorial judgment and `gpt-5.4-mini` only for lightweight sidecar passes. |
+| `model: opus` | Do not hard-code model names in portable skill text. Use the host default. Optional local custom agents may pin models, but that is not required for plugin correctness. |
 | `tools:` frontmatter on agents | Keep Claude agent frontmatter for Claude. For Codex, move the reusable persona instructions into references or optional custom-agent TOML. |
+
+Reference loading rule: Codex skills should not assume references are automatically loaded. Each `SKILL.md` must explicitly name the reference files it needs and say when to read them. For example, `critique` and `tighten` should say to read `../../references/deirdre-method.md` and `../../references/editor-persona.md` before running the critique workflow.
 
 ## Skill Updates
 
@@ -67,18 +90,21 @@ Files:
 - `draft/skills/critique/SKILL.md`
 - `draft/skills/tighten/SKILL.md`
 - `draft/references/deirdre-method.md`
+- `draft/references/editor-persona.md`
+- `draft/scripts/chunk-markdown.js`
 - `draft/agents/editor.md`
 
 Changes:
 
 1. Keep `critique` read-only.
-2. Keep `tighten` file-editing behavior, including automatic application and `updated:` frontmatter bump.
+2. Keep `tighten`'s current auto-apply contract in both Claude and Codex. In Codex, it applies edits when the workspace is writable; in read-only or untrusted workspaces it must report that edits could not be applied and must not claim success.
 3. Replace "launch one editor agent per chunk" with a host-neutral instruction:
    - Prefer isolated critique passes per chunk when subagents are explicitly available.
    - Otherwise run the same critique prompts sequentially in the main thread.
 4. Move the reusable Deirdre persona text into a reference that Codex skills can load directly.
 5. Keep `draft/agents/editor.md` for Claude compatibility if Claude still expects that path.
-6. Consider adding a deterministic chunking script so the skill does not depend on `tks` being installed.
+6. Add a deterministic fallback chunker at `draft/scripts/chunk-markdown.js`. Use `tks` when available for token counts; otherwise the script splits by Markdown blocks, headings, list groups, and sentence boundaries using the same thresholds described in `deirdre-method.md`.
+7. Add malformed frontmatter behavior: if frontmatter is invalid or ambiguous, do not rewrite the frontmatter; apply body edits only and report that `updated:` was skipped.
 
 ### `pitch`
 
@@ -86,6 +112,7 @@ Files:
 
 - `pitch/skills/sharpen/SKILL.md`
 - `pitch/skills/page-one-meeting/SKILL.md`
+- `pitch/references/managing-editor.md`
 - `pitch/agents/managing-editor.md`
 - `pitch/skills/page-one-meeting/references/*.md`
 
@@ -95,6 +122,7 @@ Changes:
 2. Keep web research conditional: use web tools when available; otherwise make the editorial verdict clear about any claims that were not independently checked.
 3. Move reusable managing-editor instructions into a reference that Codex skills can load.
 4. Keep `pitch/agents/managing-editor.md` for Claude compatibility if Claude still expects that path.
+5. Define `sharpen` input handling: accept a file path, pasted pitch material, or a referenced fixture. If no pitch material is present, ask for the raw pitch before evaluating.
 
 ## Page-One Meeting Redesign
 
@@ -112,9 +140,10 @@ Codex-compatible behavior:
    - Use only when the user explicitly asks for parallel agents or the skill invocation includes a clear parallel instruction.
    - Spawn one Codex subagent per persona.
    - The chair sends each persona the same shared roster and raw material.
-   - The chair collects opening takes.
-   - The chair routes challenges by sending follow-up prompts to each subagent.
-   - The chair assigns the mandatory dissent round.
+   - Each subagent returns a structured response to the chair with these headings: `Opening take`, `Challenge to peers`, `Revised position`, and `Dissent readiness`.
+   - The chair does not rely on peer-to-peer messaging. It converts each persona's `Challenge to peers` into chair-authored follow-up prompts and sends those prompts to the named target personas.
+   - The chair waits for each response before moving phases. If a subagent times out or cannot be reached, the chair records the missing seat in the trace and continues with the single-thread fallback for that persona.
+   - The chair assigns the mandatory dissent round from the collected revised positions.
    - The chair writes the final artifact.
 
 3. Remove hard requirements for:
@@ -135,6 +164,15 @@ Codex-compatible behavior:
 
 Add `agents/openai.yaml` to each skill for Codex UI metadata.
 
+Exact paths:
+
+```text
+draft/skills/critique/agents/openai.yaml
+draft/skills/tighten/agents/openai.yaml
+pitch/skills/sharpen/agents/openai.yaml
+pitch/skills/page-one-meeting/agents/openai.yaml
+```
+
 Suggested policy:
 
 | Skill | Implicit invocation |
@@ -142,7 +180,7 @@ Suggested policy:
 | `critique` | allowed |
 | `tighten` | allowed, but description must state that it edits files |
 | `sharpen` | allowed |
-| `page-one-meeting` | consider explicit-only to avoid accidentally starting an expensive workflow |
+| `page-one-meeting` | explicit-only with `policy.allow_implicit_invocation: false` to avoid accidentally starting an expensive workflow |
 
 Example:
 
@@ -179,7 +217,7 @@ Invocation examples:
 ```text
 $critique path/to/draft.md
 $tighten path/to/draft.md
-$sharpen
+$sharpen path/to/pitch.md
 $page-one-meeting
 ```
 
@@ -202,7 +240,9 @@ scenarios/
   fixtures/
     draft-short.md
     draft-frontmatter.md
+    draft-malformed-frontmatter.md
     draft-long.md
+    draft path with spaces.md
     pitch-raw.md
     pitch-needs-intake.md
     pitch-saturated-angle.md
@@ -219,18 +259,26 @@ scenarios/
 
 Trace captures should record:
 
+Required fields:
+
 | Field | Purpose |
 | --- | --- |
 | `harness` | `claude-code` or `codex`. |
-| `source` | Marketplace URL, local path, branch, or commit under test. |
 | `plugin` | `draft` or `pitch`. |
 | `skill` | `critique`, `tighten`, `sharpen`, or `page-one-meeting`. |
 | `scenario` | Stable scenario id, matching the fixture/snippet name. |
-| `install_steps` | Exact commands or UI steps used to install. |
 | `invocation` | Exact slash command, `$skill`, or explicit prompt used. |
+| `result` | `pass`, `fail`, or `blocked`. |
+| `files_changed` | Expected changed files, actual changed files, or `none` for read-only skills. |
+
+Optional fields:
+
+| Field | Purpose |
+| --- | --- |
+| `source` | Marketplace URL, local path, branch, or commit under test. |
+| `install_steps` | Exact commands or UI steps used to install. |
 | `inputs` | Fixture files or pasted text used. |
 | `expected_path` | Main-thread, Claude subagent, Codex sequential, or Codex explicit-subagent path. |
-| `files_changed` | Expected changed files, or `none` for read-only skills. |
 | `assertions` | Pass/fail checks performed after the run. |
 | `known_gaps` | Anything not verified, such as web novelty when web tools were unavailable. |
 
@@ -264,7 +312,14 @@ Unhappy paths:
 
 ### Codex
 
-Happy paths:
+Local development happy path:
+
+```bash
+codex plugin marketplace add ./.
+codex
+```
+
+Remote marketplace happy path after the branch lands in the upstream repo:
 
 ```bash
 codex plugin marketplace add benjaminjackson/writing-skills
@@ -281,7 +336,8 @@ Expected:
 
 - The `writing-skills` marketplace appears.
 - `draft` and `pitch` can be installed independently.
-- Installed skills appear in `/skills` and can be invoked explicitly with `$skill` or `@plugin-skill`.
+- Installed skills appear in `/skills` and can be invoked explicitly with `$skill`.
+- If plugin `@` invocation is available, the trace records the exact displayed names before README documents them.
 - `agents/openai.yaml` metadata renders readable names and default prompts.
 
 Unhappy paths:
@@ -342,16 +398,16 @@ Expected:
 Claude:
 
 ```text
-/sharpen
+/sharpen scenarios/fixtures/pitch-raw.md
 ```
 
 Codex:
 
 ```text
-$sharpen
+$sharpen scenarios/fixtures/pitch-raw.md
 ```
 
-Prompt body should paste or mention `scenarios/fixtures/pitch-raw.md`.
+Inline or pasted pitch material is also valid. If neither a path nor pitch material is present, `sharpen` asks for the pitch before evaluating.
 
 Expected:
 
@@ -406,8 +462,10 @@ Expected:
 | `critique` | Claude + Codex | User asks for rewrite | Declines rewrite path and points to `tighten`. |
 | `tighten` | Claude + Codex | Draft with frontmatter | Applies safe edits; bumps `updated:`. |
 | `tighten` | Claude + Codex | Draft without frontmatter | Applies edits; does not add frontmatter. |
+| `tighten` | Claude + Codex | Malformed frontmatter | Applies body edits only; skips `updated:` and reports why. |
 | `tighten` | Claude + Codex | Load-bearing emotional line | Skips flattening edit and reports why. |
 | `tighten` | Codex | Read-only workspace | Reports inability to edit; does not claim success. |
+| `tighten` | Claude + Codex | Target changes during run | Detects mismatch before write or reports that exact replacement failed; does not overwrite unrelated user changes. |
 | `sharpen` | Claude + Codex | Complete pitch | Gives green/revise/kill verdict; no disk writes. |
 | `sharpen` | Claude + Codex | Missing target outlet | Asks only if outlet is necessary; otherwise evaluates outlet-agnostic. |
 | `sharpen` | Claude + Codex | Web unavailable | Flags research uncertainty explicitly. |
@@ -432,9 +490,10 @@ A compatibility pass is complete when:
 5. `critique` and `sharpen` leave the working tree unchanged in their happy paths.
 6. `tighten` changes only the intended fixture file in its happy path.
 7. `page-one-meeting` writes only under `pitches/<YYYY-MM-DD>-<slug>/`.
-8. Codex skills do not require Claude-only runtime terms.
+8. Codex skills do not require Claude-only runtime terms as unconditional steps.
 9. Claude skills still preserve their existing native agent behavior.
 10. README gives a complete install path for both harnesses.
+11. Static validation runs in CI, while live Claude and Codex harness traces remain manual unless a stable noninteractive harness is added.
 
 ## Validation
 
@@ -450,7 +509,7 @@ Checks:
 6. Verify every plugin manifest `skills` path exists.
 7. Verify every `SKILL.md` has valid frontmatter with `name` and `description`.
 8. Verify every `agents/openai.yaml` is valid YAML when present.
-9. Grep Codex-facing files for Claude-only runtime terms:
+9. Check Codex-facing files for unconditional Claude-only runtime requirements. A simple grep can flag candidate lines, but the check should allow conditional compatibility notes such as "when Claude `Agent` is available". Terms to inspect:
    - `Agent(`
    - `SendMessage`
    - `AskUserQuestion`
@@ -458,21 +517,21 @@ Checks:
    - `WebFetch`
    - `subagent_type`
 10. Verify README mentions both Claude and Codex installation.
+11. Run this script in CI once added. Keep live install and skill-execution traces manual until they can run reliably without requiring interactive plugin trust or account-specific setup.
 
 ## Implementation Order
 
 1. Add Codex manifests and local marketplace.
 2. Add `agents/openai.yaml` metadata.
-3. Convert skill wording from Claude-native to host-neutral.
-4. Redesign `page-one-meeting` around chair-routed debate with optional Codex subagents.
-5. Update README installation and usage docs.
-6. Add validation script.
-7. Run validation and a manual smoke test in Codex.
+3. Add reusable persona references and deterministic chunking fallback.
+4. Convert skill wording from Claude-native to host-neutral while preserving Claude-native agent files.
+5. Redesign `page-one-meeting` around chair-routed debate with optional Codex subagents.
+6. Update README installation and usage docs.
+7. Add validation script and CI wiring.
+8. Run validation plus manual Claude and Codex smoke traces.
 
-## Open Decisions
+## Decisions To Confirm
 
-1. Should `page-one-meeting` allow implicit invocation, or should it require explicit `$page-one-meeting`?
-2. Should we publish as two Codex plugins (`draft` and `pitch`) or also provide a combined `writing-skills` wrapper plugin later?
-3. Should chunking become deterministic with a bundled script, or is the current text-based method enough?
-4. Should optional Codex custom agents live in this repo as examples, or should the skills avoid custom-agent config entirely for portability?
-5. Should `tighten` keep applying substantive edits automatically in Codex, or should Codex get a safer review-first mode?
+1. Should `page-one-meeting` allow implicit invocation, or should it require explicit `$page-one-meeting`? Current recommendation: explicit-only because it is expensive and can write files.
+2. Should we publish as two Codex plugins (`draft` and `pitch`) or also provide a combined `writing-skills` wrapper plugin later? Current recommendation: start with two plugins to match the current Claude boundary.
+3. Should optional Codex custom agents live in this repo as examples, or should the skills avoid custom-agent config entirely for portability? Current recommendation: avoid custom-agent config in the first compatibility pass.
