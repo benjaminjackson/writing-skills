@@ -220,6 +220,22 @@ function validateDraftCompatibilityPrimitives() {
   }
 }
 
+function validatePitchCompatibilityPrimitives() {
+  ensureFile("pitch/references/managing-editor.md");
+
+  const sharpen = read("pitch/skills/sharpen/SKILL.md");
+  for (const required of [
+    "../../references/managing-editor.md",
+    "web search",
+    "Do not write files",
+    "Do not spawn hidden subagents",
+  ]) {
+    if (!sharpen.includes(required)) {
+      addError(`pitch/skills/sharpen/SKILL.md: missing compatibility guidance: ${required}`);
+    }
+  }
+}
+
 function reportClaudeOnlyTerms() {
   const terms = [
     { name: "Agent(", pattern: /Agent\s*\(/ },
@@ -266,6 +282,7 @@ validateSkillFrontmatter();
 validateOpenAiYaml();
 validateDocsInstallCoverage();
 validateDraftCompatibilityPrimitives();
+validatePitchCompatibilityPrimitives();
 reportClaudeOnlyTerms();
 
 if (warnings.length) {
