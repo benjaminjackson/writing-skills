@@ -11,25 +11,31 @@ description: >-
   assessed, use `tighten` instead.
 ---
 
-# Critique a document
+# Critique A Document
 
-Runs a document through **Deirdre** (the `editor` sub-agent, a critic built on Deirdre
-McCloskey's *Economical Writing*) and reports what she finds. This skill only reads and
-reports — it never touches the file. For the version that applies the fixes, use `tighten`.
+Run a document through **Deirdre**, a critic built on Deirdre McCloskey's *Economical
+Writing*, and report what she finds. This skill only reads and reports; it never touches the
+file. For the version that applies the fixes, use `tighten`.
 
 ## How it works
 
-See [../../references/deirdre-method.md](../../references/deirdre-method.md) for the full
-method: how the `editor` sub-agent works, chunking rules, the critique prompts, and the
-surgical/substantive distinction.
+Before starting, read:
+
+- [../../references/editor-persona.md](../../references/editor-persona.md) for Deirdre's voice.
+- [../../references/deirdre-method.md](../../references/deirdre-method.md) for chunking,
+  critique prompts, host execution rules, and the surgical/substantive distinction.
 
 ## The workflow
 
-1. **Read & chunk.** Read each document, measure tokens with `tks`, and split it into Pass 1
-   chunks per the chunking rules in the shared method file.
-2. **Pass 1 — line by line.** Launch one `editor` agent per chunk (parallel batches) with the
-   granular prompt. Collect the line-by-line notes.
-3. **Pass 2 — whole doc.** Launch the holistic pass with the whole-doc prompt.
+1. **Read and chunk.** Read each document. For long or non-trivial Markdown, run
+   `node draft/scripts/chunk-markdown.js <file.md>` from the repository root and use its Pass 1
+   and Pass 2 chunk plan. If you cannot run the script, follow the chunking rules in the shared
+   method file manually.
+2. **Pass 1 - line by line.** Run one isolated Deirdre critique per Pass 1 chunk with the
+   granular prompt. Claude may use the native `editor` agent. Codex should perform the passes
+   sequentially in the main thread unless the user explicitly asks for parallel subagents.
+3. **Pass 2 - whole doc.** Run the holistic pass with the whole-doc prompt or Pass 2 chunk
+   plan from the chunker.
 4. **Merge & report.** Combine Pass 1 + Pass 2 findings, dedupe overlaps, and report per below.
    Make no edits, propose none, ask nothing.
 

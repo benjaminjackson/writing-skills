@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 const root = process.cwd();
 const errors = [];
@@ -170,6 +171,55 @@ function validateDocsInstallCoverage() {
   }
 }
 
+function validateDraftCompatibilityPrimitives() {
+  for (const rel of [
+    "draft/references/editor-persona.md",
+    "draft/references/deirdre-method.md",
+    "draft/scripts/chunk-markdown.js",
+    "pitch/references/managing-editor.md",
+  ]) {
+    ensureFile(rel);
+  }
+
+  for (const rel of ["draft/skills/critique/SKILL.md", "draft/skills/tighten/SKILL.md"]) {
+    const body = read(rel);
+    for (const required of [
+      "../../references/editor-persona.md",
+      "../../references/deirdre-method.md",
+      "draft/scripts/chunk-markdown.js",
+    ]) {
+      if (!body.includes(required)) addError(`${rel}: missing reference to ${required}`);
+    }
+  }
+
+  if (exists("scenarios/fixtures/draft-frontmatter.md")) {
+    const result = spawnSync(process.execPath, [
+      relPath("draft/scripts/chunk-markdown.js"),
+      relPath("scenarios/fixtures/draft-frontmatter.md"),
+    ], { encoding: "utf8" });
+
+    if (result.status !== 0) {
+      addError(`draft/scripts/chunk-markdown.js: smoke test failed: ${result.stderr.trim()}`);
+      return;
+    }
+
+    try {
+      const output = JSON.parse(result.stdout);
+      if (!output.frontmatter_skipped) {
+        addError("draft/scripts/chunk-markdown.js: expected frontmatter_skipped=true");
+      }
+      if (!Array.isArray(output.pass1) || output.pass1.length === 0) {
+        addError("draft/scripts/chunk-markdown.js: expected non-empty pass1 chunks");
+      }
+      if (!Array.isArray(output.pass2) || output.pass2.length === 0) {
+        addError("draft/scripts/chunk-markdown.js: expected non-empty pass2 chunks");
+      }
+    } catch (error) {
+      addError(`draft/scripts/chunk-markdown.js: smoke test did not emit JSON: ${error.message}`);
+    }
+  }
+}
+
 function reportClaudeOnlyTerms() {
   const terms = [
     { name: "Agent(", pattern: /Agent\s*\(/ },
@@ -215,6 +265,7 @@ validatePlugin("pitch", "pitch");
 validateSkillFrontmatter();
 validateOpenAiYaml();
 validateDocsInstallCoverage();
+validateDraftCompatibilityPrimitives();
 reportClaudeOnlyTerms();
 
 if (warnings.length) {

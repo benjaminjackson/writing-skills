@@ -1,17 +1,38 @@
 # The Deirdre method
 
-Shared by `tighten` and `critique`. The engine is the **`editor`** sub-agent
-(`subagent_type: editor`), Deirdre McCloskey. She has only the `Read` tool and a hard rule
-against rewriting — hand her prose to judge, expect a critique back, nothing more.
+Shared by `tighten` and `critique`. Load [editor-persona.md](editor-persona.md) before running
+the critique passes. Deirdre critiques only; she does not rewrite. Hand her prose to judge,
+expect a critique back, then let the host agent decide whether to report notes (`critique`) or
+apply safe edits (`tighten`).
 
-The one thing that makes or breaks results: **don't overload her.** A fresh agent reading a
-paragraph or two gives far sharper line edits than one agent drowning in a whole document. So
-chunk, and use a **separate agent per chunk** so each reads with fresh, uncluttered context.
+The one thing that makes or breaks results: **do not overload the critique pass.** A focused
+read of a paragraph or section gives sharper line edits than a whole-document skim. Chunk the
+document, run each chunk as its own isolated critique pass, then run one holistic pass for
+cross-document issues.
+
+## Host execution
+
+- **Claude Code:** Use the native `draft/agents/editor.md` agent when available. It carries the
+  same persona as `editor-persona.md`. Run chunk critiques in parallel batches if the harness
+  supports it.
+- **Codex:** Read `editor-persona.md` directly and apply that persona in the current thread.
+  Run chunk critiques sequentially unless the user explicitly asks for parallel subagents and
+  the session exposes a suitable subagent tool. Keep each chunk's notes separate until the
+  merge step.
+- **Any host:** If an agent/subagent path is unavailable, the main agent must perform the
+  same critique passes itself using the prompts below.
 
 ## Chunking: how much to hand Deirdre at once
 
-Size every chunk by token count, measured with `tks` (`cat file.md | tks`, or pipe a slice:
-`printf '%s' "$chunk" | tks`). If `tks` is missing, estimate tokens ≈ words × 1.3.
+Prefer the deterministic fallback:
+
+```bash
+node draft/scripts/chunk-markdown.js <file.md>
+```
+
+It skips frontmatter, groups Markdown blocks, keeps lists together, uses `tks` when available,
+and falls back to `words x 1.3` when it is not. If you do not run the script, size chunks by
+the same token rules manually.
 
 A **block** is one blank-line-separated unit. A whole bulleted or numbered **list counts as
 one block**. Skip YAML frontmatter and pure checkbox / fill-in-the-blank form lines (but do
@@ -25,7 +46,7 @@ prose around it (the proposal, the cover letter, the summary) and note in the re
 legal sections were left untouched. If the *user explicitly asks* for the legal text to be
 edited, treat every change to it as substantive and flag rather than apply.
 
-**Pass 1 — line-by-line (section-sized chunks, one fresh agent each):**
+**Pass 1 - line-by-line (section-sized chunks, one isolated critique each):**
 - Each chunk is a run of **adjacent blocks packed up to 400 tokens** (aim for 150-400) — keep
   folding in the next block as long as the chunk stays under the ceiling. There's no fixed
   block-count limit: a section with many short blocks (a bulleted list, a run of short
@@ -43,16 +64,16 @@ edited, treat every change to it as substantive and flag rather than apply.
   critique; the point of small chunks is to protect a fresh agent from drowning in a *long*
   document, not to atomize a short one.
 
-**Pass 2 — whole-doc (the holistic pass):**
-- **Document ≤ 4,000 tokens:** one agent over the **entire document** (pass the file path;
+**Pass 2 - whole-doc (the holistic pass):**
+- **Document <= 4,000 tokens:** one critique pass over the **entire document** (pass the file path;
   tell it to skip frontmatter). This is where cross-section repetition, rhythm, and structure
   get caught, so keep it whole whenever you can.
-- **Document > 4,000 tokens:** split at top-level `##` headings into chunks of **≤ 3,000
-  tokens** each (never split mid-section), one agent per chunk. Then **you** scan across those
-  chunks yourself for repetition that spans them, since no single agent saw the whole.
+- **Document > 4,000 tokens:** split at top-level `##` headings into chunks of **<= 3,000
+  tokens** each (never split mid-section), one critique pass per chunk. Then **you** scan
+  across those chunks yourself for repetition that spans them, since no single pass saw the
+  whole.
 
-Run the Pass 1 chunks in parallel batches (about 4-6 agents at a time), then run Pass 2. For
-several documents, do this per document.
+Run Pass 1 first, then Pass 2. For several documents, do this per document.
 
 ## The critique prompts
 
