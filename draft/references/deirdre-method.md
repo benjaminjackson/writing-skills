@@ -13,8 +13,8 @@ cross-document issues.
 ## Host execution
 
 - **Claude Code:** Use the native `draft/agents/editor.md` agent when available. It carries the
-  same persona as `editor-persona.md`. Run chunk critiques in parallel batches if the harness
-  supports it.
+  same persona as `editor-persona.md`. Run Pass 1 chunk critiques in parallel batches of about
+  4-6 agents at a time, then run Pass 2.
 - **Codex:** Read `editor-persona.md` directly and apply that persona in the current thread.
   Run chunk critiques sequentially unless the user explicitly asks for parallel subagents and
   the session exposes a suitable subagent tool. Keep each chunk's notes separate until the
@@ -73,7 +73,10 @@ edited, treat every change to it as substantive and flag rather than apply.
   across those chunks yourself for repetition that spans them, since no single pass saw the
   whole.
 
-Run Pass 1 first, then Pass 2. For several documents, do this per document.
+Run Pass 1 first, then Pass 2. In Claude Code, Pass 1 should use parallel batches of about
+4-6 native editor agents. In Codex default mode, run the same chunk critiques sequentially in
+the current thread unless the user explicitly asks for parallel subagents. For several
+documents, do this per document.
 
 ## The critique prompts
 

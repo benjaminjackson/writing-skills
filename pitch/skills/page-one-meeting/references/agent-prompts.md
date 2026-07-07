@@ -3,7 +3,9 @@
 These templates support both host modes:
 
 - **Claude native room:** Run each persona as a named background editor and use the host's
-  native peer-message surface for challenges. Personas report back to the chair.
+  native peer-message surface for challenges. Claude Code tool pattern:
+  `Agent({name, run_in_background: true, prompt, description})` to spawn and
+  `SendMessage({to, message, summary})` to communicate. Personas report back to the chair.
 - **Codex default room:** The chair simulates each persona in the current thread. Keep notes
   labeled by persona and phase. Do not invent a raw transcript; write only the takes needed
   for synthesis.
@@ -34,6 +36,8 @@ FELLOW EDITORS:
 Evaluate through your lens. Form an opinion; do not hedge into blandness. Return 3-5
 sentences: your verdict-leaning read and the one thing you would fight for or against.
 Do not conclude the meeting yourself.
+
+Claude native room: send this opening take to the chair with `SendMessage(to: "main", ...)`.
 ```
 
 ## Debate-Round Template (Phase 3)
@@ -44,6 +48,9 @@ Use once per persona after all opening takes are available.
 Open debate round. Pick 1-2 editors whose position you most want to pressure-test. Challenge
 each with a specific, sharp question, not "thoughts?". Then return your revised position:
 what changed, if anything, and why.
+
+Claude native room: message peers directly by name with `SendMessage`. Cap yourself at 3 sent
+messages total, then send the revised position to the chair with `SendMessage(to: "main", ...)`.
 ```
 
 For Codex default mode, the chair writes the challenge and response notes directly:

@@ -280,6 +280,10 @@ function reportClaudeOnlyTerms() {
       for (const term of terms) {
         if (term.pattern.test(line)) {
           if (/Claude Code|Claude native|host's web tools|In Codex/.test(line)) continue;
+          if (rel === "pitch/skills/page-one-meeting/references/agent-prompts.md") {
+            const context = lines.slice(Math.max(0, index - 2), index + 1).join(" ");
+            if (/Claude Code|Claude native/.test(context)) continue;
+          }
           addWarning(`${rel}:${index + 1}: inspect transitional Claude-only term ${term.name}`);
         }
       }

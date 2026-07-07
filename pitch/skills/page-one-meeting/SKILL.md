@@ -29,8 +29,9 @@ for the verdict vocabulary and editorial standards.
 ## Host Behavior
 
 - **Claude Code:** May use the native background-agent room and peer-message workflow from
-  [references/agent-prompts.md](references/agent-prompts.md). Keep the same phase structure
-  and relay only synthesized digests to the user.
+  [references/agent-prompts.md](references/agent-prompts.md). Use named background personas
+  and native peer messages so the room can challenge itself, not just report serially to the
+  chair. Keep the same phase structure and relay only synthesized digests to the user.
 - **Codex default:** Run the meeting as a chair-led simulation in the current thread. Create
   3-5 distinct editor personas, write their opening takes, challenge pairs, revised positions,
   and dissent in labeled notes, then synthesize. Do not spawn hidden subagents.
@@ -119,9 +120,12 @@ happened is part of the artifact, not just a gate to pass through.
    angle saturated; what is the closest coverage; can the host actually verify novelty; has
    the language drifted into sales or scarcity register?
 4. For anything under real doubt about novelty or fact-checkability, run a second editorial
-   gate using the managing-editor reference. Use web search/fetch tools when available and
-   relevant. If web tools are unavailable, separate editorial judgment from unverified novelty
-   or factual claims.
+   gate that is as unprimed by the room as the host allows. In Claude Code, invoke the native
+   `managing-editor` agent as a separate gate with its own web tools. In Codex, use a separate
+   subagent only if the user explicitly asked for subagents; otherwise run a clearly separated
+   managing-editor pass from the reference and state that it is not a fresh context. If web
+   tools are unavailable, separate editorial judgment from unverified novelty or factual
+   claims.
 5. Write `pitch.md`: verdict using the managing-editor vocabulary (**Green light** /
    **Revise and resubmit** / **Kill it**), the shaped pitch (angle, headline, spine, reader,
    proof), the cast roster, debate synthesis, Phase 4 dissent section, outside check, and any
