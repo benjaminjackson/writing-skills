@@ -234,6 +234,28 @@ function validatePitchCompatibilityPrimitives() {
       addError(`pitch/skills/sharpen/SKILL.md: missing compatibility guidance: ${required}`);
     }
   }
+
+  const pageOne = read("pitch/skills/page-one-meeting/SKILL.md");
+  for (const required of [
+    "../../references/managing-editor.md",
+    "Codex default",
+    "Codex explicit subagent mode",
+    "Do not spawn hidden subagents",
+    "Mandatory Dissent Round",
+    "Chair's outside check",
+    "references/agent-prompts.md",
+  ]) {
+    if (!pageOne.includes(required)) {
+      addError(`pitch/skills/page-one-meeting/SKILL.md: missing compatibility guidance: ${required}`);
+    }
+  }
+
+  const pageOnePrompts = read("pitch/skills/page-one-meeting/references/agent-prompts.md");
+  for (const required of ["Claude native room", "Codex default room", "Codex explicit subagent room"]) {
+    if (!pageOnePrompts.includes(required)) {
+      addError(`pitch/skills/page-one-meeting/references/agent-prompts.md: missing host mode: ${required}`);
+    }
+  }
 }
 
 function reportClaudeOnlyTerms() {
@@ -257,6 +279,7 @@ function reportClaudeOnlyTerms() {
     lines.forEach((line, index) => {
       for (const term of terms) {
         if (term.pattern.test(line)) {
+          if (/Claude Code|Claude native|host's web tools|In Codex/.test(line)) continue;
           addWarning(`${rel}:${index + 1}: inspect transitional Claude-only term ${term.name}`);
         }
       }
