@@ -1,0 +1,28 @@
+{
+  "name": "pitch",
+  "version": "1.0.0",
+  "description": "Editorial workflows for story pitches: get a managing-editor read or run a page-one meeting simulation.",
+  "author": {
+    "name": "Benjamin Jackson",
+    "email": "ben@benjaminjackson.co",
+    "url": "https://github.com/benjaminjackson"
+  },
+  "homepage": "https://github.com/benjaminjackson/writing-skills",
+  "repository": "https://github.com/benjaminjackson/writing-skills",
+  "license": "MIT",
+  "keywords": ["writing", "journalism", "pitch", "editing"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Pitch",
+    "shortDescription": "Develop and stress-test story pitches",
+    "longDescription": "Editorial workflows for evaluating story pitches, including a single managing-editor read and a simulated page-one meeting.",
+    "developerName": "Benjamin Jackson",
+    "category": "Writing",
+    "capabilities": ["Instructions", "File editing"],
+    "websiteURL": "https://github.com/benjaminjackson/writing-skills",
+    "defaultPrompt": [
+      "Use $sharpen to get an editor's verdict on this pitch.",
+      "Use $page-one-meeting to stress-test this story idea."
+    ]
+  }
+}

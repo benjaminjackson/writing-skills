@@ -1,0 +1,4 @@
+interface:
+  display_name: "Critique Draft"
+  short_description: "Read-only critique for prose drafts"
+  default_prompt: "Use $critique to review this draft without editing it."

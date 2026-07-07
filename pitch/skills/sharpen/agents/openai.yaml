@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sharpen Pitch"
+  short_description: "Get a managing-editor verdict"
+  default_prompt: "Use $sharpen to get an editor's verdict on this pitch."

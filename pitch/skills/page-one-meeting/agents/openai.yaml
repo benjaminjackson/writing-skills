@@ -1,0 +1,7 @@
+interface:
+  display_name: "Page-One Meeting"
+  short_description: "Simulate an editorial pitch meeting"
+  default_prompt: "Use $page-one-meeting to stress-test this story idea with an editorial panel."
+
+policy:
+  allow_implicit_invocation: false
