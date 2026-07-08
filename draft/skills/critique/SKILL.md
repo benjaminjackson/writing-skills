@@ -6,7 +6,7 @@ description: >-
   marketing copy, blog posts, or any prose draft. Trigger on phrases like
   "critique this", "how does this read?", "what's wrong with this", "give me
   notes on this", "review this draft", "does this land", "get me a second
-  opinion on this", or "/critique <file>". This is a read-only pass — it never
+  opinion on this", or "/critique [file]". This is a read-only pass — it never
   edits the file. If the user wants the writing actually fixed, not just
   assessed, use `tighten` instead.
 ---

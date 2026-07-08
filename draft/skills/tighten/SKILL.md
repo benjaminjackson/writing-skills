@@ -9,7 +9,7 @@ description: >-
   doesn't want to review each change. Trigger on phrases like "tighten this",
   "clean this up", "fix this", "edit this for economy", "make this leaner",
   "cut the fluff from this doc", "give this a line edit and apply it", "this
-  feels bloated, fix it", or "/tighten <file>". Works on a single document or
+  feels bloated, fix it", or "/tighten [file]". Works on a single document or
   a batch in one run: several board policies, a folder of drafts, a stack of
   emails. If the user wants feedback without the file being changed, use
   `critique` instead. Don't reach for this when the request is to write
