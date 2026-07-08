@@ -17,6 +17,14 @@ A **block** is one blank-line-separated unit. A whole bulleted or numbered **lis
 one block**. Skip YAML frontmatter and pure checkbox / fill-in-the-blank form lines (but do
 feed Deirdre the prose intros and instructions around them).
 
+**Skip legal language entirely.** Contracts, terms and conditions, warranties, liability
+clauses, privacy-policy boilerplate — any legalese embedded in or attached to the document.
+Its wording is deliberate and often legally load-bearing; "tighter" can mean "no longer
+enforceable." Don't chunk it, don't hand it to Deirdre, don't edit it. Critique or edit the
+prose around it (the proposal, the cover letter, the summary) and note in the report that the
+legal sections were left untouched. If the *user explicitly asks* for the legal text to be
+edited, treat every change to it as substantive and flag rather than apply.
+
 **Pass 1 — line-by-line (section-sized chunks, one fresh agent each):**
 - Each chunk is a run of **adjacent blocks packed up to 400 tokens** (aim for 150-400) — keep
   folding in the next block as long as the chunk stays under the ceiling. There's no fixed
