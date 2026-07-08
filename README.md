@@ -4,31 +4,15 @@ A Claude Code plugin marketplace with two plugins: **draft**, which critiques an
 
 ## Installation
 
-Inside a Claude Code session:
-
-### Add the marketplace
-
 ```
-/plugin marketplace add benjaminjackson/writing-skills
+claude plugin marketplace add benjaminjackson/writing-skills
+claude plugin install draft@writing-skills
+claude plugin install pitch@writing-skills
 ```
-
-### Install draft
-
-```
-/plugin install draft@writing-skills
-```
-
-### Install pitch
-
-```
-/plugin install pitch@writing-skills
-```
-
-Confirm the plugins are installed: run `/plugin` (Installed tab) or `/plugin list`.
 
 ## draft
 
-Prose editing built on Deirdre McCloskey's *Economical Writing*. One agent, two skills: **editor** is a critic that judges prose against McCloskey's standards and refuses to rewrite it; **critique** and **tighten** both run a document through editor and share the same chunking engine — one just reports, the other applies them.
+Prose editing built on Deirdre McCloskey's *Economical Writing*. One agent, two skills: **editor** is a critic that judges prose against McCloskey's standards and refuses to rewrite it; **critique** and **tighten** both run a document through editor and share the same chunking engine — one just reports the findings, the other applies them.
 
 ### editor
 
@@ -124,30 +108,6 @@ The chair adds one more check in Phase 5. They reread the shaped pitch as a skep
 - **Automatically:** on phrases like "page one meeting," "run this by the editors," "simulate a pitch meeting," or "get the room's take."
 
 For a single editorial read instead of a multi-agent debate, use `sharpen`.
-
-## Repo structure
-
-```
-.claude-plugin/marketplace.json        # marketplace manifest (this repo)
-draft/.claude-plugin/plugin.json       # draft plugin manifest
-draft/agents/editor.md                 # editor agent
-draft/references/deirdre-method.md     # shared chunking rules & critique prompts
-draft/skills/critique/                 # critique skill (read-only)
-  SKILL.md
-draft/skills/tighten/                  # tighten skill (applies edits)
-  SKILL.md
-pitch/.claude-plugin/plugin.json       # pitch plugin manifest
-pitch/agents/managing-editor.md        # managing-editor agent
-pitch/skills/sharpen/                  # sharpen skill
-  SKILL.md
-pitch/skills/page-one-meeting/         # page-one-meeting skill
-  SKILL.md
-  references/                          # phase templates & checklists
-    agent-prompts.md
-    archetype-bench.md
-    intake-checklist.md
-    pitch-brief-template.md
-```
 
 ## Author
 
