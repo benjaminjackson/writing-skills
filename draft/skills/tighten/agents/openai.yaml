@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tighten Draft"
+  short_description: "Apply a rigorous prose line edit"
+  default_prompt: "Use $tighten to tighten this draft and apply the edits."

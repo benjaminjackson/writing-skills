@@ -1,0 +1,34 @@
+harness: codex
+plugin: draft,pitch
+skill: critique,sharpen
+scenario: codex-local-marketplace-smoke
+invocation: |
+  CODEX_HOME=/tmp/writing-skills-codex-home codex plugin marketplace add /Users/vicente/Workspaces/vicente.services/writing-skills --json
+  CODEX_HOME=/tmp/writing-skills-codex-home codex plugin list --available --json
+  CODEX_HOME=/tmp/writing-skills-codex-home codex plugin add draft@writing-skills --json
+  CODEX_HOME=/tmp/writing-skills-codex-home codex plugin add pitch@writing-skills --json
+  codex plugin marketplace add /Users/vicente/Workspaces/vicente.services/writing-skills --json
+  codex plugin add draft@writing-skills --json
+  codex plugin add pitch@writing-skills --json
+  codex exec --ephemeral -C /Users/vicente/Workspaces/vicente.services/writing-skills --sandbox read-only '$critique scenarios/fixtures/draft-short.md. Keep the output concise for a smoke trace and do not edit files.'
+  codex exec --ephemeral -C /Users/vicente/Workspaces/vicente.services/writing-skills --sandbox read-only '$sharpen scenarios/fixtures/pitch-raw.md. Keep the output concise for a smoke trace and do not write files.'
+result: pass
+files_changed: none
+source: local checkout at commit 7021e94 before preservation patch; normal Codex install cached under ~/.codex/plugins/cache/writing-skills
+install_steps: |
+  Isolated CODEX_HOME marketplace add succeeded as writing-skills.
+  Isolated CODEX_HOME list showed draft@writing-skills and pitch@writing-skills available.
+  Isolated CODEX_HOME plugin add installed draft and pitch into /tmp/writing-skills-codex-home.
+  Normal authenticated CODEX_HOME marketplace add and plugin add installed draft and pitch for exec smoke.
+inputs: |
+  scenarios/fixtures/draft-short.md
+  scenarios/fixtures/pitch-raw.md
+expected_path: Codex local marketplace install path plus current-thread skill invocation
+assertions: |
+  $critique loaded the installed draft plugin from ~/.codex/plugins/cache/writing-skills/draft/1.0.0, read the Deirdre persona and method references, and returned a read-only critique.
+  $sharpen loaded the installed pitch plugin from ~/.codex/plugins/cache/writing-skills/pitch/1.0.0, read the managing-editor reference, and returned a single Revise and resubmit verdict.
+  $sharpen used live web search because it was available and named the novelty check in the output.
+  Codex exec sessions used read-only sandbox and no repo files changed.
+known_gaps: |
+  A Codex exec attempt under the isolated temporary CODEX_HOME failed with 401 because auth is tied to the normal Codex home. Plugin marketplace/list/add still passed in the isolated home.
+  The current Codex session logged an unrelated local MCP connection warning for http://127.0.0.1:3000/mcp; it did not block plugin invocation.

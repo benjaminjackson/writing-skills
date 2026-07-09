@@ -1,0 +1,23 @@
+harness: claude-code
+plugin: draft,pitch
+skill: critique,tighten,sharpen,page-one-meeting
+scenario: claude-preservation-review
+invocation: |
+  git diff origin/main...HEAD > /tmp/writing-skills-codex-compat-pr.diff
+  claude -p "Read /tmp/writing-skills-codex-compat-pr.diff and review whether this PR adulterates the original writing-skills behavior beyond making it Codex-compatible. Focus only on behavior preservation risks for Claude and the original skills. Return: Findings, Non-blocking concerns, Verdict. Do not edit files." --model opus --permission-mode dontAsk --allowedTools Read --add-dir /tmp --add-dir /Users/vicente/Workspaces/vicente.services/writing-skills
+  git diff > /tmp/writing-skills-preservation-fix.diff
+  claude -p "Read /tmp/writing-skills-preservation-fix.diff. This patch responds to your prior preservation findings about Claude parallel chunking, page-one Agent/SendMessage templates, and the unprimed managing-editor gate. Does it address the behavioral preservation risks without introducing new ones? Return Findings and Verdict only. Do not edit files." --model opus --permission-mode dontAsk --allowedTools Read --add-dir /tmp --add-dir /Users/vicente/Workspaces/vicente.services/writing-skills
+result: pass
+files_changed: draft/references/deirdre-method.md, pitch/skills/page-one-meeting/SKILL.md, pitch/skills/page-one-meeting/references/agent-prompts.md, scripts/check-codex-compat.js
+source: PR diff against origin/main plus preservation follow-up patch
+install_steps: none
+inputs: |
+  /tmp/writing-skills-codex-compat-pr.diff
+  /tmp/writing-skills-preservation-fix.diff
+expected_path: Claude Opus read-only review
+assertions: |
+  Initial Claude review found no Claude breakage, but identified preservation risks: diluted Claude parallel chunking, removed explicit page-one Agent/SendMessage templates, and weakened unprimed managing-editor gate.
+  Preservation patch restored Claude 4-6 parallel editor-agent batching, explicit Agent/SendMessage template guidance, the 3-message debate cap, and the unprimed native managing-editor gate for Claude.
+  Follow-up Claude review said all three prior preservation risks were addressed without significant new risks.
+known_gaps: |
+  Claude noted the checker exemption for page-one prompt templates should be context-aware. The final patch tightened the exemption to allow Claude-only terms only near explicit Claude native context.

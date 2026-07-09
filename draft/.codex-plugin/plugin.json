@@ -1,0 +1,28 @@
+{
+  "name": "draft",
+  "version": "1.0.0",
+  "description": "Prose editing workflows built on Deirdre McCloskey's Economical Writing: critique drafts read-only or tighten them in place.",
+  "author": {
+    "name": "Benjamin Jackson",
+    "email": "ben@benjaminjackson.co",
+    "url": "https://github.com/benjaminjackson"
+  },
+  "homepage": "https://github.com/benjaminjackson/writing-skills",
+  "repository": "https://github.com/benjaminjackson/writing-skills",
+  "license": "MIT",
+  "keywords": ["writing", "editing", "prose", "critique"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Draft",
+    "shortDescription": "Critique and tighten prose drafts",
+    "longDescription": "Read-only critique and in-place tightening workflows for prose drafts, built around Deirdre McCloskey's standards for economy, clarity, and plain phrasing.",
+    "developerName": "Benjamin Jackson",
+    "category": "Writing",
+    "capabilities": ["Instructions", "File editing"],
+    "websiteURL": "https://github.com/benjaminjackson/writing-skills",
+    "defaultPrompt": [
+      "Use $critique to review this draft without editing it.",
+      "Use $tighten to apply a rigorous line edit to this file."
+    ]
+  }
+}

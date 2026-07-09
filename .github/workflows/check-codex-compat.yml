@@ -1,0 +1,30 @@
+name: Codex compatibility
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - codex-compat-plan
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check whitespace
+        shell: bash
+        run: |
+          if [ -n "${{ github.base_ref }}" ]; then
+            git fetch origin "${{ github.base_ref }}" --depth=1
+            git diff --check "origin/${{ github.base_ref }}...HEAD"
+          else
+            git diff --check HEAD~1..HEAD || git diff --check HEAD
+          fi
+      - name: Check Codex compatibility scaffolding
+        run: node scripts/check-codex-compat.js

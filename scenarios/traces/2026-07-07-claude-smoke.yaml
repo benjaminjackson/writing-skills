@@ -1,0 +1,29 @@
+harness: claude-code
+plugin: draft,pitch
+skill: critique,sharpen
+scenario: claude-local-marketplace-smoke
+invocation: |
+  claude plugin marketplace add /Users/vicente/Workspaces/vicente.services/writing-skills --scope local
+  claude plugin install draft@writing-skills --scope local
+  claude plugin install pitch@writing-skills --scope local
+  claude -p "Use /critique /Users/vicente/Workspaces/vicente.services/writing-skills/scenarios/fixtures/draft-short.md. Keep the output concise for a smoke trace and do not edit files." --model sonnet --permission-mode dontAsk --allowedTools Read --add-dir /Users/vicente/Workspaces/vicente.services/writing-skills
+  claude -p "Use /sharpen /Users/vicente/Workspaces/vicente.services/writing-skills/scenarios/fixtures/pitch-raw.md. Keep the output concise for a smoke trace and do not write files." --model sonnet --permission-mode dontAsk --allowedTools Read --add-dir /Users/vicente/Workspaces/vicente.services/writing-skills
+result: pass
+files_changed: none
+source: local checkout at commit 7021e94 before preservation patch; local Claude install cached as writing-skills/draft and writing-skills/pitch
+install_steps: |
+  Marketplace add succeeded as writing-skills in local scope under /tmp/writing-skills-claude-smoke.
+  draft@writing-skills and pitch@writing-skills installed successfully in local scope.
+inputs: |
+  scenarios/fixtures/draft-short.md
+  scenarios/fixtures/pitch-raw.md
+expected_path: Claude native plugin install path with slash-command skill invocation
+assertions: |
+  claude plugin validate passed for the marketplace and both plugin manifests.
+  claude plugin list --json showed draft@writing-skills and pitch@writing-skills enabled in local scope.
+  /critique returned a read-only Deirdre-style critique with line notes and one structural note.
+  /sharpen returned a single managing-editor verdict: Revise and resubmit.
+  No repo files changed during the smoke invocations.
+known_gaps: |
+  /sharpen was run with Read only, so live web novelty checks were intentionally unavailable in this Claude smoke.
+  The Claude plugin manifests still emit non-blocking version warnings from claude plugin validate.

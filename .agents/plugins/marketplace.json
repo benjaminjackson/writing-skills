@@ -1,0 +1,32 @@
+{
+  "name": "writing-skills",
+  "interface": {
+    "displayName": "Writing Skills"
+  },
+  "plugins": [
+    {
+      "name": "draft",
+      "source": {
+        "source": "local",
+        "path": "./draft"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Writing"
+    },
+    {
+      "name": "pitch",
+      "source": {
+        "source": "local",
+        "path": "./pitch"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Writing"
+    }
+  ]
+}
