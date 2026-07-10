@@ -49,7 +49,8 @@ edited, treat every change to it as substantive and flag rather than apply.
   get caught, so keep it whole whenever you can.
 - **Document > 4,000 tokens:** split at top-level `##` headings into chunks of **≤ 3,000
   tokens** each (never split mid-section), one agent per chunk. Then **you** scan across those
-  chunks yourself for repetition that spans them, since no single agent saw the whole.
+  chunks yourself for repetition that spans them, since no single agent saw the whole — hunt
+  the same signatures: three-beats, heading-echoes, closing flourishes that only restate.
 
 Run the Pass 1 chunks in parallel batches (about 4-6 agents at a time), then run Pass 2. For
 several documents, do this per document.
@@ -77,9 +78,12 @@ several documents, do this per document.
 > Critique this document against Deirdre McCloskey's *Economical Writing*: `<FILE_PATH>` (skip
 > the YAML frontmatter). Step back and judge it as a whole: economy, structure, rhythm, and
 > especially repetition across sections, anything only visible at the whole-document level.
-> You don't need to re-flag every small word fix; another pass handles those. Name the few
-> cross-cutting problems and the single change that matters most. Flag each as surgical or
-> substantive.
+> Hunt the claim → elaborate → summarize three-beat, heading-echoes (a first sentence that
+> restates its section title), and closing flourishes that only restate the section. Quote
+> each sentence or clause you would cut entirely and say why — and flag the load-bearing
+> lines that must NOT be cut. You don't need to re-flag every small word fix; another pass
+> handles those. Name the few cross-cutting problems and the single change that matters most.
+> Flag each as surgical or substantive.
 
 ## Surgical vs substantive
 
@@ -91,13 +95,23 @@ This is the line that keeps meaning intact.
 - Kill intensifiers and hedges (very, really, genuinely, completely, quite).
 - Passive → active when the actor is known.
 - Collapse a doublet or elegant variation to one word.
-- Trim a sentence that is a **verbatim duplicate** of another nearby (the meaning still lives
-  in the other spot).
+- Trim a sentence or clause whose idea already lives elsewhere in the piece — a **verbatim or
+  semantic duplicate**. The recurring signatures: a **heading-echo** (a first sentence that
+  restates its section title), a **closing flourish** that only restates the section, and
+  **beat three** of a claim → elaborate → summarize run. The test: the cut is surgical because
+  the idea survives in the other spot — no meaning is lost. Check the emotional/cadence guard
+  and the keep-list (Reading rules) first: a closer that restates but lands the feeling, the
+  rhythm, or is the section's one line with teeth is the payload, not a duplicate. When it
+  isn't clearly a duplicate, treat it as substantive.
 
 **Substantive (changes what it says or its shape):**
 - Delete a numbered or bulleted list item.
 - Merge or remove a section.
 - Cut a sentence or clause that carries a **distinct idea**.
+- Cut an example or illustration that adds concreteness the abstract sentence lacks. It is not
+  a semantic duplicate — cutting it removes something. Trimming an example stack to one (or
+  examples plus summary → keep one) is the canonical purpose-gated call (see "read the
+  document's purpose").
 - Reduce a phrase repeated for emphasis across sections.
 - Any restructure.
 
@@ -112,6 +126,15 @@ This is the line that keeps meaning intact.
   for a style/voice guide (e.g. `docs/voice-and-tone.md`, `STYLE.md`, a section in
   `CLAUDE.md`). If one exists, also enforce its mechanicals (things like em-dash rules or a
   house cadence) on the documents it covers. If no such guide exists, skip this step.
+- **Read the document's purpose before deciding how hard to cut.** Semantic duplicates go
+  regardless — the idea survives elsewhere. But concreteness-for-brevity cuts (trimming an
+  example stack to one, pruning elaboration that is dispensable but not redundant) depend on
+  whether the reader will *use* this document or *study* it. Reference doc, one-pager, or an
+  explicit "make it punchy": cut hard. Manifesto, speech, narrative, marketing where the last
+  line is the payload: preserve rhythm and deliberate repetition. Whatever the purpose, never
+  trim past the **keep-list**: a concrete list that gives an abstraction meaning, the one line
+  with teeth in a section, the sharpest concrete image, and defined terms or real
+  distinctions all stay.
 - **Economy is not the only axis: protect the emotional and rhythmic lines.** Deirdre
   optimizes for economy and concreteness, and a meaning-drift edit *looks* surgical: one local
   word, clearly tighter. But often the warmest line in a piece is the one she clips, because

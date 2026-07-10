@@ -4,9 +4,10 @@ description: >-
   Use this skill whenever someone hands you a piece of writing and wants it
   actually fixed: tightened, cut for economy, given a rigorous line edit.
   Essays, emails, board policies, internal docs, marketing copy, blog posts,
-  or any prose draft. Applies every edit automatically, no approval step —
-  the right call whenever the ask is "just make this better" and the user
-  doesn't want to review each change. Trigger on phrases like "tighten this",
+  or any prose draft. Applies every edit automatically, no approval step
+  (at most a one-line calibration question on a long doc whose purpose is
+  ambiguous) — the right call whenever the ask is "just make this better"
+  and the user doesn't want to review each change. Trigger on phrases like "tighten this",
   "clean this up", "fix this", "edit this for economy", "make this leaner",
   "cut the fluff from this doc", "give this a line edit and apply it", "this
   feels bloated, fix it", or "/tighten [file]". Works on a single document or
@@ -38,18 +39,24 @@ apply step.
 
 ## The workflow
 
-1. **Read & chunk.** Read each document, measure tokens with `tks`, and split it into Pass 1
-   chunks per the chunking rules in the shared method file.
+1. **Read & chunk.** Read each document, note its purpose (see "read the document's purpose"
+   in the shared method file), measure tokens with `tks`, and split it into Pass 1 chunks per
+   the chunking rules in the shared method file.
 2. **Pass 1 — line by line.** Launch one `editor` agent per chunk (parallel batches) with the
    granular prompt. Collect the line-by-line notes.
 3. **Pass 2 — whole doc.** Launch the holistic pass with the whole-doc prompt.
 4. **Triage.** Merge Pass 1 + Pass 2 findings, dedupe overlaps, and sort each into surgical or
    substantive per the shared method file.
 5. **Apply everything.** Make every surgical and substantive edit via exact find-and-replace.
-   The one exception: an edit that flattens emotional meaning or kills a deliberate cadence
-   (see "protect the emotional and rhythmic lines" in the shared method file) — skip that one
-   and note it in the report instead of applying it. Nothing else waits for approval; this
-   skill never asks, it applies.
+   Semantic-duplicate cuts — heading-echoes, restatements, closing flourishes that only
+   restate — are surgical and apply by default. Concreteness-for-brevity cuts and any length
+   target are calibrated by the purpose read (see "read the document's purpose" in the shared
+   method file), made while reading in step 1. If the purpose is genuinely ambiguous *and*
+   the document is over 4,000 tokens, ask one line; otherwise default to preserve and note
+   the call in the report. The other exception: an edit that flattens emotional meaning or
+   kills a deliberate cadence (see "protect the emotional and rhythmic lines") — skip it and
+   note it in the report instead of applying it. Nothing else waits for approval; this skill
+   never asks for sign-off, it applies.
 6. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
    (`MM-DD-YYYY`). Skip files without frontmatter.
 7. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
@@ -61,6 +68,9 @@ apply step.
   run at a glance.
 - **Collapse the surgical.** Don't show every before→after. Give the count and the **rewritten
   final paragraphs**, so the user eyeballs the clean result instead of diffing each word.
+- **List the semantic-duplicate cuts.** Unlike word-level tightenings they're judgment calls,
+  so give a compact locator list — each cut quoted, one line on where its idea survives. No
+  before/after needed.
 - **Spotlight the substantive.** These already happened, but they're the ones worth a second
   look — number each, show before→after, and say why it was safe to apply.
 - **Call out anything skipped.** If an edit was held back for flattening emotion or killing a
@@ -68,8 +78,9 @@ apply step.
 
 ## Guardrails
 
-Preserves all original meaning, with one named exception path (skip, don't apply, edits that
-flatten emotion or kill a deliberate cadence). Editing local markdown is automatic in this
-project — this skill always applies its edits, both surgical and substantive, with no approval
-step and no asking first. Never sends, posts, or touches anything outside the local
-file(s) it's given.
+Preserves all original meaning, with two named exception paths: edits that flatten emotion or
+kill a deliberate cadence are skipped, not applied; and when a long document's purpose is
+genuinely ambiguous, the skill asks one calibration line before choosing how hard to cut —
+calibration, not approval. Editing local markdown is automatic in this project — this skill
+always applies its edits, both surgical and substantive, with no per-edit approval step.
+Never sends, posts, or touches anything outside the local file(s) it's given.

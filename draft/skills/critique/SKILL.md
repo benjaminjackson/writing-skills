@@ -40,6 +40,10 @@ surgical/substantive distinction.
   the ones worth acting on), then the word- and sentence-level notes as a shorter list
   underneath — quote, verdict, fix. This is feedback to read and decide on, not a diff to
   approve, so there's no need for before/after pairs on every line.
+- **Distinguish the two structural-cut kinds.** Semantic duplicates (heading-echoes,
+  restatements, closing flourishes that only restate) are safe cuts; concreteness-for-brevity
+  cuts depend on the document's purpose — report those as conditional recommendations. Don't
+  resolve the purpose question or ask it; that's `tighten`'s job.
 - **Name the single change that matters most**, drawn from the Pass 2 pass.
 - If most of the notes are minor word-level fixes and the user seems to want them applied, say
   so: "Most of this is safe tightening — run `tighten` and I'll just apply it."
