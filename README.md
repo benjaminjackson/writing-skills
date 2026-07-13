@@ -130,9 +130,11 @@ It insists on one addition: **the silent failure**. If doing step 2 without step
 
 It closes by telling you — in chat, not in the doc — what it verified and what it only reasoned about, including any UI flow it has never watched anyone click through.
 
+It also covers **commit messages and PR descriptions**, which are documentation with a hostile deadline: written at the end of a long session, when the session is the only thing in your head. That makes them where session leakage does the most damage, and the reader — someone bisecting a regression eighteen months from now — is the least equipped to survive it. So the message describes what the code does now and why it needed to, not the three approaches you abandoned or the bug you introduced at 2pm and fixed at 3pm. The reader has the diff; they can see what moved. Why it moved is the only thing a commit message adds.
+
 #### Usage
 
-It loads on its own whenever documentation is being written or updated — "write a README," "document this," "update the install guide," "our docs are out of date." There's no command to type, because the failures it prevents are the ones you'd never think to ask for help with.
+It loads on its own whenever documentation is being written or updated — "write a README," "document this," "update the install guide," "our docs are out of date" — and whenever a commit message or PR description gets drafted. There's no command to type, because the failures it prevents are the ones you'd never think to ask for help with.
 
 It won't touch writing that has a voice — essays, posts, emails, marketing copy. That's `draft`.
 

@@ -3,9 +3,10 @@ name: write
 description: >-
   Use this skill whenever you are writing or updating technical documentation:
   a README, an install guide, setup or config docs, dev docs, API docs, help
-  text, or a troubleshooting section. Trigger on "write a README", "document
-  this", "update the install guide", "write the setup docs", or "our docs are
-  out of date". It edits the file directly, and
+  text, a troubleshooting section — and also every commit message and pull
+  request description. Trigger on "write a README", "document this", "update
+  the install guide", "our docs are out of date", "write the commit message",
+  "open a PR", or "write the PR description". It edits the file directly, and
   it verifies every path, command, and flag against the actual code before
   writing about them. This is technical writing — transactional prose, no
   author's voice to preserve. Do NOT use it for writing that has a voice:
@@ -130,7 +131,32 @@ the troubleshooting section, and anywhere the reader might stop early thinking t
 
 The happy path is the easy half. Anyone can write it. Write the other half.
 
-## 6. Say what you didn't verify
+## 6. Commit messages and pull requests
+
+A commit message is documentation with a hostile deadline: it gets written at the end of a
+long session, when the session is the only thing in your head. That makes it the place session
+leakage does the most damage, and the reader — someone bisecting a regression eighteen months
+from now — is the least equipped to survive it.
+
+Everything above applies. These are the parts that bite hardest here:
+
+- **Describe the change, not the journey.** What the code does now, and why it needed to. Not
+  what you tried first, not what the review said, not the bug you introduced at 2pm and fixed
+  at 3pm. The three approaches you abandoned are not history — they never shipped.
+- **The reader has the diff.** They can see *what* lines moved. They cannot see *why*, and that
+  is the only thing a commit message adds. Don't narrate the patch back to them.
+- **No conversational residue.** "As requested," "per the discussion," "addressing the feedback,"
+  "as we decided." The reviewer was not in the room and the future reader never will be.
+- **The subject line is a claim about behavior**, in the imperative, under 50 characters: what
+  the tree does after this commit that it didn't before.
+- **Verify the body against the diff, not against your memory of the work.** Read the actual
+  patch before describing it. A commit message that describes an earlier draft of the change
+  is the same failure as a doc that describes deleted code.
+- **A PR description answers three questions:** what changed, why it changed, and how a reviewer
+  can convince themselves it works. Everything else is optional. What you didn't test goes in,
+  plainly — that is the rule below, and a PR is where it matters most.
+
+## 7. Say what you didn't verify
 
 When you finish, tell the user — **in chat, not in the doc** — what you actually confirmed and
 what you only reasoned about. Which paths you grepped. Which commands you ran. Which UI flow
