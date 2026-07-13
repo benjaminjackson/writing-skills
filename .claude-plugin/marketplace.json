@@ -5,8 +5,8 @@
     "email": "ben@benjaminjackson.co"
   },
   "metadata": {
-    "description": "Prose-editing skills for Claude Code, built on Deirdre McCloskey's Economical Writing",
-    "version": "1.0.0"
+    "description": "Writing skills for Claude Code: prose editing built on Deirdre McCloskey's Economical Writing, editorial tools for story pitches, and technical documentation that respects the reader's time",
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -18,6 +18,11 @@
       "name": "pitch",
       "description": "Editorial tools for developing and stress-testing story pitches: the managing-editor agent gives a single Socratic editorial read (green light / revise / kill), the sharpen skill runs a pitch through that one editor for a quick verdict, and the page-one-meeting skill simulates a full multi-persona page-one meeting that debates a pitch and delivers a verdict.",
       "source": "./pitch"
+    },
+    {
+      "name": "documentation",
+      "description": "Technical writing that respects the reader's time: the write skill drafts and updates READMEs, install guides, and dev docs, verifying every path, command, and flag against the actual code before describing it, refusing to document a UI flow it hasn't watched run, and cutting the reassurance, closing flourishes, and leftover conversation that bloat docs without telling the reader anything.",
+      "source": "./documentation"
     }
   ]
 }

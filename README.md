@@ -1,6 +1,6 @@
 # writing-skills
 
-A Claude Code plugin marketplace with two plugins: **draft**, which critiques and tightens prose with a critic built on Deirdre McCloskey's *Economical Writing*, and **pitch**, which develops and stress-tests story pitches.
+A Claude Code plugin marketplace with three plugins: **draft**, which critiques and tightens prose with a critic built on Deirdre McCloskey's *Economical Writing*; **pitch**, which develops and stress-tests story pitches; and **documentation**, which writes technical docs that don't waste the reader's time.
 
 ## Installation
 
@@ -8,6 +8,7 @@ A Claude Code plugin marketplace with two plugins: **draft**, which critiques an
 claude plugin marketplace add benjaminjackson/writing-skills
 claude plugin install draft@writing-skills
 claude plugin install pitch@writing-skills
+claude plugin install documentation@writing-skills
 ```
 
 ## draft
@@ -108,6 +109,32 @@ The chair adds one more check in Phase 5. They reread the shaped pitch as a skep
 - **Automatically:** on phrases like "page one meeting," "run this by the editors," "simulate a pitch meeting," or "get the room's take."
 
 For a single editorial read instead of a multi-agent debate, use `sharpen`.
+
+## documentation
+
+Technical writing is a different job from prose editing. `draft` protects a writer's voice while cutting fat; `documentation` assumes there's no voice to protect.
+
+One skill: **write**. It edits the file directly.
+
+### write
+
+Two things happen before a word is drafted.
+
+**Name the reader.** Who reads this, what must they do, what do they already know? A skeptical non-technical reader needs every silent failure called out, and reads an admiring sentence about the architecture as a sales pitch. An engineer who has done this four times needs neither. Tone and coverage follow from the answer.
+
+**Verify.** Every proper noun in a doc is a factual claim, and docs rot silently because nobody re-reads the install guide while changing the code. So it greps for every path, command, flag, and env var before describing any of them. A section documenting code that no longer exists isn't badly worded — it's fiction, and it gets deleted rather than reworded. Install flows and menu paths aren't greppable, so it never describes one it hasn't watched run.
+
+Then it drafts, holding every sentence to one test: **what does the reader do differently because they read this?** "Nothing, they just feel better" means it doesn't go in. That cuts reassurance ("no Node, no config files"), closing flourishes ("that's the whole setup"), design essays defending an architecture nobody attacked, and the one that sneaks in unnoticed — **session leakage**, where a doc drafted at the end of a long working session inherits the session, answering questions nobody asked and narrating what changed instead of describing what is.
+
+It insists on one addition: **the silent failure**. If doing step 2 without step 1 produces a plausible-looking success that's actually broken, that goes in the doc, in the step and in troubleshooting both.
+
+It closes by telling you — in chat, not in the doc — what it verified and what it only reasoned about, including any UI flow it has never watched anyone click through.
+
+#### Usage
+
+It loads on its own whenever documentation is being written or updated — "write a README," "document this," "update the install guide," "our docs are out of date." There's no command to type, because the failures it prevents are the ones you'd never think to ask for help with.
+
+It won't touch writing that has a voice — essays, posts, emails, marketing copy. That's `draft`.
 
 ## Author
 
