@@ -68,7 +68,7 @@ Then it makes the call: **green light**, **revise and resubmit**, or **kill it**
 
 ### sharpen
 
-A single editorial pass, not a debate. Launches `managing-editor` with your pitch material verbatim (plus a named outlet, if you gave one) and relays its verdict directly — no summarizing, no softening, no saving to disk.
+A single editorial pass, not a debate. Launches `managing-editor` with your pitch material verbatim (plus a named outlet, if you gave one) and relays the verdict to you word for word. Everything stays in the conversation; `page-one-meeting` is the one that writes to disk.
 
 #### Usage
 
