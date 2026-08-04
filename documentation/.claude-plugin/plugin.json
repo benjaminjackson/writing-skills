@@ -1,5 +1,6 @@
 {
   "name": "documentation",
+  "version": "1.1.0",
   "description": "Technical writing that respects the reader's time: the write skill drafts and updates READMEs, install guides, and dev docs, verifying every path, command, and flag against the actual code before describing it, refusing to document a UI flow it hasn't watched run, and cutting the reassurance, closing flourishes, and leftover conversation that bloat docs without telling the reader anything.",
   "author": {
     "name": "Benjamin Jackson",

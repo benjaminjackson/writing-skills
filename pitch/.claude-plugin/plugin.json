@@ -1,5 +1,6 @@
 {
   "name": "pitch",
+  "version": "1.1.0",
   "description": "Editorial tools for developing and stress-testing story pitches: the managing-editor agent gives a single Socratic editorial read (green light / revise / kill), the sharpen skill runs a pitch through that one editor for a quick verdict, and the page-one-meeting skill simulates a full multi-persona page-one meeting that debates a pitch and delivers a verdict.",
   "author": {
     "name": "Benjamin Jackson",
