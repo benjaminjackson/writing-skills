@@ -1,7 +1,7 @@
 {
   "name": "draft",
-  "version": "1.1.0",
-  "description": "Prose editing built on Deirdre McCloskey's Economical Writing: the editor agent critiques a draft line by line and refuses to rewrite it, the critique skill runs a document through editor and reports the findings with no edits made, and the tighten skill runs the same process but applies every safe and structural edit automatically, no approval step.",
+  "version": "1.2.0",
+  "description": "Prose editing and drafting built on Deirdre McCloskey's Economical Writing: the editor agent critiques a draft line by line and refuses to rewrite it, the critique skill runs a document through editor and reports the findings with no edits made, the tighten skill runs the same process but applies every safe and structural edit automatically, and the skeleton skill builds a new piece from the inside out, core idea first, then every topic sentence, then the joints, then the prose.",
   "author": {
     "name": "Benjamin Jackson",
     "email": "ben@benjaminjackson.co"

@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Writing skills for Claude Code: prose editing built on Deirdre McCloskey's Economical Writing, editorial tools for story pitches, and technical documentation that respects the reader's time",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "draft",
-      "description": "Prose editing built on Deirdre McCloskey's Economical Writing: the editor agent critiques a draft line by line and refuses to rewrite it, the critique skill runs a document through editor and reports the findings with no edits made, and the tighten skill runs the same process but applies every safe and structural edit automatically, no approval step.",
+      "description": "Prose editing and drafting built on Deirdre McCloskey's Economical Writing: the editor agent critiques a draft line by line and refuses to rewrite it, the critique skill runs a document through editor and reports the findings with no edits made, the tighten skill runs the same process but applies every safe and structural edit automatically, and the skeleton skill builds a new piece from the inside out, core idea first, then every topic sentence, then the joints, then the prose.",
       "source": "./draft"
     },
     {

@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: defers-to-tighten
+context:
+  scaffold_script: cp "$EVAL_FIXTURES/fat-but-sound.md" .
