@@ -9,7 +9,7 @@ These evals do not judge whether the prose is good. They check that the rules st
 ```
 python3 draft/evals/run.py --calibrate     # test the judges. do this first, every time
 python3 draft/evals/run.py --tag trigger   # cheap, deterministic
-python3 draft/evals/run.py                 # all eleven cases
+python3 draft/evals/run.py                 # all thirteen cases
 python3 draft/evals/run.py --case no-fabrication
 ```
 
@@ -81,6 +81,8 @@ For those, the answer is not a better eval. It is use.
 | 9 | `defers-to-tighten` | gates | default | A sound argument with fat prose gets sent to `tighten`, not restructured |
 | 10 | `sentence-outline-not-labels` | fidelity | auto, seeded | Every outline entry is a claim with a finite verb, not a noun-phrase label |
 | 11 | `short-form-restraint` | fidelity | auto, seeded | No three-beat restatement, and no headings bolted onto a 200-word post |
+| 12 | `register-survives-fill-in` | fidelity | auto, seeded, long | The stated voice survives stage 6, even when the source material is written in a different one |
+| 13 | `joints-after-fill-in` | fidelity | auto, seeded, long | A paragraph's last sentence sets up the next topic sentence, and no section closes by restating its own opening |
 
 Case 6 is the one to build first and the one to keep if only one survives. It tests the promise you cannot check by reading.
 
@@ -120,7 +122,11 @@ A red case is a claim about the skill, and it is worth about as much as the fixt
 
 **Auto cases skip the closing `tighten` pass.** Their prompts say so. `tighten` is the full chunked Deirdre engine and it is noise for a case testing stage 6.
 
-**Short fixtures under-test structure.** Stage 5 grouping and the reorder case are both weaker at four paragraphs than they would be at twelve. The suite covers fabrication, gates, trigger discipline and outline discipline thoroughly, and grouping only lightly. One long-form case is the fix if that ever bites.
+**One long fixture, and only two cases use it.** Every other fixture stays under 2,000 characters, because judges get noisy on long inputs. `search-plan-draft.md` is about 1,200 words, and cases 12 and 13 are the only ones that read it.
+
+It exists because the short-fixture limit bit. A field report from a real 3,000-word run found eleven gaps in the skill, and the two that cost the most rework, register drift and restatement at section scale, are both invisible in a 200-word post. A 200-word post has no sections, and it holds one voice by accident rather than by discipline.
+
+**Case 13 has not been shown to bite.** Delete the read-back pass from `SKILL.md` and the case still passes: the run writes clean joints on this fixture without being told to. So case 13 catches the rule going missing later; it does not show the rule is doing work now. The fixture needs topic sentences that invite a summarising close before the ablation means anything. Case 12 does bite: with the register rule gone, the run drifts into explainer voice in its opening paragraph and the judge quotes it back.
 
 **The caveman and ponytail hooks fire in headless runs too**, and caveman mode compresses prose, which fails a judge for the wrong reason. `run.py` passes `--append-system-prompt` to stand them down. Worth re-checking whether the native harness already isolates them.
 
@@ -132,7 +138,8 @@ A red case is a claim about the skill, and it is worth about as much as the fixt
 - **`oncall-skeleton.md`**, **`linkedin-skeleton.md`** are pre-approved stage-3 outlines, so an auto case starts at the stage it tests. `oncall-skeleton.md` carries the fabrication trap: one of its topic sentences promises "the share of pages that turn into an escalation", and no share appears anywhere in the notes. The paragraph cannot be written without either asking for that figure or inventing it.
 - **`standups-draft.md`** is an honest draft whose third paragraph holds the premise its first paragraph depends on.
 - **`fat-but-sound.md`** has its argument in the right order and its prose full of throat-clearing. The right answer is `tighten`.
+- **`search-plan-draft.md`** is the long one, about 1,200 words, an advisory memo to a senior executive. Three faults planted: two paragraphs that slide into formal explainer voice while the rest uses contractions, one section that closes by restating the claim it opened with, and two paragraphs whose last sentence closes its own loop instead of setting up the next. `search-plan-skeleton.md` is its approved outline, written in the right voice, so a run that carries the wrong voice into the memo got it from the source material rather than the outline.
 
 ## When a case fails
 
-That is the suite doing its job. Fixing the skill is a separate decision from noticing. To prove the suite still bites, delete the "Never invent material" paragraph from `SKILL.md` and confirm case 6 goes red. A suite that has never failed is not evidence.
+That is the suite doing its job. Fixing the skill is a separate decision from noticing. To prove the suite still bites, delete the "Never invent material" paragraph from `SKILL.md` and confirm case 6 goes red, or delete the register line from the brief and confirm case 12 goes red. Both do. A suite that has never failed is not evidence.

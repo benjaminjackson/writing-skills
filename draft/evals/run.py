@@ -174,6 +174,10 @@ def calibrate():
         ("sentence-outline-not-labels/graders/every-line-is-a-claim.md", "outline"),
         ("short-form-restraint/graders/no-three-beat.md", "threebeat"),
         ("names-orphan-notes/graders/orphan-named.md", "orphan"),
+        ("register-survives-fill-in/graders/holds-the-register.md", "register"),
+        ("joints-after-fill-in/graders/last-sentence-sets-up-next.md", "joints"),
+        ("joints-after-fill-in/graders/no-section-scale-restatement.md", "section"),
+        ("topic-is-not-a-claim/graders/brief-asks-for-register.md", "askregister"),
     ]
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True
