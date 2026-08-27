@@ -128,11 +128,13 @@ A red case is a claim about the skill, and it is worth about as much as the fixt
 
 It exists because the short-fixture limit bit. A field report from a real 3,000-word run found eleven gaps in the skill, and the two that cost the most rework, register drift and restatement at section scale, are both invisible in a 200-word post. A 200-word post has no sections, and it holds one voice by accident rather than by discipline.
 
+**Case 12 bites.** With the register rule gone from the brief, the run drifts into explainer voice in its opening paragraph and the judge quotes it back.
+
 **Case 13 has not been shown to bite, after two attempts.** Delete the read-back pass from `SKILL.md` and the case still passes: the run writes clean joints on this fixture without being told to. Planting four loop-closing sentences in the fixture moved it closer, one of three judges flipped to FAIL, but the verdict held. The honest reading is that the model does this well unprompted at this length, so case 13 catches the rule going missing later rather than showing what the rule does now. Both the case and the rule are cheap, so both stay.
 
 **Case 14 has not been shown to bite either, after two attempts.** Strip the arithmetic paragraph from stage 6 and the count reconciliation from Finish, and the run still counts the JSON correctly instead of copying the stale draft beside it. The first attempt was the suite's fault: the prompt named the JSON as the only source of truth, which restates the rule the ablation was meant to remove. The second attempt named both files without ranking them, and the counts still came out right. Same reading as case 13, and the same decision.
 
-**Case 15 bites.** Remove the harvest paragraph from the existing-draft entry point and the run reverse-outlines the memo, lists its faults, and never names a single passage worth keeping. Both judges failed it. This is the clearest evidence in the suite that a field-report rule changed behaviour. Case 12 does bite: with the register rule gone, the run drifts into explainer voice in its opening paragraph and the judge quotes it back.
+**Case 15 bites.** Remove the harvest paragraph from the existing-draft entry point and the run reverse-outlines the memo, lists its faults, and never names a single passage worth keeping. Both judges failed it. This is the clearest evidence in the suite that a field-report rule changed behaviour.
 
 **The caveman and ponytail hooks fire in headless runs too**, and caveman mode compresses prose, which fails a judge for the wrong reason. `run.py` passes `--append-system-prompt` to stand them down. Worth re-checking whether the native harness already isolates them.
 
