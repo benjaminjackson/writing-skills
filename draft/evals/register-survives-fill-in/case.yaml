@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: register-survives-fill-in
+context:
+  scaffold_script: |
+    cp "$EVAL_FIXTURES/search-plan-draft.md" .
+    cp "$EVAL_FIXTURES/search-plan-skeleton.md" post.md

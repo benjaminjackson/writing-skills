@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: no-fabrication
+context:
+  scaffold_script: |
+    cp "$EVAL_FIXTURES/oncall-notes.md" .
+    cp "$EVAL_FIXTURES/oncall-skeleton.md" post.md

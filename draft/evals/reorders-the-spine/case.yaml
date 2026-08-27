@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: reorders-the-spine
+context:
+  scaffold_script: cp "$EVAL_FIXTURES/standups-draft.md" .

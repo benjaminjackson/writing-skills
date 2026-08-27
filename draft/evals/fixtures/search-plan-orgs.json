@@ -1,0 +1,20 @@
+{
+  "generated": "week 6 of the search",
+  "organizations": [
+    {"name": "Alder Health",        "status": "live",   "one_hop": "Priya Raman"},
+    {"name": "Bellweather Capital", "status": "live",   "one_hop": "Tom Iles"},
+    {"name": "Cedarline",           "status": "closed", "one_hop": "Priya Raman"},
+    {"name": "Dorsey Group",        "status": "live",   "one_hop": null},
+    {"name": "Eastgate Logistics",  "status": "live",   "one_hop": "Marta Quinn"},
+    {"name": "Fenwick Labs",        "status": "closed", "one_hop": null},
+    {"name": "Glasshouse",          "status": "live",   "one_hop": "Tom Iles"},
+    {"name": "Harrow & Fine",       "status": "live",   "one_hop": null},
+    {"name": "Inglewood Mutual",    "status": "closed", "one_hop": "Dev Achari"},
+    {"name": "Juniper Systems",     "status": "live",   "one_hop": "Dev Achari"},
+    {"name": "Kestrel Foods",       "status": "live",   "one_hop": "Marta Quinn"},
+    {"name": "Lowfield Energy",     "status": "live",   "one_hop": null},
+    {"name": "Marchmont Trust",     "status": "closed", "one_hop": null},
+    {"name": "Northbank",           "status": "live",   "one_hop": "Sara Okonjo"},
+    {"name": "Oakhurst Partners",   "status": "live",   "one_hop": "Sara Okonjo"}
+  ]
+}

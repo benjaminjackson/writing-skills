@@ -1,6 +1,6 @@
 # writing-skills
 
-A Claude Code plugin marketplace with three plugins: **draft**, which critiques and tightens prose with a critic built on Deirdre McCloskey's *Economical Writing*; **pitch**, which develops and stress-tests story pitches; and **documentation**, which writes technical docs that don't waste the reader's time.
+A Claude Code plugin marketplace with three plugins: **draft**, which builds, critiques and tightens prose with a critic built on Deirdre McCloskey's *Economical Writing*; **pitch**, which develops and stress-tests story pitches; and **documentation**, which writes technical docs that don't waste the reader's time.
 
 ## Installation
 
@@ -13,7 +13,7 @@ claude plugin install documentation@writing-skills
 
 ## draft
 
-Prose editing built on Deirdre McCloskey's *Economical Writing*. One agent, two skills: **editor** is a critic that judges prose against McCloskey's standards and refuses to rewrite it; **critique** and **tighten** both run a document through editor and share the same chunking engine — one just reports the findings, the other applies them.
+Prose editing and drafting built on Deirdre McCloskey's *Economical Writing*. One agent, three skills: **editor** is a critic that judges prose against McCloskey's standards and refuses to rewrite it; **critique** and **tighten** both run a document through editor and share the same chunking engine — one just reports the findings, the other applies them; **skeleton** works the other way round, building a piece that doesn't exist yet from its core idea outwards.
 
 ### editor
 
@@ -43,7 +43,49 @@ Applies the edits. No approval step, no mode to pick — surgical and substantiv
 - **Explicitly:** `/tighten <file>`
 - **Automatically:** on phrases like "tighten this," "clean this up," "fix this," "edit this for economy," or "make this leaner."
 
-Both work on one document or a batch — several board policies, a folder of drafts — in one run. Want the notes first and the edits later? Run `critique`, then `tighten` once you've seen what it found.
+`critique` and `tighten` both work on one document or a batch — several board policies, a folder of drafts — in one run. Want the notes first and the edits later? Run `critique`, then `tighten` once you've seen what it found.
+
+### skeleton
+
+Drafting, not editing. `skeleton` builds a piece that doesn't exist yet, from the inside out: core idea first, then every topic sentence, then the joints between them, then headings, and only then the supporting prose. It will not write a single supporting sentence until the argument survives being read aloud on its own.
+
+Most bad writing isn't badly worded. It's well-worded paragraphs in an order that doesn't add up, and by the time you can see that, fixing it means a rewrite. Reordering topic sentences costs nothing; reordering finished paragraphs costs the afternoon.
+
+#### The six stages
+
+1. **Core idea.** One sentence, and it has to be a claim someone can disagree with. Negate it: if the negation is absurd, you have a topic, not a claim.
+2. **The argument.** What has to be true for the core idea to hold, and what each of those needs to stand up. This produces the paragraphs, not their sentences.
+3. **The sentence outline.** Every topic sentence written out, subject and verb, making a claim. Then you read them alone, in order, aloud, and reorder until the reasoning holds.
+4. **The joints.** Name the relation between each adjacent pair in one word: so, but, and, therefore, except. No relation means the order is wrong. Fix by rewriting the next topic sentence before adding a transition; prefer the fix that adds no words.
+5. **Groups and headings.** Only where a group is real. A heading that restates its first topic sentence is a heading-echo, and one of the two goes.
+6. **Fill in.** The topic sentence stays. Supporting sentences carry evidence, an example, the mechanism, or a concession, never a restatement, and never a summarising beat at the end.
+
+The names behind this are real ones, not invented: stage 3 is a **sentence outline** (Chicago and MLA both distinguish it from a topic outline), the shape is Barbara Minto's **Pyramid Principle**, and reading the topic sentences alone to test the argument is Joseph Williams' **reverse outline** from *Style*, run before the prose exists instead of after.
+
+#### It starts from wherever you are
+
+**From nothing**, stage 1 is a conversation. **From notes**, it draws candidate core ideas out of what you actually wrote, and notes that fit no claim get named out loud and set aside rather than smuggled into a paragraph. **From an existing draft**, it pulls the real topic sentences out and reads those alone, which is the reverse outline in its original form: it shows you the argument the draft actually makes, against the one you meant.
+
+#### Keeping you in the loop
+
+The risk in a six-stage method run by an agent is that you get an essay you didn't write. Three things prevent it.
+
+By default **every stage stops** and shows you what it produced. Pass `auto` and only two stop: the core idea and the sentence outline. Those are the two places a wrong answer can't be recovered later, and the two where only you hold the information. The read-aloud test at stage 3 is done by you, out loud, because that's what makes it a test.
+
+It **never invents material**. No evidence, number, quotation, anecdote, or example you didn't supply. Where the material runs out it stops and asks for that one thing. An invented example in your own voice is the hardest error to catch reading back, and a flagged invention that reads well tends to survive to publication.
+
+It runs `sloplint` at every stage and `editor` at three of them, the claim, the argument line, and the finished prose, then applies her notes in one round rather than walking you through each. `tighten` runs last, on prose, once.
+
+#### Usage
+
+- **Explicitly:** `/skeleton [file-or-notes] [auto]`
+- **Automatically:** it doesn't. Six stages is a choice you make, not something a plain "write me a blog post" should trigger.
+
+For prose whose argument is sound and whose words are fat, that's `tighten`, not this.
+
+#### Evals
+
+`draft/evals/` holds a fifteen-case suite for the rules above: that the gates hold, that a plain "write me a post" doesn't get ambushed, and above all that stage 6 never invents a number, a quotation, or an anecdote you didn't supply. The graders are LLM judges rather than pattern matches, because a fabricated anecdote contains no digits and a regex would go green on the failure it was meant to catch. The judges themselves are calibrated against hand-written known-bad artifacts before any case runs. See `draft/evals/README.md`.
 
 ## pitch
 
