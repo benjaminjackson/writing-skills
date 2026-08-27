@@ -178,6 +178,8 @@ def calibrate():
         ("joints-after-fill-in/graders/last-sentence-sets-up-next.md", "joints"),
         ("joints-after-fill-in/graders/no-section-scale-restatement.md", "section"),
         ("topic-is-not-a-claim/graders/brief-asks-for-register.md", "askregister"),
+        ("counts-come-from-the-file/graders/counts-match-the-source.md", "counts"),
+        ("harvest-before-restructure/graders/names-what-it-keeps.md", "harvest"),
     ]
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True

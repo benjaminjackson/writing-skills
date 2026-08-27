@@ -85,7 +85,7 @@ For prose whose argument is sound and whose words are fat, that's `tighten`, not
 
 #### Evals
 
-`draft/evals/` holds a thirteen-case suite for the rules above: that the gates hold, that a plain "write me a post" doesn't get ambushed, and above all that stage 6 never invents a number, a quotation, or an anecdote you didn't supply. The graders are LLM judges rather than pattern matches, because a fabricated anecdote contains no digits and a regex would go green on the failure it was meant to catch. The judges themselves are calibrated against hand-written known-bad artifacts before any case runs. See `draft/evals/README.md`.
+`draft/evals/` holds a fifteen-case suite for the rules above: that the gates hold, that a plain "write me a post" doesn't get ambushed, and above all that stage 6 never invents a number, a quotation, or an anecdote you didn't supply. The graders are LLM judges rather than pattern matches, because a fabricated anecdote contains no digits and a regex would go green on the failure it was meant to catch. The judges themselves are calibrated against hand-written known-bad artifacts before any case runs. See `draft/evals/README.md`.
 
 ## pitch
 

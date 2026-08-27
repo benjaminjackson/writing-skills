@@ -9,7 +9,7 @@ These evals do not judge whether the prose is good. They check that the rules st
 ```
 python3 draft/evals/run.py --calibrate     # test the judges. do this first, every time
 python3 draft/evals/run.py --tag trigger   # cheap, deterministic
-python3 draft/evals/run.py                 # all thirteen cases
+python3 draft/evals/run.py                 # all fifteen cases
 python3 draft/evals/run.py --case no-fabrication
 ```
 
@@ -83,6 +83,8 @@ For those, the answer is not a better eval. It is use.
 | 11 | `short-form-restraint` | fidelity | auto, seeded | No three-beat restatement, and no headings bolted onto a 200-word post |
 | 12 | `register-survives-fill-in` | fidelity | auto, seeded, long | The stated voice survives stage 6, even when the source material is written in a different one |
 | 13 | `joints-after-fill-in` | fidelity | auto, seeded, long | A paragraph's last sentence sets up the next topic sentence, and no section closes by restating its own opening |
+| 14 | `counts-come-from-the-file` | fidelity | auto, seeded, long | Every count comes from the data file, not from the stale draft sitting next to it |
+| 15 | `harvest-before-restructure` | process | default, long | A rebuild names the finished passages it keeps, and says what it drops |
 
 Case 6 is the one to build first and the one to keep if only one survives. It tests the promise you cannot check by reading.
 
@@ -122,11 +124,15 @@ A red case is a claim about the skill, and it is worth about as much as the fixt
 
 **Auto cases skip the closing `tighten` pass.** Their prompts say so. `tighten` is the full chunked Deirdre engine and it is noise for a case testing stage 6.
 
-**One long fixture, and only two cases use it.** Every other fixture stays under 2,000 characters, because judges get noisy on long inputs. `search-plan-draft.md` is about 1,200 words, and cases 12 and 13 are the only ones that read it.
+**One long fixture, and only two cases use it.** Every other fixture stays under 2,000 characters, because judges get noisy on long inputs. `search-plan-draft.md` is about 1,200 words, and cases 12 to 15 are the only ones that read it. Case 14 reads `search-plan-orgs.json` alongside it, so the memo and the data disagree and the run has to pick.
 
 It exists because the short-fixture limit bit. A field report from a real 3,000-word run found eleven gaps in the skill, and the two that cost the most rework, register drift and restatement at section scale, are both invisible in a 200-word post. A 200-word post has no sections, and it holds one voice by accident rather than by discipline.
 
-**Case 13 has not been shown to bite.** Delete the read-back pass from `SKILL.md` and the case still passes: the run writes clean joints on this fixture without being told to. So case 13 catches the rule going missing later; it does not show the rule is doing work now. The fixture needs topic sentences that invite a summarising close before the ablation means anything. Case 12 does bite: with the register rule gone, the run drifts into explainer voice in its opening paragraph and the judge quotes it back.
+**Case 13 has not been shown to bite, after two attempts.** Delete the read-back pass from `SKILL.md` and the case still passes: the run writes clean joints on this fixture without being told to. Planting four loop-closing sentences in the fixture moved it closer, one of three judges flipped to FAIL, but the verdict held. The honest reading is that the model does this well unprompted at this length, so case 13 catches the rule going missing later rather than showing what the rule does now. Both the case and the rule are cheap, so both stay.
+
+**Case 14 has not been shown to bite either, after two attempts.** Strip the arithmetic paragraph from stage 6 and the count reconciliation from Finish, and the run still counts the JSON correctly instead of copying the stale draft beside it. The first attempt was the suite's fault: the prompt named the JSON as the only source of truth, which restates the rule the ablation was meant to remove. The second attempt named both files without ranking them, and the counts still came out right. Same reading as case 13, and the same decision.
+
+**Case 15 bites.** Remove the harvest paragraph from the existing-draft entry point and the run reverse-outlines the memo, lists its faults, and never names a single passage worth keeping. Both judges failed it. This is the clearest evidence in the suite that a field-report rule changed behaviour. Case 12 does bite: with the register rule gone, the run drifts into explainer voice in its opening paragraph and the judge quotes it back.
 
 **The caveman and ponytail hooks fire in headless runs too**, and caveman mode compresses prose, which fails a judge for the wrong reason. `run.py` passes `--append-system-prompt` to stand them down. Worth re-checking whether the native harness already isolates them.
 
@@ -138,7 +144,7 @@ It exists because the short-fixture limit bit. A field report from a real 3,000-
 - **`oncall-skeleton.md`**, **`linkedin-skeleton.md`** are pre-approved stage-3 outlines, so an auto case starts at the stage it tests. `oncall-skeleton.md` carries the fabrication trap: one of its topic sentences promises "the share of pages that turn into an escalation", and no share appears anywhere in the notes. The paragraph cannot be written without either asking for that figure or inventing it.
 - **`standups-draft.md`** is an honest draft whose third paragraph holds the premise its first paragraph depends on.
 - **`fat-but-sound.md`** has its argument in the right order and its prose full of throat-clearing. The right answer is `tighten`.
-- **`search-plan-draft.md`** is the long one, about 1,200 words, an advisory memo to a senior executive. Three faults planted: two paragraphs that slide into formal explainer voice while the rest uses contractions, one section that closes by restating the claim it opened with, and two paragraphs whose last sentence closes its own loop instead of setting up the next. `search-plan-skeleton.md` is its approved outline, written in the right voice, so a run that carries the wrong voice into the memo got it from the source material rather than the outline.
+- **`search-plan-draft.md`** is the long one, about 1,200 words, an advisory memo to a senior executive. Three faults planted: two paragraphs that slide into formal explainer voice while the rest uses contractions, one section that closes by restating the claim it opened with, and two paragraphs whose last sentence closes its own loop instead of setting up the next. `search-plan-skeleton.md` is its approved outline, written in the right voice, so a run that carries the wrong voice into the memo got it from the source material rather than the outline. `search-plan-counts-skeleton.md` is a shorter outline whose every topic sentence needs a count under it, and `search-plan-orgs.json` holds the true list: 15 organizations, 4 closed, 8 of the 11 live ones reachable through 5 named contacts. The draft's own counts (fourteen, twelve, ten, four) are stale on every one of those figures, so a run that copies instead of counting is caught by which number it wrote.
 
 ## When a case fails
 

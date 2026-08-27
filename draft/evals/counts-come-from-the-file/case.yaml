@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: counts-come-from-the-file
+context:
+  scaffold_script: |
+    cp "$EVAL_FIXTURES/search-plan-orgs.json" .
+    cp "$EVAL_FIXTURES/search-plan-draft.md" .
+    cp "$EVAL_FIXTURES/search-plan-counts-skeleton.md" post.md
