@@ -1,7 +1,8 @@
 ---
 name: skeleton
 description: >-
-  Build a piece of writing from the inside out: core idea first, then every
+  Build a piece of writing from the inside out: core idea first, then one
+  And, But, Therefore beat per section built from the But outward, then every
   topic sentence, then the joints between them, then headings, and only then
   the supporting prose. For essays, blog posts, memos, talks, long emails,
   anything where the argument has to hold. Works from nothing, from a pile of
@@ -25,7 +26,11 @@ The method has real names behind it. Stage 3 is a **sentence outline** (Chicago 
 distinguish it from a topic outline: every entry is a full sentence, not a noun phrase). The
 core-idea-first shape with grouped support beneath it is Barbara Minto's **Pyramid Principle**.
 Reading the topic sentences alone to test the argument is Joseph Williams' **reverse outline**
-from *Style*, run before the prose exists instead of after.
+from *Style*, run before the prose exists instead of after. Stage 2 is Randy Olson's **And, But,
+Therefore**, one beat per section, and each beat is built from the But outward, because the But
+is the only one of the three that tells you whether the section needs to exist. That method,
+with the tests for a But that fails and the framing rules, lives in
+[../../references/abt-beats.md](../../references/abt-beats.md).
 
 ## Before anything: the brief
 
@@ -34,7 +39,8 @@ Get four things, and write them down verbatim. Every `editor` call quotes them.
 1. **Who reads this**, and what they already know. Ask what else they have in hand: a report
    they paid for, an earlier memo, a thread. Name what this piece must not re-explain and what
    it must not contradict.
-2. **What they should think or do** after reading.
+2. **What they should think or do** after reading, and what they believe now that stands in
+   the way, in their own words. The second half is where every section's But comes from.
 3. **What it is**: essay, memo, post, talk, email. Roughly how long.
 4. **How it should sound.** One sentence, best given as a comparison: "like explaining it to a
    CEO friend over coffee", "like a technical memo to peers". Contractions or not. And who the
@@ -58,7 +64,9 @@ which notes went unused and why.
 
 **From an existing draft.** Pull the real topic sentences out of it, one per paragraph, and
 read those alone. That is the reverse outline in its original form, and it shows the argument
-the draft actually makes against the one the writer meant. Then run stages 3 to 6 on the
+the draft actually makes against the one the writer meant. Then find each section's But. A
+section with no But is a heading with facts under it, and a sentence with tension in it that
+sits anywhere else is a But that got mislabelled. Then run stages 3 to 6 on the
 result, treating the old paragraphs as raw material to fill from. Before starting, check this
 is the right skill: if the argument holds and only the prose is fat, that is `tighten`.
 
@@ -74,6 +82,11 @@ sentences into that same file, one per line with a blank line between. Every lat
 it in place. The outline becomes the draft; there is no copy step and no scratch file. If the
 user did not name a file, propose a path and get agreement before writing.
 
+Edit it by exact, unique match. A file with a comment log or frontmatter above the draft can
+hold the same marker twice, and a script that matches the first `-->` when it meant the last
+one drops everything between them. Check the match count before the write, and read the file
+back after it.
+
 ## The six stages
 
 ### 1. The core idea
@@ -87,12 +100,24 @@ what is useful" is a claim, because someone can argue the opposite.
 Propose two or three candidates. The writer picks one or writes their own. Never proceed on a
 core idea you chose for them.
 
-### 2. The argument
+### 2. The beats
 
-List what has to be true for the core idea to hold, and what each of those needs to stand up:
-evidence, an example, a concession. Group them where they serve the same sub-claim.
+Break the piece into sections, one main idea each, and give every section one beat: And, But,
+Therefore. Build each beat from the But outward. The But is what the reader believes now that
+this section overturns, written about the reader and never about us. The Therefore answers it,
+locks on the But's key noun, and says what only we do. The And is the common ground, and it
+ends on what the But is about to take away. The full method is in
+[../../references/abt-beats.md](../../references/abt-beats.md).
 
-This stage produces the paragraphs. It does not produce their sentences.
+Under each beat, list what it needs to stand up: evidence, an example, a concession, a quote
+from a real person. That sorts the material. A quote goes under the claim it backs, which is
+not always the section it was collected for: a graduate who says "I didn't have the key, and
+you gave it to me" is backing a claim about access, and she does not belong under a claim
+about trust however good the quote is. A note that fits no beat is named and set aside.
+
+This stage produces the sections and their three claims each, in rough words. It does not
+produce their sentences. If the material holds no Therefore for a beat, the beat gets a
+bracketed slot that says whose answer it needs, and the stage carries on.
 
 ### 3. The sentence outline
 
@@ -106,11 +131,18 @@ stage stops and waits.
 
 Reorder until the reasoning holds. Reordering costs nothing now and costs a rewrite later.
 
+The spine has three tests beyond order. Every sentence is a claim and not a statistic: the
+number goes under the claim it supports. Every actor is named: a pronoun whose antecedent lives
+in prose that does not exist yet fails aloud. And the joints come from the order and from an
+echo word carried from one sentence to the next, not from "So" and "But" at the head of every
+line; two or three of those in a piece is the ceiling, and the rest read the way a person talks.
+
 Every topic sentence has to be a claim the material can carry. Inventing one here is cheaper to
 do and harder to see than inventing a sentence at stage 6, because an outline entry looks like a
 plan rather than a claim, and it arrives with no evidence attached for the writer to check
-against. If the argument needs a step the material does not support, say so and ask. Do not write
-the step and hope.
+against. If the argument needs a step the material does not support, leave the slot open in
+brackets, say whose answer it needs, and carry on. Do not write the step and hope. A filled slot
+that reads well is the one nobody checks.
 
 ### 4. The joints
 
@@ -119,6 +151,11 @@ relation is there, the order is wrong, and you go back to stage 3.
 
 Fix by rewriting the following topic sentence first. Add a transition sentence to the previous
 paragraph only when a rewrite cannot carry the relation. Prefer the fix that adds no words.
+
+Inside a beat the joints are built in. Between beats, the Therefore of one section hands off to
+the And of the next, usually through an echo word. Check that hand-off first; it is where the
+order most often breaks, and where a section that turned out to be a list of facts with no But
+shows itself.
 
 Bolted-on connectives are the tell that the relation is not real: "Furthermore", "Building on
 this", "Importantly", "That said" used as filler. If a sentence needs one of those to connect,
@@ -132,7 +169,9 @@ well as its sections; stage 5 is the only place it gets one.
 
 **The standalone test.** Read the title and the headings alone, in order, with nothing else in
 front of you. They have to make sense to someone who reads only those. A heading that needs its
-paragraph to be understood is a label for you, not a signpost for the reader.
+paragraph to be understood is a label for you, not a signpost for the reader. A heading is also
+a promise: "What your gift buys" has to be paid by a section that says what a gift buys, and if
+the section only says what the work costs, one of the two changes.
 
 A heading that restates its first topic sentence is a heading-echo, which
 [../../references/deirdre-method.md](../../references/deirdre-method.md) already hunts. Cut the
@@ -142,6 +181,21 @@ heading or rewrite the sentence, not both.
 
 The topic sentence stays as written. Supporting sentences carry evidence, an example, the
 mechanism, or a concession. Never a restatement.
+
+Put the proof next to the claim it proves and cut the sentence that announces it. "She did
+everything right" is a tell; the double shifts are the proof, and they need no tell in front of
+them. When a transcript or an interview exists, harvest from it before writing around it.
+
+The argument stays ours. A quoted person backs a claim we already made in our own words; they
+do not make the claim for us. A section that is mostly quotation, with a sentence or two of our
+own between the quotes, has handed its argument to other people, and the reader has to work out
+what we are claiming from what they said. Make the claim, then let the quote prove it.
+
+A person is introduced before they speak, with enough to place them, and the attribution comes
+before the quotation. Fold the age in with the name: "Laura, 53, came from Brazil". Quotes are
+verbatim, and a paraphrase is marked until the speaker confirms it. A citation's footnote goes
+after the last fact it supports, not the first. One name per thing throughout: if a meeting is
+a session in paragraph one, it is a session in paragraph six.
 
 **A topic sentence is not always a paragraph.** If it has one sentence of evidence behind it and
 no more, it belongs inside its neighbour's paragraph. Merge the two and say you did. That is a
@@ -158,15 +212,17 @@ and a flagged invention that reads well tends to survive to publication.
 
 When the evidence lives in files rather than in the writer's head, this covers arithmetic. Every
 number goes back to the file it came from before it is written down. A count that is close and
-stated with confidence is the same error as an invented quotation and much harder to see.
+stated with confidence is the same error as an invented quotation and much harder to see. Dates
+count too: an age or a duration is arithmetic on two dates from the file, done on the day the
+piece will be read.
 
 If filling in proves a topic sentence wrong, go back to stage 3 and read the spine aloud again.
 That is the only backward path, and it is a normal thing to happen.
 
 ### Then read it back
 
-Two passes over the filled-in prose. Both are mechanical, both run without a gate, and both go
-before the editor sees anything.
+Four passes over the filled-in prose. All are mechanical, run without a gate, and go before the
+editor sees anything.
 
 **The joints, again.** Stage 4 named the relation between topic sentences. Now the joint that
 matters has moved: read the last sentence of each paragraph against the topic sentence of the
@@ -180,6 +236,21 @@ it can only mean one thing. Name the specific thing and say what it does.
 
 Run the same check on the evidence, where it shows up as overclaiming. "Half the names on your
 list sit in the wrong group" is a sentence you either counted or you did not.
+
+**The fact audit.** For every fact, write in a phrase how it makes the reader more likely to do
+what the brief says. No answer, cut it, however true. Hunt hardest for the facts that undermine
+the case, because they are true and they are ours: the number that shrinks the problem, the
+figure that makes the ask look wrong, the limit stated as a confession, the detail the reader
+does not need in order to decide. Each fact lives once, in the section that owns it, and a
+person is introduced in full once. When sections were drafted by separate agents, this is
+where the duplicate introductions and the fact that landed in three sections get caught. The
+adversarial way to run it, one agent listing and one defending, is in the beats reference.
+
+**When a line is not hitting,** diagnose before rewriting, in the order the beats reference
+gives: the claim is false for its own examples, a metaphor is stretched over unlike items, the
+But has no tension, the line recites the reader's world back to them, an antecedent is missing.
+Then rebuild the beat from the But outward. A rewrite that skips the diagnosis reproduces the
+fault in different words.
 
 ## Gates
 
@@ -263,7 +334,9 @@ a draft to critique, and names what not to judge at that stage.
 
 First, reconcile the counts. List every number in the document and check that a reader can see
 how they relate. Thirteen people, fourteen organisations and ten recommendations can each be true
-and still leave the reader unable to draw the picture.
+and still leave the reader unable to draw the picture. Where one figure comes from another, show
+the step: a reader who cannot get from the year's cost to the amount being raised, because one
+number was subtracted and the next divided, starts auditing every other number on the page.
 
 Then run `draft:tighten` on the file. That is the full chunked Deirdre pass, the right tool once,
 on prose, and the wrong tool six times, on an outline.
@@ -278,14 +351,16 @@ on prose, and the wrong tool six times, on an outline.
   aside. The writer decides whether that is right.
 - **Name what you harvested.** When working from an existing draft, quote the passages you kept
   unchanged, and say which ones you dropped.
-- **List the gaps.** At the end, every place the material ran out and what is still needed.
+- **List the gaps and the open slots.** At the end, every place the material ran out, every
+  bracketed Therefore, and whose answer each one needs.
 - **Close with the spine.** The final topic sentences in order, so the writer sees the argument
   the piece ended up making.
 
 ## Guardrails
 
 Never invents evidence, numbers, quotations, anecdotes, or examples; it asks for the one thing
-missing and waits. Never chooses the core idea for the writer, and never fills in prose before
+missing and waits. Never fills a slot the material cannot carry; it leaves the bracket and names
+whose answer it needs. Never chooses the core idea for the writer, and never fills in prose before
 the sentence outline has been read aloud and approved by them. Writes and edits the target file
 directly. Never sends, posts, or touches anything outside the local file it is given. No em
 dashes or en dashes in the file it writes or the messages it sends.

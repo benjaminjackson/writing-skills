@@ -69,7 +69,9 @@ several documents, do this per document.
 > Go line by line. Quote the exact phrase at issue, name what's wrong, and say what to do
 > (cut / swap / sharpen). Weight toward word- and sentence-level economy: wasted words, weak
 > verbs, elegant variation, throat-clearing, "this is / there is" padding, redundant doublets,
-> needless qualifiers, actor-hiding passive. If a line is genuinely good, say so and move on.
+> needless qualifiers, actor-hiding passive, and an aside set off by commas that splits a verb
+> from its object ("learn from each other, in conversation, the rules"). If a line is genuinely
+> good, say so and move on.
 > For anything you'd cut that carries a distinct idea (not just padding), label it
 > **substantive**. Quote exact text so edits can be located.
 
@@ -134,7 +136,15 @@ This is the line that keeps meaning intact.
   line is the payload: preserve rhythm and deliberate repetition. Whatever the purpose, never
   trim past the **keep-list**: a concrete list that gives an abstraction meaning, the one line
   with teeth in a section, the sharpest concrete image, and defined terms or real
-  distinctions all stay.
+  distinctions all stay. A piece written to get the reader to do something (a case for
+  support, a pitch, a proposal, a fundraising email) has one more purpose test: every fact
+  answers how it makes the reader more likely to do it, and a fact with no answer is a
+  substantive cut. The ones to hunt are the true facts
+  that undermine the case: a number that shrinks the problem, a figure that makes the ask look
+  wrong, a limit stated as a confession. See [abt-beats.md](abt-beats.md).
+- **Keep the spine intact.** After applying edits, read the first sentence of every paragraph
+  in order, aloud. An edit that cut a name a later sentence leaned on, or the echo word that
+  joined two paragraphs, broke the argument while tightening the prose. Put the word back.
 - **Economy is not the only axis: protect the emotional and rhythmic lines.** Deirdre
   optimizes for economy and concreteness, and a meaning-drift edit *looks* surgical: one local
   word, clearly tighter. But often the warmest line in a piece is the one she clips, because
