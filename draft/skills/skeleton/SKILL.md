@@ -113,7 +113,10 @@ Under each beat, list what it needs to stand up: evidence, an example, a concess
 from a real person. That sorts the material. A quote goes under the claim it backs, which is
 not always the section it was collected for: a graduate who says "I didn't have the key, and
 you gave it to me" is backing a claim about access, and she does not belong under a claim
-about trust however good the quote is. A note that fits no beat is named and set aside.
+about trust however good the quote is. The same sorting runs on width: a fact proves the
+claim above it at that claim's width, and a number about one group under a claim about everyone
+narrows the claim to the group. It goes under the narrower claim, if the piece makes one. A note
+that fits no beat is named and set aside.
 
 This stage produces the sections and their three claims each, in rough words. It does not
 produce their sentences. If the material holds no Therefore for a beat, the beat gets a
@@ -238,7 +241,8 @@ Run the same check on the evidence, where it shows up as overclaiming. "Half the
 list sit in the wrong group" is a sentence you either counted or you did not.
 
 **The fact audit.** For every fact, write in a phrase how it makes the reader more likely to do
-what the brief says. No answer, cut it, however true. Hunt hardest for the facts that undermine
+what the brief says. No answer, cut it, however true. Then name the claim each fact proves,
+and check it is the claim above it and not a narrower one. Hunt hardest for the facts that undermine
 the case, because they are true and they are ours: the number that shrinks the problem, the
 figure that makes the ask look wrong, the limit stated as a confession, the detail the reader
 does not need in order to decide. Each fact lives once, in the section that owns it, and a
@@ -325,7 +329,8 @@ a draft to critique, and names what not to judge at that stage.
 > Every paragraph opens with a topic sentence that was fixed before the prose was written.
 > Judge whether the prose serves it: which paragraphs only restate their opening sentence, where
 > the claim, elaborate, summarise three-beat appears, and where the prose drifts off the claim it
-> is meant to carry. Hunt restatement at three scales: inside one paragraph, across two adjacent
+> is meant to carry, and where a supporting fact proves a narrower claim than the topic sentence
+> makes. Hunt restatement at three scales: inside one paragraph, across two adjacent
 > paragraphs, and a section's opening claim against its closing line. Judge the register too:
 > where does this sound like something other than <REGISTER>. This is not the economy pass;
 > another one handles that.

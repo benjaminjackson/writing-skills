@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: facts-match-claim-width
+context:
+  scaffold_script: |
+    cp "$EVAL_FIXTURES/buddy-notes.md" .
+    cp "$EVAL_FIXTURES/buddy-skeleton.md" memo.md

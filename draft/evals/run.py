@@ -180,6 +180,7 @@ def calibrate():
         ("topic-is-not-a-claim/graders/brief-asks-for-register.md", "askregister"),
         ("counts-come-from-the-file/graders/counts-match-the-source.md", "counts"),
         ("harvest-before-restructure/graders/names-what-it-keeps.md", "harvest"),
+        ("facts-match-claim-width/graders/facts-prove-the-claim-above.md", "width"),
     ]
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True

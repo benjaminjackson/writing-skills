@@ -116,6 +116,13 @@ true and they are ours:
 - **A detail the reader does not need in order to act.** The legal terms, the payment gateway,
   the six months a fiscal sponsorship took. Cut whatever the reader does not need in order to
   decide.
+- **A fact that proves a narrower claim than the one it sits under.** A claim about everyone
+  we serve, with a number about one group of them beneath it. The number is true and it reads
+  as support, but it backs the narrower claim, and the reader takes the narrower claim as the
+  real one: the trust, the result, the reach now seem to rest on the trait the number measures.
+  It also re-scopes who the piece is for. Check width: every fact under a claim proves that
+  claim at that claim's width. One that proves a narrower claim moves to the section that makes
+  the narrower claim, and if no section does, it is set aside with the orphan notes.
 
 Each fact lives once, in the section that owns it. When sections are drafted by separate agents,
 the same fact and the same introduction of the same person arrive in three places. At assembly,

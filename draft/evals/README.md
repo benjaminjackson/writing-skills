@@ -9,7 +9,7 @@ These evals do not judge whether the prose is good. They check that the rules st
 ```
 python3 draft/evals/run.py --calibrate     # test the judges. do this first, every time
 python3 draft/evals/run.py --tag trigger   # cheap, deterministic
-python3 draft/evals/run.py                 # all fifteen cases
+python3 draft/evals/run.py                 # all sixteen cases
 python3 draft/evals/run.py --case no-fabrication
 ```
 
@@ -85,6 +85,7 @@ For those, the answer is not a better eval. It is use.
 | 13 | `joints-after-fill-in` | fidelity | auto, seeded, long | A paragraph's last sentence sets up the next topic sentence, and no section closes by restating its own opening |
 | 14 | `counts-come-from-the-file` | fidelity | auto, seeded, long | Every count comes from the data file, not from the stale draft sitting next to it |
 | 15 | `harvest-before-restructure` | process | default, long | A rebuild names the finished passages it keeps, and says what it drops |
+| 16 | `facts-match-claim-width` | fidelity | auto, seeded | A true number that proves a narrower claim than the topic sentence above it does not get filed under that sentence |
 
 Case 6 is the one to build first and the one to keep if only one survives. It tests the promise you cannot check by reading.
 
@@ -136,6 +137,8 @@ It exists because the short-fixture limit bit. A field report from a real 3,000-
 
 **Case 15 bites.** Remove the harvest paragraph from the existing-draft entry point and the run reverse-outlines the memo, lists its faults, and never names a single passage worth keeping. Both judges failed it. This is the clearest evidence in the suite that a field-report rule changed behaviour.
 
+**Case 16 bites.** Remove the width rule from stage 2, the read-back fact audit and the beats reference, and the run files the bootcamp figure under the trust paragraph, framed as a concession it then rebuts with the one buddy who had no bootcamp. Both judges failed it. With the rule, the run leaves the figure out and names it as set aside, with the reason.
+
 **The caveman and ponytail hooks fire in headless runs too**, and caveman mode compresses prose, which fails a judge for the wrong reason. `run.py` passes `--append-system-prompt` to stand them down. Worth re-checking whether the native harness already isolates them.
 
 ## Fixtures
@@ -144,6 +147,7 @@ It exists because the short-fixture limit bit. A field report from a real 3,000-
 
 - **`oncall-notes.md`** carries the suite. It has enough real material to argue from, and **an orphan**: a Jira complaint that supports no claim in the piece. The orphan is plausible on purpose; an absurd one is a test the skill cannot fail.
 - **`oncall-skeleton.md`**, **`linkedin-skeleton.md`** are pre-approved stage-3 outlines, so an auto case starts at the stage it tests. `oncall-skeleton.md` carries the fabrication trap: one of its topic sentences promises "the share of pages that turn into an escalation", and no share appears anywhere in the notes. The paragraph cannot be written without either asking for that figure or inventing it.
+- **`buddy-notes.md`**, **`buddy-skeleton.md`** are a short memo's notes and approved outline. The notes hold one true figure that proves a claim narrower than the topic sentence it most obviously belongs under, plus one person the narrower claim cannot account for. Filing the figure under that sentence is the failure.
 - **`standups-draft.md`** is an honest draft whose third paragraph holds the premise its first paragraph depends on.
 - **`fat-but-sound.md`** has its argument in the right order and its prose full of throat-clearing. The right answer is `tighten`.
 - **`search-plan-draft.md`** is the long one, about 1,200 words, an advisory memo to a senior executive. Three faults planted: two paragraphs that slide into formal explainer voice while the rest uses contractions, one section that closes by restating the claim it opened with, and two paragraphs whose last sentence closes its own loop instead of setting up the next. `search-plan-skeleton.md` is its approved outline, written in the right voice, so a run that carries the wrong voice into the memo got it from the source material rather than the outline. `search-plan-counts-skeleton.md` is a shorter outline whose every topic sentence needs a count under it, and `search-plan-orgs.json` holds the true list: 15 organizations, 4 closed, 8 of the 11 live ones reachable through 5 named contacts. The draft's own counts (fourteen, twelve, ten, four) are stale on every one of those figures, so a run that copies instead of counting is caught by which number it wrote.
