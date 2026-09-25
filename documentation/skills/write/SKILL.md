@@ -79,12 +79,6 @@ current code and call the doc updated; there is nothing under it to sync. (A rea
 install guide walked users through a `.env` file, a Node check, and hand-editing a JSON config,
 for a skill that had been deleted from the repo months earlier.)
 
-**Do not invent the UI.** Install flows, menu paths, click sequences and dialogs are not
-greppable. If you have not watched it run, you do not know what it does. Symmetry with a
-neighboring feature is not evidence: one file being a double-click does not make the file
-next to it a double-click. When you have not seen the flow, ask, mark it unverified, or leave
-it out. Never guess.
-
 **Check hard limits before writing, not after.** If a field has a documented maximum, such as a
 1024-character skill description, a 72-character commit subject, or a 160-character meta
 description, measure it while drafting. A limit you plan to eyeball at the end is a limit you
@@ -183,10 +177,9 @@ These are the parts that bite hardest here:
 ## 7. Say what you didn't verify
 
 When you finish, tell the user, **in chat, not in the doc**, what you actually confirmed and
-what you only reasoned about. Which paths you grepped. Which commands you ran. Which UI flow
-you have never watched anyone click through.
+what you only reasoned about. Which paths you grepped. Which commands you ran.
 
-"I did not install these packages into a clean environment and click through" is a sentence you
+"I did not install these packages into a clean environment and run the setup" is a sentence you
 are allowed to write, and the user is far better off for reading it. Gloss over it and the next
 person to find out is a reader, in the middle of a setup that doesn't work.
 
@@ -194,8 +187,7 @@ person to find out is a reader, in the middle of a setup that doesn't work.
 
 Never emits an em dash or en dash, in any file it writes or any message it sends, for any
 reason. Writes and edits the target file directly: this is a drafting skill, not a read-only
-review. Never describes a UI or install flow it has not watched run; it asks, marks the flow
-unverified, or omits it. Never rewords a section that documents code which no longer exists; it
+review. Never rewords a section that documents code which no longer exists; it
 deletes the section and reports it. Never finishes without telling the user what went
 unverified. Never touches prose with a voice; essays, posts, emails, and marketing copy belong
 to the `draft` plugin's `critique` and `tighten`.
