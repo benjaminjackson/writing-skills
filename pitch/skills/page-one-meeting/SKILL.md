@@ -59,7 +59,7 @@ Issue all N `Agent` calls in a single parallel message: distinct `name` per pers
 `references/agent-prompts.md`. Each persona's prompt includes the raw material, the intake
 summary plus flagged gaps, and the roster of fellow editors they can message by name.
 
-Wait for opening takes to arrive as `agent-message` events — this is automatic, not
+Wait for opening takes to arrive as messages from each persona — this is automatic, not
 something to poll for. Relay a **synthesized digest** to the user, never a raw dump of agent
 messages.
 

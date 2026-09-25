@@ -3,7 +3,7 @@
 Real tool surface, confirmed working: `Agent({name, run_in_background: true, prompt,
 description})` to spawn, `SendMessage({to, message, summary})` to communicate. Spawned agents
 are automatically addressable by `name` — no separate team-creation step. Agents message the
-chair unprompted (`to: "main"`) as `agent-message` events; these arrive on their own, no
+chair unprompted (`to: "main"`) as messages in the conversation; these arrive on their own, no
 polling required.
 
 Issue all spawn calls for Phase 2 in a single message so they run in parallel.
@@ -61,5 +61,5 @@ not skipped.
 ## Relay discipline
 
 Synthesize incoming agent messages into a short digest at the end of each phase. Never paste
-raw agent-message transcripts to the user — that's noise, not signal, and it's easy to lose
+raw agent messages to the user — that's noise, not signal, and it's easy to lose
 this discipline without saying it explicitly.
