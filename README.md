@@ -1,6 +1,6 @@
 # writing-skills
 
-A Claude Code plugin marketplace with three plugins: **draft**, which builds, critiques and tightens prose with a critic built on Deirdre McCloskey's *Economical Writing*; **pitch**, which develops and stress-tests story pitches; and **documentation**, which writes technical docs that don't waste the reader's time.
+A Claude Code plugin marketplace with three plugins: **draft**, which builds, critiques and tightens prose with a critic built on Deirdre McCloskey's *Economical Writing*; **pitch**, which puts story pitches in front of a simulated managing editor or a simulated editorial meeting; and **documentation**, which writes technical docs for a named reader and checks every command and path against the code.
 
 ## Installation
 
@@ -13,21 +13,21 @@ claude plugin install documentation@writing-skills
 
 ## draft
 
-Prose editing and drafting built on Deirdre McCloskey's *Economical Writing*. One agent, three skills: **editor** is a critic that judges prose against McCloskey's standards and refuses to rewrite it; **critique** and **tighten** both run a document through editor and share the same chunking engine — one just reports the findings, the other applies them; **skeleton** works the other way round, building a piece that doesn't exist yet from its core idea outwards.
+Prose editing and drafting built on Deirdre McCloskey's *Economical Writing*. One agent, three skills: **editor** is a critic that judges prose against McCloskey's standards and refuses to rewrite it; **critique** and **tighten** both run a document through editor and share the same chunking engine, and critique reports the findings while tighten applies them; **skeleton** drafts a new piece, starting from its core idea.
 
 ### editor
 
-`editor` (agent, `subagent_type: editor`, model: opus, tools: `Read`) is Deirdre McCloskey herself — economist, rhetorician, author of *Economical Writing*. Handed a draft, she hunts for fat, throat-clearing, hedges, elegant variation, passive voice that hides who did what, vague abstractions, and cleverness for its own sake. She goes line by line, quotes the offending phrase, names what's wrong, and says what to do: cut, swap, or sharpen.
+`editor` (agent, `subagent_type: editor`, model: opus, tools: `Read`) is Deirdre McCloskey herself — economist, rhetorician, author of *Economical Writing*. Handed a draft, she looks for fat, throat-clearing, hedges, elegant variation, passive voice that hides who did what, vague abstractions, and cleverness for its own sake. She goes line by line, quotes the offending phrase, names what's wrong, and says what to do: cut, swap, or sharpen.
 
-She has one hard rule: she critiques, she doesn't rewrite. Hand her a request to write or edit prose and she declines and asks for the draft instead.
+She has one hard rule: she only critiques. Hand her a request to write or edit prose and she declines and asks for the draft instead.
 
 ### How it works
 
-editor works best reading a paragraph or two with uncluttered context, so neither skill hands it a whole document at once. Instead each runs editor in two passes: a line-by-line pass, with a separate agent per section-sized chunk, then a single whole-document pass that catches repetition, rhythm, and structure no chunk-level agent can see. editor triages every finding into **surgical** (preserves meaning: cut padding, weak verb → strong, passive → active, collapse a doublet) or **substantive** (changes what it says or its shape: delete a list item, merge a section, cut a sentence with a distinct idea). `critique` and `tighten` share this process — what differs is what happens after.
+editor works best reading a paragraph or two with uncluttered context, so neither skill hands it a whole document at once. Instead each runs editor in two passes: a line-by-line pass, with a separate agent per section-sized chunk, then a single whole-document pass that catches repetition, rhythm, and structure no chunk-level agent can see. editor triages every finding into **surgical** (preserves meaning: cut padding, weak verb → strong, passive → active, collapse a doublet) or **substantive** (changes what it says or its shape: delete a list item, merge a section, cut a sentence with a distinct idea). `critique` and `tighten` share this process and differ only in what they do with the findings.
 
 ### critique
 
-Read-only. Runs the document through editor and reports what she finds — no edits, ever. For when you want a second opinion, not a rewrite.
+Read-only. Runs the document through editor and reports what she finds, without editing the file. Use it when you want her notes and plan to make the changes yourself.
 
 #### Usage
 
@@ -36,7 +36,7 @@ Read-only. Runs the document through editor and reports what she finds — no ed
 
 ### tighten
 
-Applies the edits. No approval step, no mode to pick — surgical and substantive fixes both apply, as exact find-and-replace. The one thing it holds back: an edit that would flatten a line's emotion or kill a deliberately-built cadence. tighten skips it and names it in the report instead of applying it.
+Applies the edits. It applies surgical and substantive fixes alike, as exact find-and-replace, with no approval step and no mode to pick. The one thing it holds back: an edit that would flatten a line's emotion or kill a deliberately-built cadence. tighten skips it and names it in the report instead of applying it.
 
 #### Usage
 
@@ -47,9 +47,9 @@ Applies the edits. No approval step, no mode to pick — surgical and substantiv
 
 ### skeleton
 
-Drafting, not editing. `skeleton` builds a piece that doesn't exist yet, from the inside out: core idea first, then every topic sentence, then the joints between them, then headings, and only then the supporting prose. It will not write a single supporting sentence until the argument survives being read aloud on its own.
+`skeleton` drafts a new piece from the inside out: core idea first, then every topic sentence, then the joints between them, then headings, and only then the supporting prose. It will not write a single supporting sentence until the argument survives being read aloud on its own.
 
-Most bad writing isn't badly worded. It's well-worded paragraphs in an order that doesn't add up, and by the time you can see that, fixing it means a rewrite. Reordering topic sentences costs nothing; reordering finished paragraphs costs the afternoon.
+In most bad drafts the sentences are fine and the paragraphs are in an order that doesn't add up. By the time you can see that, fixing it means a rewrite. Reordering topic sentences takes a minute; reordering finished paragraphs takes hours.
 
 #### The six stages
 
@@ -60,19 +60,19 @@ Most bad writing isn't badly worded. It's well-worded paragraphs in an order tha
 5. **Groups and headings.** Only where a group is real. A heading that restates its first topic sentence is a heading-echo, and one of the two goes.
 6. **Fill in.** The topic sentence stays. Supporting sentences carry evidence, an example, the mechanism, or a concession, never a restatement, and never a summarising beat at the end.
 
-The names behind this are real ones, not invented: stage 3 is a **sentence outline** (Chicago and MLA both distinguish it from a topic outline), the shape is Barbara Minto's **Pyramid Principle**, and reading the topic sentences alone to test the argument is Joseph Williams' **reverse outline** from *Style*, run before the prose exists instead of after.
+The method comes from published sources: stage 3 is a **sentence outline** (Chicago and MLA both distinguish it from a topic outline), the shape is Barbara Minto's **Pyramid Principle**, and reading the topic sentences alone to test the argument is Joseph Williams' **reverse outline** from *Style*, run before the prose exists instead of after.
 
 #### It starts from wherever you are
 
-**From nothing**, stage 1 is a conversation. **From notes**, it draws candidate core ideas out of what you actually wrote, and notes that fit no claim get named out loud and set aside rather than smuggled into a paragraph. **From an existing draft**, it pulls the real topic sentences out and reads those alone, which is the reverse outline in its original form: it shows you the argument the draft actually makes, against the one you meant.
+**From nothing**, stage 1 is a conversation. **From notes**, it draws candidate core ideas out of what you actually wrote, and notes that fit no claim get named out loud and set aside instead of going into a paragraph. **From an existing draft**, it pulls the real topic sentences out and reads those alone, which is the reverse outline in its original form: it shows you the argument the draft actually makes, against the one you meant.
 
 #### Keeping you in the loop
 
 The risk in a six-stage method run by an agent is that you get an essay you didn't write. Three things prevent it.
 
-By default **every stage stops** and shows you what it produced. Pass `auto` and only two stop: the core idea and the sentence outline. Those are the two places a wrong answer can't be recovered later, and the two where only you hold the information. The read-aloud test at stage 3 is done by you, out loud, because that's what makes it a test.
+By default **every stage stops** and shows you what it produced. Pass `auto` and only two stop: the core idea and the sentence outline. A wrong core idea or a wrong outline can't be fixed later, and only you know what you meant to argue. You do the read-aloud test at stage 3 yourself, out loud.
 
-It **never invents material**. No evidence, number, quotation, anecdote, or example you didn't supply. Where the material runs out it stops and asks for that one thing. An invented example in your own voice is the hardest error to catch reading back, and a flagged invention that reads well tends to survive to publication.
+It **uses only material you supply**: every piece of evidence, number, quotation, anecdote, and example comes from you. Where the material runs out it stops and asks for that one thing. An invented example written in your voice is hard to spot when you read the draft back, even when it's flagged.
 
 It runs `sloplint` at every stage and `editor` at three of them, the claim, the argument line, and the finished prose, then applies her notes in one round rather than walking you through each. `tighten` runs last, on prose, once.
 
@@ -81,11 +81,11 @@ It runs `sloplint` at every stage and `editor` at three of them, the claim, the 
 - **Explicitly:** `/skeleton [file-or-notes] [auto]`
 - **Automatically:** it doesn't. Six stages is a choice you make, not something a plain "write me a blog post" should trigger.
 
-For prose whose argument is sound and whose words are fat, that's `tighten`, not this.
+If the argument is sound and only the wording needs cutting, use `tighten`.
 
 #### Evals
 
-`draft/evals/` holds a fifteen-case suite for the rules above: that the gates hold, that a plain "write me a post" doesn't get ambushed, and above all that stage 6 never invents a number, a quotation, or an anecdote you didn't supply. The graders are LLM judges rather than pattern matches, because a fabricated anecdote contains no digits and a regex would go green on the failure it was meant to catch. The judges themselves are calibrated against hand-written known-bad artifacts before any case runs. See `draft/evals/README.md`.
+`draft/evals/` holds a fifteen-case suite for the rules above: that the gates hold, that a plain "write me a post" doesn't start the six stages uninvited, and above all that stage 6 never invents a number, a quotation, or an anecdote you didn't supply. The graders are LLM judges rather than pattern matches, because a fabricated anecdote contains no digits and a regex would pass the failure it was meant to catch. The judges themselves are calibrated against hand-written known-bad artifacts before any case runs. See `draft/evals/README.md`.
 
 ## pitch
 
@@ -93,24 +93,24 @@ One agent, two skills: **managing-editor** gives a single Socratic editorial rea
 
 ### managing-editor
 
-`managing-editor` (agent, model: opus, tools: `Read`, `WebSearch`, `WebFetch`) is a managing editor at a digital-first publication, evaluating pitches by the editorial standards of the NYT, Vox, The Atlantic, or The New Yorker. Socratic, not prescriptive — it asks the questions that help a writer see what's working, rather than handing over a list of fixes.
+`managing-editor` (agent, model: opus, tools: `Read`, `WebSearch`, `WebFetch`) is a managing editor at a digital-first publication, evaluating pitches by the editorial standards of the NYT, Vox, The Atlantic, or The New Yorker. It asks the questions that help a writer see what's working, instead of handing over a list of fixes.
 
 #### How it works
 
-Unlike `editor`, it isn't limited to judging the prose handed to it: `WebSearch` and `WebFetch` let it check whether a pitch's claims hold up and whether the angle's already been covered, not just whether the writing works. Name a publication and it pivots to that outlet's editorial voice and priorities; leave it unnamed and it applies standard journalism ethics.
+Unlike `editor`, it isn't limited to judging the prose handed to it: `WebSearch` and `WebFetch` let it check whether a pitch's claims hold up and whether the angle's already been covered, not just whether the writing works. Name a publication and it applies that outlet's editorial voice and priorities; leave it unnamed and it applies standard journalism ethics.
 
 It evaluates a pitch against four questions:
 
-1. **Is this newsworthy?** — impact, timeliness, proximity, prominence, conflict, novelty, human interest.
-2. **Does this work as a story?** — a specific angle, narrative tension, a human element, a reporting plan.
-3. **Will this resonate?** — audience fit, publication fit, emotional or intellectual stakes.
-4. **Does this meet our standards?** — accuracy, fairness, independence, sourcing, accessibility.
+1. **Is this newsworthy?** Impact, timeliness, proximity, prominence, conflict, novelty, human interest.
+2. **Does this work as a story?** A specific angle, narrative tension, a human element, a reporting plan.
+3. **Will this resonate?** Audience fit, publication fit, emotional or intellectual stakes.
+4. **Does this meet our standards?** Accuracy, fairness, independence, sourcing, accessibility.
 
-Then it makes the call: **green light**, **revise and resubmit**, or **kill it** — with reasoning, not a hedge.
+Then it makes the call, **green light**, **revise and resubmit**, or **kill it**, and gives its reasons.
 
 ### sharpen
 
-A single editorial pass, not a debate. Launches `managing-editor` with your pitch material verbatim (plus a named outlet, if you gave one) and relays the verdict to you word for word. Everything stays in the conversation; `page-one-meeting` is the one that writes to disk.
+`sharpen` runs one editorial pass. It launches `managing-editor` with your pitch material verbatim (plus a named outlet, if you gave one) and relays the verdict to you word for word. Everything stays in the conversation; `page-one-meeting` is the one that writes to disk.
 
 #### Usage
 
@@ -121,27 +121,27 @@ For a multi-persona debate instead of one editor's read, use `page-one-meeting`.
 
 ### page-one-meeting
 
-A simulated page-one editorial meeting: a chair (Claude) convenes 3-5 editor personas who debate a pitch — not just report to the chair one at a time — and the meeting ends in a verdict and a shaped pitch.
+A simulated page-one editorial meeting: a chair (Claude) convenes 3-5 editor personas who debate a pitch with each other, instead of reporting to the chair one at a time, and the meeting ends in a verdict and a shaped pitch.
 
 #### How it works
 
-The chair launches each persona as a separate `Agent` call with a distinct `name`, then reaches it by name via `SendMessage`. Agents message the chair unprompted as they finish. The meeting runs as a live debate among named personas, not a deterministic script, so it uses `Agent`/`SendMessage` rather than the `Workflow` tool.
+The chair launches each persona as a separate `Agent` call with a distinct `name`, then reaches it by name via `SendMessage`. Agents message the chair unprompted as they finish. The meeting is a live debate among named personas, so it uses `Agent`/`SendMessage` rather than the `Workflow` tool, which runs a fixed script.
 
 #### The phases
 
-0. **Intake** — read what the pitcher gave, ask only for what's missing and matters most, proceed the moment they signal impatience.
-1. **Cast assembly** — pick 3-5 archetypes suited to this pitch's tensions, fresh names each run.
-2. **Seating / opening takes** — spawn all personas in parallel, then digest their opening positions for the user.
-3. **Open debate** — by default, each persona challenges 1-2 named peers in a single round, then reports a revised position.
-4. **Mandatory dissent round** — see below.
-5. **Verdict + shaped pitch** — first disk write, `pitches/<date>-<slug>/pitch.md`: verdict and shaped pitch, plus the debate synthesis and dissent findings.
-6. **Drafting brief** (optional, argument-gated) — `pitch-brief.md`, one section per persona, each pulling real published analogues.
+0. **Intake:** read what the pitcher gave, ask only for what's missing and matters most, proceed the moment they signal impatience.
+1. **Cast assembly:** pick 3-5 archetypes suited to this pitch's tensions, fresh names each run.
+2. **Seating / opening takes:** spawn all personas in parallel, then digest their opening positions for the user.
+3. **Open debate:** by default, each persona challenges 1-2 named peers in a single round, then reports a revised position.
+4. **Mandatory dissent round:** see below.
+5. **Verdict + shaped pitch:** first disk write, `pitches/<date>-<slug>/pitch.md`: verdict and shaped pitch, plus the debate synthesis and dissent findings.
+6. **Drafting brief** (optional, argument-gated): `pitch-brief.md`, one section per persona, each pulling real published analogues.
 
 #### Why the mandatory dissent round exists
 
-Unguided multi-agent debate has a known failure mode: sycophantic conformity, where positions converge and lock in, often by the second exchange. Left unchecked, the room agrees with itself and nothing forces a check on whether that consensus is right — a weak angle or a bad premise can sail through if every persona is built to agree.
+In an unguided multi-agent debate, positions tend to converge and lock in, often by the second exchange. This is sycophantic conformity. If nothing forces a check on whether that consensus is right, a weak angle or a bad premise can pass unchallenged when every persona is built to agree.
 
-So Phase 4 doesn't get skipped, especially when the room looks unanimous. Dissent duty goes to whichever persona moved *most toward* consensus in Phase 3, not the built-in skeptic, who would rehash their existing position. They must argue two things: steelman the case that the pitch is wrong, and name the closest coverage of this angle (or admit they can't rule it out). If they still believe the consensus holds after trying, they say so and name what would change their mind. They record the finding in `pitch.md` either way, so it becomes part of the output rather than a checkpoint that leaves no trace.
+So Phase 4 always runs, even when the room looks unanimous. Dissent duty goes to whichever persona moved *most toward* consensus in Phase 3, not the built-in skeptic, who would rehash their existing position. They must argue two things: steelman the case that the pitch is wrong, and name the closest coverage of this angle (or admit they can't rule it out). If they still believe the consensus holds after trying, they say so and name what would change their mind. They record the finding in `pitch.md` either way, so it becomes part of the output.
 
 The chair adds one more check in Phase 5. They reread the shaped pitch as a skeptic, independent of what the panel just agreed, before it's finalized.
 
@@ -154,29 +154,29 @@ For a single editorial read instead of a multi-agent debate, use `sharpen`.
 
 ## documentation
 
-Technical writing is a different job from prose editing. `draft` protects a writer's voice while cutting fat; `documentation` assumes there's no voice to protect.
+`documentation` is for writing where the author's voice doesn't matter: READMEs, install guides, commit messages, PR descriptions. `draft` is for prose where it does.
 
 One skill: **write**. It edits the file directly.
 
 ### write
 
-Two things happen before a word is drafted.
+Before it drafts, it names the reader and verifies every fact it will state.
 
-**Name the reader.** Who reads this, what must they do, what do they already know? A skeptical non-technical reader needs every silent failure called out, and reads an admiring sentence about the architecture as a sales pitch. An engineer who has done this four times needs neither. Tone and coverage follow from the answer.
+**Name the reader.** Who reads this, what must they do, what do they already know? A skeptical non-technical reader needs every silent failure called out, and reads an admiring sentence about the architecture as a sales pitch. An engineer who has done this four times can skip the failure callouts.
 
-**Verify.** Every proper noun in a doc is a factual claim, and docs rot silently because nobody re-reads the install guide while changing the code. So it greps for every path, command, flag, and env var before describing any of them. A section documenting code that no longer exists isn't badly worded — it's fiction, and it gets deleted rather than reworded. Install flows and menu paths aren't greppable, so it never describes one it hasn't watched run.
+**Verify.** Every proper noun in a doc is a factual claim, and docs go out of date without anyone noticing, because nobody re-reads the install guide while changing the code. So it greps for every path, command, flag, and env var before describing any of them. A section documenting code that no longer exists gets deleted instead of reworded.
 
 Then it drafts, holding every sentence to one test: **what does the reader do differently because they read this?** "Nothing, they just feel better" means it doesn't go in. That cuts reassurance ("it just works out of the box"), closing flourishes ("that's the whole setup"), design essays defending an architecture nobody attacked, and the one that sneaks in unnoticed — **session leakage**, where a doc drafted at the end of a long working session inherits the session, answering questions nobody asked and narrating what changed instead of describing what is.
 
 It insists on one addition: **the silent failure**. If doing step 2 without step 1 produces a plausible-looking success that's actually broken, that goes in the doc, in the step and in troubleshooting both.
 
-It closes by telling you — in chat, not in the doc — what it verified and what it only reasoned about, including any UI flow it has never watched anyone click through.
+It ends with a message in chat, kept out of the doc, that lists what it verified and what it only reasoned about.
 
-It also covers **commit messages and PR descriptions**, which are documentation with a hostile deadline: written at the end of a long session, when the session is the only thing in your head. That makes them where session leakage does the most damage, and the reader — someone bisecting a regression eighteen months from now — is the least equipped to survive it. So the message describes what the code does now and why it needed to, not the three approaches you abandoned or the bug you introduced at 2pm and fixed at 3pm. The reader has the diff; they can see what moved. Why it moved is the only thing a commit message adds.
+It also covers **commit messages and PR descriptions**. They get written at the end of a long session, when the session is the only thing in your head, so session leakage does the most damage there. Their reader, someone bisecting a regression eighteen months from now, has the least context to see past it. So the message describes what the code does now and why it needed to, not the three approaches you abandoned or the bug you introduced at 2pm and fixed at 3pm. The reader has the diff; they can see what changed.
 
 #### Usage
 
-It loads on its own whenever documentation is being written or updated — "write a README," "document this," "update the install guide," "our docs are out of date" — and whenever a commit message or PR description gets drafted. There's no command to type, because the failures it prevents are the ones you'd never think to ask for help with.
+It loads on its own whenever documentation is being written or updated — "write a README," "document this," "update the install guide," "our docs are out of date" — and whenever a commit message or PR description gets drafted. It has no slash command, because you won't think to ask for help with the failures it prevents.
 
 It won't touch writing that has a voice — essays, posts, emails, marketing copy. That's `draft`.
 
