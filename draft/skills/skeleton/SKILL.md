@@ -50,6 +50,31 @@ If the user gave all four, do not ask. If any is missing, one `AskUserQuestion`,
 asking. Audience and register are the two only the writer holds, and getting either wrong means
 every paragraph written before the correction gets written a second time.
 
+**Name the job the piece does.** Before stage 1, say which of three it is, because each needs a
+different spine.
+
+- A **case** persuades a reader who doubts the claim. It needs grounds and backing under every
+  step, and the stages below were written for it.
+- A **strategy** states a point of view and a direction to readers who mostly agree already. It
+  needs a purpose (why this exists), the insight the rest follows from, and a plan over time
+  (what comes first and what follows). It needs little or no evidence. An outline with no
+  purpose and no sequence fails, however well each sentence holds, so check for both at stage 3.
+- A **report** informs. It needs findings in order of how much each changes the reader's view.
+
+**Read the model piece first.** If the user names or links an example of the target genre, read
+it before stage 1. Say its shape back in two or three lines: voice, length, how it opens, how
+much evidence it carries. Hold every later stage to that shape. Do not copy its content.
+
+## When the user gives a template
+
+When the user supplies a template with named sections, the template is the structure, and it
+overrides the beats. Keep its sections and their order. Use a beat only inside a section that
+makes an argument, such as a strategy template's "strategy argument". Fixed-form sections get no
+beat and no But: a statement to fill in ("We are the only…"), a list of characteristics, a set
+of "we were wrong about" lines. Write those in the form the template gives. A beat forced onto
+a list turns it into narration. The template's section names are the headings, so stage 5 has
+none to invent.
+
 ## Where you are starting from
 
 Three entry points. They change stages 1 to 3 only; stages 4 to 6 are the same either way.
@@ -96,6 +121,9 @@ One sentence, and it must be a claim someone can disagree with.
 The test: negate it. If the negation is absurd or says nothing, what you have is a topic, not a
 claim. "What benchmarks measure" is a topic. "Benchmarks measure what is easy to score, not
 what is useful" is a claim, because someone can argue the opposite.
+
+On a strategy, the core idea is the point of view: what the writer believes about the world that
+the rest of the piece follows from. A claim about the product is not yet a strategy.
 
 Propose two or three candidates. The writer picks one or writes their own. Never proceed on a
 core idea you chose for them.
