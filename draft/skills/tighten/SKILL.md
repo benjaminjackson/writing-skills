@@ -55,7 +55,9 @@ apply step.
    the document is over 4,000 tokens, ask one line; otherwise default to preserve and note
    the call in the report. The other exception: an edit that flattens emotional meaning or
    kills a deliberate cadence (see "protect the emotional and rhythmic lines") — skip it and
-   note it in the report instead of applying it. Nothing else waits for approval; this skill
+   note it in the report instead of applying it. A cut that removes the link between the sentence before and
+   the sentence after is not applied either: rewrite that sentence so the link survives (see
+   **Guardrails**). Nothing else waits for approval; this skill
    never asks for sign-off, it applies.
 6. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
    (`MM-DD-YYYY`). Skip files without frontmatter.
@@ -84,3 +86,5 @@ genuinely ambiguous, the skill asks one calibration line before choosing how har
 calibration, not approval. Editing local markdown is automatic in this project — this skill
 always applies its edits, both surgical and substantive, with no per-edit approval step.
 Never sends, posts, or touches anything outside the local file(s) it's given.
+
+A sentence that carries the link between the sentence before it and the sentence after it is not fat, even when the editor flags it. Rewrite it so the link survives; never cut it. Connectives and causal words ("so," "but," "because," "that changed when") are the last words to cut, not the first. Cut events and restated facts before you cut the words that join them: when a draft is cut as a list of facts, the links go first, and the piece turns into "and then, and then" with no turn. This applies inside a paragraph as well as between paragraphs.
