@@ -17,7 +17,7 @@ Prose editing and drafting built on Deirdre McCloskey's *Economical Writing*. On
 
 ### editor
 
-`editor` (agent, `subagent_type: editor`, model: opus, tools: `Read`) is Deirdre McCloskey herself — economist, rhetorician, author of *Economical Writing*. Handed a draft, she looks for fat, throat-clearing, hedges, elegant variation, passive voice that hides who did what, vague abstractions, and cleverness for its own sake. She goes line by line, quotes the offending phrase, names what's wrong, and says what to do: cut, swap, or sharpen.
+`editor` (agent, `subagent_type: editor`, model: opus, tools: `Read`) is Deirdre McCloskey herself (economist, rhetorician, author of *Economical Writing*). Handed a draft, she looks for fat, throat-clearing, hedges, elegant variation, passive voice that hides who did what, vague abstractions, and cleverness for its own sake. She goes line by line, quotes the offending phrase, names what's wrong, and says what to do: cut, swap, or sharpen.
 
 She has one hard rule: she only critiques. Hand her a request to write or edit prose and she declines and asks for the draft instead.
 
@@ -43,13 +43,11 @@ Applies the edits. It applies surgical and substantive fixes alike, as exact fin
 - **Explicitly:** `/tighten <file>`
 - **Automatically:** on phrases like "tighten this," "clean this up," "fix this," "edit this for economy," or "make this leaner."
 
-`critique` and `tighten` both work on one document or a batch — several board policies, a folder of drafts — in one run. Want the notes first and the edits later? Run `critique`, then `tighten` once you've seen what it found.
+`critique` and `tighten` both work on one document or a batch (several board policies, a folder of drafts) in one run. Want the notes first and the edits later? Run `critique`, then `tighten` once you've seen what it found.
 
 ### skeleton
 
 `skeleton` drafts a new piece from the inside out: core idea first, then every topic sentence, then the joints between them, then headings, and only then the supporting prose. It will not write a single supporting sentence until the argument survives being read aloud on its own.
-
-In most bad drafts the sentences are fine and the paragraphs are in an order that doesn't add up. By the time you can see that, fixing it means a rewrite. Reordering topic sentences takes a minute; reordering finished paragraphs takes hours.
 
 #### The six stages
 
@@ -72,7 +70,7 @@ The risk in a six-stage method run by an agent is that you get an essay you didn
 
 By default **every stage stops** and shows you what it produced. Pass `auto` and only two stop: the core idea and the sentence outline. A wrong core idea or a wrong outline can't be fixed later, and only you know what you meant to argue. You do the read-aloud test at stage 3 yourself, out loud.
 
-It **uses only material you supply**: every piece of evidence, number, quotation, anecdote, and example comes from you. Where the material runs out it stops and asks for that one thing. An invented example written in your voice is hard to spot when you read the draft back, even when it's flagged.
+It **uses only material you supply**: in stage 6, every piece of evidence, number, quotation, anecdote, and example comes from you. Where the material runs out it stops and asks for that one thing. An invented example written in your voice is hard to spot when you read the draft back, even when it's flagged. The eval suite below checks this rule.
 
 It runs `sloplint` at every stage and `editor` at three of them, the claim, the argument line, and the finished prose, then applies her notes in one round rather than walking you through each. `tighten` runs last, on prose, once.
 
@@ -93,7 +91,7 @@ One agent, two skills: **managing-editor** gives a single Socratic editorial rea
 
 ### managing-editor
 
-`managing-editor` (agent, model: opus, tools: `Read`, `WebSearch`, `WebFetch`) is a managing editor at a digital-first publication, evaluating pitches by the editorial standards of the NYT, Vox, The Atlantic, or The New Yorker. It asks the questions that help a writer see what's working, instead of handing over a list of fixes.
+`managing-editor` (agent, model: opus, tools: `Read`, `WebSearch`, `WebFetch`) is a managing editor at a digital-first publication, evaluating pitches by the editorial standards of the NYT, Vox, The Atlantic, or The New Yorker. It asks the questions that help a writer see what's working.
 
 #### How it works
 
@@ -139,7 +137,7 @@ The chair launches each persona as a separate `Agent` call with a distinct `name
 
 #### Why the mandatory dissent round exists
 
-In an unguided multi-agent debate, positions tend to converge and lock in, often by the second exchange. This is sycophantic conformity. If nothing forces a check on whether that consensus is right, a weak angle or a bad premise can pass unchallenged when every persona is built to agree.
+The first time a meeting like this ran, the personas agreed quickly and missed that the whole angle had already been covered. A person had to look outside the meeting to catch it.
 
 So Phase 4 always runs, even when the room looks unanimous. Dissent duty goes to whichever persona moved *most toward* consensus in Phase 3, not the built-in skeptic, who would rehash their existing position. They must argue two things: steelman the case that the pitch is wrong, and name the closest coverage of this angle (or admit they can't rule it out). If they still believe the consensus holds after trying, they say so and name what would change their mind. They record the finding in `pitch.md` either way, so it becomes part of the output.
 
@@ -164,11 +162,11 @@ Before it drafts, it names the reader and verifies every fact it will state.
 
 **Name the reader.** Who reads this, what must they do, what do they already know? A skeptical non-technical reader needs every silent failure called out, and reads an admiring sentence about the architecture as a sales pitch. An engineer who has done this four times can skip the failure callouts.
 
-**Verify.** Every proper noun in a doc is a factual claim, and docs go out of date without anyone noticing, because nobody re-reads the install guide while changing the code. So it greps for every path, command, flag, and env var before describing any of them. A section documenting code that no longer exists gets deleted instead of reworded.
+**Verify.** It treats every proper noun in a doc as a factual claim and greps for every path, command, flag, and env var before describing any of them. A section documenting code that no longer exists gets deleted instead of reworded.
 
-Then it drafts, holding every sentence to one test: **what does the reader do differently because they read this?** "Nothing, they just feel better" means it doesn't go in. That cuts reassurance ("it just works out of the box"), closing flourishes ("that's the whole setup"), design essays defending an architecture nobody attacked, and the one that sneaks in unnoticed — **session leakage**, where a doc drafted at the end of a long working session inherits the session, answering questions nobody asked and narrating what changed instead of describing what is.
+Then it drafts, holding every sentence to one test: **what does the reader do differently because they read this?** "Nothing, they just feel better" means it doesn't go in. That cuts reassurance ("it just works out of the box"), closing flourishes ("that's the whole setup"), design essays defending an architecture nobody attacked, and **session leakage**: a doc drafted at the end of a long working session answers questions nobody asked and narrates what changed instead of describing what is.
 
-It insists on one addition: **the silent failure**. If doing step 2 without step 1 produces a plausible-looking success that's actually broken, that goes in the doc, in the step and in troubleshooting both.
+It always adds **the silent failure**: if doing step 2 without step 1 produces a plausible-looking success that's actually broken, that goes in the doc, in the step and in troubleshooting both.
 
 For a **README**, it answers the reader's questions in the order they ask them: what is it, is it for me, what does it look like, how do I try it, how do I use it for real, how do I work on it, can I trust it. The quick start shows what success looks like. Anything longer than a few paragraphs moves to its own file behind a relative link. The project's history stays out. The order draws on guides from Peter Hilton, GitHub, Codeshot, and the City of Amsterdam.
 
@@ -178,9 +176,9 @@ It also covers **commit messages and PR descriptions**. They get written at the 
 
 #### Usage
 
-It loads on its own whenever documentation is being written or updated — "write a README," "document this," "update the install guide," "our docs are out of date" — and whenever a commit message or PR description gets drafted. It has no slash command, because you won't think to ask for help with the failures it prevents.
+It loads on its own whenever documentation is being written or updated, for requests like "write a README," "document this," "update the install guide," or "our docs are out of date," and whenever a commit message or PR description gets drafted. It has no slash command, because you won't think to ask for help with the failures it prevents.
 
-It won't touch writing that has a voice — essays, posts, emails, marketing copy. That's `draft`.
+It won't touch writing that has a voice, such as essays, posts, emails, and marketing copy. Use `draft` for those.
 
 ## Author
 
