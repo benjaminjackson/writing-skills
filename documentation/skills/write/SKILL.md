@@ -148,7 +148,30 @@ the troubleshooting section, and anywhere the reader might stop early thinking t
 
 The happy path is the easy half. Anyone can write it. Write the other half.
 
-## 6. Commit messages and pull requests
+## 6. READMEs
+
+A README has more readers than any other doc, and most of them are still deciding whether to read on. Section 1 still applies, but a README serves several readers at once, and they arrive with their questions in a fixed order. Answer them in that order, so each reader finds their answer before the part meant for someone else:
+
+1. **What is it?** One sentence under the title: what it does, and for whom. Name the outcome, not the adjectives. "A CLI that turns a folder of Markdown files into a static site," not "a fast, extensible framework." If someone reads the first ten lines and still can't say whether this is a library, an app, or a game, the README has failed.
+2. **Is it for me?** Two or three sentences on the problem it solves and who has that problem. If readers are likely comparing it with a known alternative, say how it differs. This comes before installation so the wrong reader can leave early.
+3. **What does it look like?** Show it before you explain it. A screenshot for a UI, a real command and its real output for a CLI, a short code example and its result for a library. The example comes before the definition.
+4. **How do I try it?** A quick start that works on the first try. Prerequisites with versions ("Ruby 3.2 or later"). Commands in copyable code blocks, never only in an image. Then what success looks like: the URL, the output line, the screen. Without that last part the reader can't tell success from the silent failure in section 5. Your machine already has the step you forgot to write down, so a quick start you did not run in a clean environment goes in the section 8 report.
+5. **How do I use it for real?** The three to five tasks most readers came for, each with a short example. Configuration goes in a table with four columns: name, required or not, default, and what it does. Placeholder values only, never real ones.
+6. **How do I work on it?** How to install the dev dependencies, run the tests, and send a change. The test command also tells a new contributor that their setup works.
+7. **Can I trust it?** The license (linked to the file), the status (stable, beta, unmaintained), where to ask questions, where to report a security problem privately, and who maintains it.
+
+Leave out any question the project's readers don't ask: an internal tool has no "is it for me?" Don't add sections for questions nobody is asking.
+
+The rest:
+
+- **No history.** How the project started, what it replaced, what it used to do. The reader doesn't care. It is session leakage (section 3) over a longer stretch of time.
+- **The README is the short version.** When a section needs more than a few paragraphs, move it to its own file (`INSTALL.md`, `CONTRIBUTING.md`, `docs/configuration.md`) and link to it. The common case stays in the README and the full reference goes behind the link. A README that is the whole manual is too long to scan, and one that only says "see the docs" makes the reader click before they know whether to care. If the install section gets long, that is a fact about the install, not the README: tell the user in chat.
+- **Relative links to files in the repo.** `[Contributing](CONTRIBUTING.md)`, not a full github.com URL, because absolute links break in clones and on other branches. Keep each link's text on one line; GitHub does not render a link whose text wraps. Every linked file is a path, so section 2 applies: confirm it exists.
+- **A project tree, if there is one,** shows two or three levels, notes only the directories whose names don't explain them, and leaves out generated folders (`node_modules`, `dist`, `.git`).
+- **Badges** for build status, version, and license, if any. Not a wall of them above the first sentence.
+- **Define the project's own words.** If the code gives a common word a specific meaning ("a batch is one night's imports"), say so once, where the word first appears. Then use that word and no other (section 4).
+
+## 7. Commit messages and pull requests
 
 A commit message is documentation with a hostile deadline: it gets written at the end of a
 long session, when the session is the only thing in your head. That makes it the place session
@@ -174,7 +197,7 @@ These are the parts that bite hardest here:
   can convince themselves it works. Everything else is optional. What you didn't test goes in,
   plainly. That is the rule below, and a PR is where it matters most.
 
-## 7. Say what you didn't verify
+## 8. Say what you didn't verify
 
 When you finish, tell the user, **in chat, not in the doc**, what you actually confirmed and
 what you only reasoned about. Which paths you grepped. Which commands you ran.

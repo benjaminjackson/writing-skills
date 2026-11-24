@@ -170,6 +170,8 @@ Then it drafts, holding every sentence to one test: **what does the reader do di
 
 It insists on one addition: **the silent failure**. If doing step 2 without step 1 produces a plausible-looking success that's actually broken, that goes in the doc, in the step and in troubleshooting both.
 
+For a **README**, it answers the reader's questions in the order they ask them: what is it, is it for me, what does it look like, how do I try it, how do I use it for real, how do I work on it, can I trust it. The quick start shows what success looks like. Anything longer than a few paragraphs moves to its own file behind a relative link. The project's history stays out. The order draws on guides from Peter Hilton, GitHub, Codeshot, and the City of Amsterdam.
+
 It ends with a message in chat, kept out of the doc, that lists what it verified and what it only reasoned about.
 
 It also covers **commit messages and PR descriptions**. They get written at the end of a long session, when the session is the only thing in your head, so session leakage does the most damage there. Their reader, someone bisecting a regression eighteen months from now, has the least context to see past it. So the message describes what the code does now and why it needed to, not the three approaches you abandoned or the bug you introduced at 2pm and fixed at 3pm. The reader has the diff; they can see what changed.
