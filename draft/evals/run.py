@@ -108,7 +108,11 @@ def read_target(spec, workdir, last_message):
         return last_message
     if isinstance(spec, dict) and spec.get("source") == "file":
         f = Path(workdir) / spec["path"]
-        return strip_leading_comment(f.read_text()) if f.exists() else f"({spec['path']} was not created)"
+        if not f.exists():
+            return f"({spec['path']} was not created)"
+        text = f.read_text()
+        # raw: true reads the file as the run left it, settled block and all.
+        return text if spec.get("raw") else strip_leading_comment(text)
     return last_message
 
 
@@ -124,7 +128,13 @@ def grade_tool_used(g, tools):
     return ok, f"{len(hits)} matching call(s), wanted min={lo} max={hi}"
 
 
-def grade_regex(g, text):
+def grade_regex(g, workdir, last_message):
+    """Match the pattern against the target; a file target that was never written fails."""
+    target = g.get("target")
+    if isinstance(target, dict) and target.get("source") == "file":
+        if not (Path(workdir) / target["path"]).exists():
+            return False, f"{target['path']} was not created"
+    text = read_target(target, workdir, last_message)
     hits = re.findall(g["pattern"], text, re.M if "m" in (g.get("flags") or "") else 0)
     want = g.get("match", "contains")
     ok = (len(hits) == 0) if want == "not_contains" else (len(hits) > 0)
@@ -206,7 +216,7 @@ def run_once(case_dir, prompt, meta, cfg):
         if grader["type"] == "tool_used":
             ok, note = grade_tool_used(grader, tools)
         elif grader["type"] == "regex":
-            ok, note = grade_regex(grader, read_target(grader.get("target"), work, last))
+            ok, note = grade_regex(grader, work, last)
         elif grader["type"] == "script" and not (focus_is_file and grader.get("input")):
             # A script compares two files, so it needs both named.
             ok, note = False, "script grader needs `input` and `focus: {source: file, path: ...}`"
@@ -285,6 +295,7 @@ def calibrate():
         ("counts-come-from-the-file/graders/counts-match-the-source.md", "counts"),
         ("harvest-before-restructure/graders/names-what-it-keeps.md", "harvest"),
         ("facts-match-claim-width/graders/facts-prove-the-claim-above.md", "width"),
+        ("no-fabrication/graders/asks-for-the-gap.md", "askgap"),
         ("critique-flags-planted-faults/graders/raises-all-three.md", "raised"),
         ("critique-quiet-on-clean-twin/graders/no-false-alarms.md", "falsealarm"),
         # One known-bad file per planted fault, so each fault is shown to fail.

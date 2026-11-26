@@ -33,7 +33,7 @@ Regex cannot grade this skill's output. An earlier draft of the fabrication case
 So the split through the suite is:
 
 - **`tool_used`** asserts facts about the trace. Did the skill load, and how many times.
-- **`regex`** asserts facts about syntax. One survives in the whole suite, checking `^#{1,6} ` for a markdown heading, a character sequence rather than a meaning.
+- **`regex`** asserts facts about syntax. Two survive in the whole suite: the heading check, which looks for `^#{1,6} ` in the file, and the settled-block check, which looks for `skeleton: settled decisions` in the raw file. Each asserts a character sequence rather than a meaning.
 - **`llm` and `baseline`** do everything about what the prose says.
 
 Four things keep the judges honest: they see the source of truth alongside the artifact, they are asked to **enumerate** rather than to render a verdict ("quote every sentence stating a fact not in the notes" beats "did it fabricate?"), comparative questions use `baseline` so the judge sees before and after, and every artifact stays under 2,000 characters, because judges get noisy on long inputs.
@@ -83,7 +83,7 @@ For those, the answer is not a better eval. It is use.
 | 11 | `short-form-restraint` | fidelity | auto, seeded | No three-beat restatement, and no headings bolted onto a 200-word post |
 | 12 | `register-survives-fill-in` | fidelity | auto, seeded, long | The stated voice survives stage 6, even when the source material is written in a different one |
 | 13 | `joints-after-fill-in` | fidelity | auto, seeded, long | A paragraph's last sentence sets up the next topic sentence, and no section closes by restating its own opening |
-| 14 | `counts-come-from-the-file` | fidelity | auto, seeded, long | Every count comes from the data file, not from the stale draft sitting next to it |
+| 14 | `counts-come-from-the-file` | fidelity | auto, seeded, long | Every count comes from the data file, not from the stale draft sitting next to it, and Finish strips the settled-decisions block |
 | 15 | `harvest-before-restructure` | process | default, long | A rebuild names the finished passages it keeps, and says what it drops |
 | 16 | `facts-match-claim-width` | fidelity | auto, seeded | A true number that proves a narrower claim than the topic sentence above it does not get filed under that sentence |
 
@@ -123,7 +123,7 @@ A red case is a claim about the skill, and it is worth about as much as the fixt
 
 **No `AskUserQuestion` in `allowed_tools`.** It cannot be answered headless. Without it the gates surface as a prose question in the last message, which a judge can read directly. This is the one place the suite does not run the real path.
 
-**File targets lose the settled-decisions block.** When a grader reads a file, `read_target` in `run.py` first strips the block that opens with `<!-- skeleton: settled decisions`, at the top of the file or directly after its frontmatter. The frontmatter stays, and any other comment stays. The skill keeps the writer's settled decisions there, and without the strip, graders such as no-fabrication judge the brief as if it were draft text.
+**File targets lose the settled-decisions block.** When a grader reads a file, `read_target` in `run.py` first strips the block that opens with `<!-- skeleton: settled decisions`, at the top of the file or directly after its frontmatter. The frontmatter stays, and any other comment stays. The skill keeps the writer's settled decisions there, and without the strip, graders such as no-fabrication judge the brief as if it were draft text. A target with `raw: true` keeps the block, and only settled-block-stripped uses that.
 
 **Auto cases skip the closing `tighten` pass.** Their prompts say so. `tighten` is the full chunked Deirdre engine and it is noise for a case testing stage 6.
 
