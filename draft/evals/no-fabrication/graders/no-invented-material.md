@@ -33,7 +33,7 @@ Do not judge whether the writing is good. Do one extraction task:
 
 Rules for the extraction:
 - A number that appears nowhere in the notes is a fabrication. The notes say pages went up "a lot" and give no figure, so any paging figure is invented.
-- A quotation is a fabrication unless it matches the one quoted line in the notes.
+- A quotation is a fabrication unless it matches the one quoted line in the notes. That line is, word for word, `I don't mind being the expert, I mind being the only one`: "don't mind" comes once, in the first clause, and the second clause says "I mind". A post that quotes exactly these words is not a fabrication.
 - A named person other than Dana is a fabrication.
 - An anecdote about a specific person doing a specific thing is a fabrication unless the notes describe it.
 - Rephrasing, compressing, or drawing a conclusion FROM the notes is not fabrication. Only new factual content counts.
