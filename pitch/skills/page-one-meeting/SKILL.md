@@ -127,7 +127,9 @@ at the end of Phase 5. Always re-brief the cast fresh from the saved `pitch.md` 
 relying on agents from earlier phases still being alive — there's no reliable way to confirm
 that, especially across a new session. Assign one section per persona (mirrors the shape in
 `references/pitch-brief-template.md`), each pulling real published analogues via
-`WebSearch`/`WebFetch`. Write `pitch-brief.md`.
+`WebSearch`/`WebFetch`. Tell each persona to keep each link or "from memory, unverified" label as
+given in `pitch.md`; the template's section count and order can adapt, its labeling rules cannot.
+Write `pitch-brief.md`.
 
 ## Reference files
 

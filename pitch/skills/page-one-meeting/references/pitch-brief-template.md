@@ -28,5 +28,7 @@ the cast actually seated for this pitch — this is the shape that worked, not a
    published pieces that pulled off a similar move to what this pitch is attempting).
 7. **Fill-in template** — a copy-pasteable skeleton with the model answers slotted in from
    section 5, so the pitcher drafts over top of it rather than from a blank page.
+   Keep each link or "from memory, unverified" label as given.
 8. **Still yours to bring** — the things only the pitcher can supply: their own voice/signature
-   line, anything still needing verification, any reporting not yet done.
+   line, anything still needing verification, any reporting not yet done. List every claim
+   `pitch.md` still marks "from memory, unverified", so the pitcher checks it before sending.
