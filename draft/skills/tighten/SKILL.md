@@ -57,7 +57,8 @@ apply step.
    kills a deliberate cadence (see "protect the emotional and rhythmic lines") — skip it and
    note it in the report instead of applying it. A cut that removes the link between the sentence before and
    the sentence after is not applied either: rewrite that sentence so the link survives (see
-   **Guardrails**). Nothing else waits for approval; this skill
+   **Guardrails**). A note that ends "Fact needed from the writer" is not applied: leave the
+   sentence as written and list it in the report. Nothing else waits for approval; this skill
    never asks for sign-off, it applies.
 6. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
    (`MM-DD-YYYY`). Skip files without frontmatter.
@@ -77,6 +78,8 @@ apply step.
   look — number each, show before→after, and say why it was safe to apply.
 - **Call out anything skipped.** If an edit was held back for flattening emotion or killing a
   cadence, name it and say why, so the user knows it wasn't missed, it was a judgment call.
+- **List the facts needed.** A sentence whose note ends "Fact needed from the writer" was left
+  as written. Quote each one and say what fact it needs, so the writer can supply it.
 
 ## Guardrails
 
@@ -86,5 +89,7 @@ genuinely ambiguous, the skill asks one calibration line before choosing how har
 calibration, not approval. Editing local markdown is automatic in this project — this skill
 always applies its edits, both surgical and substantive, with no per-edit approval step.
 Never sends, posts, or touches anything outside the local file(s) it's given.
+
+Fixes follow the no-new-facts rule in "How you respond" in [../../agents/editor.md](../../agents/editor.md), and so do your own rewrites: when a note ends "Fact needed from the writer," leave the sentence as written and list it in the report.
 
 A sentence that carries the link between the sentence before it and the sentence after it is not fat, even when the editor flags it. Rewrite it so the link survives; never cut it. Connectives and causal words ("so," "but," "because," "that changed when") are the last words to cut, not the first. Cut events and restated facts before you cut the words that join them: when a draft is cut as a list of facts, the links go first, and the piece turns into "and then, and then" with no turn. This applies inside a paragraph as well as between paragraphs.

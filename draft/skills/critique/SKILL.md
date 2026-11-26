@@ -45,6 +45,8 @@ surgical/substantive distinction.
   cuts depend on the document's purpose — report those as conditional recommendations. Don't
   resolve the purpose question or ask it; that's `tighten`'s job.
 - **Name the single change that matters most**, drawn from the Pass 2 pass.
+- **Pass facts needed through as questions.** A note that ends "Fact needed from the writer"
+  stays a question for the writer; don't supply the fact yourself.
 - If most of the notes are minor word-level fixes and the user seems to want them applied, say
   so: "Most of this is safe tightening — run `tighten` and I'll just apply it."
 
