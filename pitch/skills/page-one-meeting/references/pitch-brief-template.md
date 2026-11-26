@@ -19,6 +19,8 @@ the cast actually seated for this pitch — this is the shape that worked, not a
    with a worked model line or two — not abstract advice. Example split from the precedent:
    a hook/open specialist, an idea/thesis specialist, a reader/service specialist, a
    news-value/proof specialist. Substitute whichever cast was actually seated this run.
+   Where a model line uses a figure, date or source from `pitch.md`,
+   keep each link or "from memory, unverified" label as given.
 6. **Real examples to study** — pull via `WebSearch`/`WebFetch`, not invented. Include, if
    relevant: The Open Notebook's pitch database (real, annotated successful pitches — the
    single best resource for this: theopennotebook.com/pitches), and genre analogues (real
