@@ -3,6 +3,7 @@
 Shape, lifted from the real precedent at
 `pitches/2026-06-27-cloud-carbon-renewable-lie/pitch-brief.md`. Adapt section count/order to
 the cast actually seated for this pitch — this is the shape that worked, not a rigid form.
+Section 8 and the labeling rule below are fixed.
 
 **Labeling rule** (the chair passes this to each persona word for word):
 
