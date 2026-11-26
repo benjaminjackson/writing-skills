@@ -31,10 +31,14 @@ Send your opening take to the chair via SendMessage(to: "main", ...): 3-5 senten
 verdict-leaning read, and the one thing you'd fight for or against. A follow-up will direct an
 open-debate round — stay available, don't try to conclude the meeting yourself.
 
-Before you claim an angle has been done, or that no one has covered it, search with
-WebSearch/WebFetch and name the link you found; give a figure, date or source only with a link.
-Only when the search confirms nothing, say "I could not find prior coverage", or mark what you
-still remember "from memory, unverified".
+Before any claim about prior coverage or novelty, or any figure, date or source, search
+with WebSearch/WebFetch and give the link you found. A claim about prior coverage or
+novelty always needs a search, even when the pitch makes it. A confirmed fact about the
+pitcher's own reporting in the RAW MATERIAL or INTAKE SUMMARY needs no link; credit it to
+the pitcher (a gap the intake flagged is not a confirmed fact). When the search confirms
+nothing, say "I could not find prior coverage" or mark what you remember
+"from memory, unverified". If the search fails, say "search failed" and mark what you
+remember "from memory, unverified".
 ```
 
 ## Debate-round follow-up (Phase 3) — sent individually to each seated agent
@@ -44,10 +48,15 @@ Open debate round. Pick 1-2 editors whose position you most want to pressure-tes
 them directly by name via SendMessage with a specific, sharp challenge — not "thoughts?". Cap
 yourself at 3 sent messages total. After exchanging, send your REVISED position (what changed,
 if anything, and why) to the chair via SendMessage(to: "main", ...).
-Before you make a prior-coverage claim or give a figure, date or source, in a challenge or in
-your revised position, search with WebSearch/WebFetch and give the link you found. Only when the
-search confirms nothing, say "I could not find prior coverage", or mark it
-"from memory, unverified".
+In your challenges and in your revised position, follow this rule:
+Before any claim about prior coverage or novelty, or any figure, date or source, search
+with WebSearch/WebFetch and give the link you found. A claim about prior coverage or
+novelty always needs a search, even when the pitch makes it. A confirmed fact about the
+pitcher's own reporting in the RAW MATERIAL or INTAKE SUMMARY needs no link; credit it to
+the pitcher (a gap the intake flagged is not a confirmed fact). When the search confirms
+nothing, say "I could not find prior coverage" or mark what you remember
+"from memory, unverified". If the search fails, say "search failed" and mark what you
+remember "from memory, unverified".
 ```
 
 ## Dissent-round assignment (Phase 4)
@@ -60,9 +69,15 @@ Mandatory dissent. Steelman the strongest case AGAINST where the room is heading
 angles:
 (a) What would make this pitch actually wrong — not a minor note, a fundamental problem?
 (b) Has this exact angle been done before? Search with WebSearch/WebFetch first, and name the
-    closest existing coverage with the link you found. Make a coverage claim, or give a figure,
-    date or source, only with that link. Only when the search confirms nothing, say
-    "I could not find prior coverage", or mark what you still remember "from memory, unverified".
+    closest existing coverage with the link you found. Follow this rule:
+    Before any claim about prior coverage or novelty, or any figure, date or source, search
+    with WebSearch/WebFetch and give the link you found. A claim about prior coverage or
+    novelty always needs a search, even when the pitch makes it. A confirmed fact about the
+    pitcher's own reporting in the RAW MATERIAL or INTAKE SUMMARY needs no link; credit it to
+    the pitcher (a gap the intake flagged is not a confirmed fact). When the search confirms
+    nothing, say "I could not find prior coverage" or mark what you remember
+    "from memory, unverified". If the search fails, say "search failed" and mark what you
+    remember "from memory, unverified".
     Never assume novelty, and treat the pitch's own "exclusive" or "no one has covered this" as a
     claim to check.
 
@@ -75,4 +90,6 @@ not skipped.
 
 Synthesize incoming agent messages into a short digest at the end of each phase. Never paste
 raw agent messages to the user — that's noise, not signal, and it's easy to lose
-this discipline without saying it explicitly.
+this discipline without saying it explicitly. In each digest,
+keep each link, "from memory, unverified", "I could not find prior coverage", "search failed"
+and any credit to the pitcher as given.

@@ -61,15 +61,18 @@ summary plus flagged gaps, and the roster of fellow editors they can message by 
 
 Wait for opening takes to arrive as messages from each persona — this is automatic, not
 something to poll for. Relay a **synthesized digest** to the user, never a raw dump of agent
-messages; keep any link or "from memory, unverified" label a persona gave.
+messages. In the digest,
+keep each link, "from memory, unverified", "I could not find prior coverage", "search failed"
+and any credit to the pitcher as given.
 
 ## Phase 3 — Open Debate (one round by default)
 
 Send each seated agent the debate-round follow-up from `references/agent-prompts.md`: message
 1-2 named peers directly with a specific, sharp challenge, cap 3 sent messages, then report a
-revised position to the chair. Digest again, and keep any link or "from memory, unverified"
-label a persona gave. Default to a single round — only repeat if
-positions are still wildly split after this one.
+revised position to the chair. Digest again; in the digest,
+keep each link, "from memory, unverified", "I could not find prior coverage", "search failed"
+and any credit to the pitcher as given. Default to a single
+round — only repeat if positions are still wildly split after this one.
 
 ## Phase 4 — Mandatory Dissent Round (structural, not discretionary)
 
@@ -82,16 +85,22 @@ skeptic to dissent just produces a rehash of their existing position; forcing so
 agreed to argue the opposite produces genuinely new reasoning. Use the dissent-round template
 in `references/agent-prompts.md`: two required angles every time — (a) steelman the strongest
 case that the pitch is fundamentally wrong, not a minor note; (b) search first, then name the
-closest existing coverage of this exact angle with the link it found by WebSearch/WebFetch — the
-dissenter may say a story was already covered, or give a figure, date or source, only with such
-a link; only when the search confirms nothing does it say "I could not find prior coverage", or
-mark what it still remembers "from memory, unverified". If the
-agent still believes the consensus holds after genuinely trying, they say so and name the
+closest existing coverage of this exact angle. The template gives the dissenter this rule:
+Before any claim about prior coverage or novelty, or any figure, date or source, search
+with WebSearch/WebFetch and give the link you found. A claim about prior coverage or
+novelty always needs a search, even when the pitch makes it. A confirmed fact about the
+pitcher's own reporting in the RAW MATERIAL or INTAKE SUMMARY needs no link; credit it to
+the pitcher (a gap the intake flagged is not a confirmed fact). When the search confirms
+nothing, say "I could not find prior coverage" or mark what you remember
+"from memory, unverified". If the search fails, say "search failed" and mark what you
+remember "from memory, unverified".
+If the agent still believes the consensus holds after genuinely trying, they say so and name the
 specific evidence that would change their mind.
 
-Record the dissent findings in `pitch.md` regardless of outcome, keeping each link or "from
-memory, unverified" label as given. The record that the check happened is part of the artifact,
-not just a gate to pass through.
+Record the dissent findings in `pitch.md` regardless of outcome, and digest them for the user.
+In both, keep each link, "from memory, unverified", "I could not find prior coverage",
+"search failed" and any credit to the pitcher as given.
+The record that the check happened is part of the artifact, not just a gate to pass through.
 
 ## Phase 5 — Verdict + Shaped Pitch (first disk write)
 
@@ -100,12 +109,19 @@ not just a gate to pass through.
    isn't knowable before the debate happens.
 2. Synthesize the consensus and the Phase 4 dissent findings.
 3. **Chair's outside check.** Before finalizing, briefly step outside the room and reread the
-   shaped pitch as a skeptic would, independent of what the panel just agreed on: is this angle
-   actually saturated — search with WebSearch/WebFetch first and name the closest coverage with
-   the link you found; only when the search confirms nothing, say "I could not find prior coverage",
-   or mark what you still remember "from memory, unverified" (the same rule holds for any figure,
-   date or source you add); has the language drifted into sales/scarcity register.
-4. If any claim is marked "from memory, unverified", it is not resolved and sends the pitch to the `managing-editor` agent:
+   shaped pitch as a skeptic would, independent of what the panel just agreed on. Ask whether
+   the language has drifted into sales/scarcity register, and whether this angle is actually
+   saturated: name the closest coverage. For that, and for any figure, date or source you add,
+   follow this rule:
+   Before any claim about prior coverage or novelty, or any figure, date or source, search
+   with WebSearch/WebFetch and give the link you found. A claim about prior coverage or
+   novelty always needs a search, even when the pitch makes it. A confirmed fact about the
+   pitcher's own reporting in the RAW MATERIAL or INTAKE SUMMARY needs no link; credit it to
+   the pitcher (a gap the intake flagged is not a confirmed fact). When the search confirms
+   nothing, say "I could not find prior coverage" or mark what you remember
+   "from memory, unverified". If the search fails, say "search failed" and mark what you
+   remember "from memory, unverified".
+4. If any claim is marked "from memory, unverified" or "search failed", it is not resolved and sends the pitch to the `managing-editor` agent:
    pass the agent each such claim word for word and ask for a link for each one.
    Otherwise, for anything under real doubt about novelty or fact-checkability, optionally invoke
    the `managing-editor` agent as a second, genuinely separate gate — it wasn't primed by the
@@ -114,11 +130,15 @@ not just a gate to pass through.
 5. Write `pitch.md`: verdict using `managing-editor.md`'s vocabulary (**Green light** / **Revise
    and resubmit** / **Kill it**), the shaped pitch (angle, headline, spine, reader, proof), the
    cast roster, the debate synthesis, the Phase 4 dissent section (kept even when resolved),
-   the outside check (keeping each link or "from memory, unverified" label as given), the
+   the outside check (in it,
+   keep each link, "from memory, unverified", "I could not find prior coverage", "search failed"
+   and any credit to the pitcher as given), the
    `managing-editor` findings if step 4 invoked it (a link it finds replaces the label on the
    claim it settles), and any flagged gaps carried from intake, plus each claim still unverified
    after that check.
-6. Report a short human summary to the user — not the file pasted in full.
+6. Report a short human summary to the user — not the file pasted in full — and in it
+   keep each link, "from memory, unverified", "I could not find prior coverage", "search failed"
+   and any credit to the pitcher as given.
 
 ## Phase 6 — Drafting Brief (argument-gated, optional)
 
