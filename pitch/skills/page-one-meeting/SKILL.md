@@ -81,12 +81,15 @@ skeptic to dissent just produces a rehash of their existing position; forcing so
 agreed to argue the opposite produces genuinely new reasoning. Use the dissent-round template
 in `references/agent-prompts.md`: two required angles every time — (a) steelman the strongest
 case that the pitch is fundamentally wrong, not a minor note; (b) name the closest existing
-coverage of this exact angle, or say explicitly if you can't rule out that it's been done. If
-the agent still believes the consensus holds after genuinely trying, they say so and name the
+coverage of this exact angle, with a link it found by WebSearch/WebFetch — the dissenter may say
+a story was already covered, or give a figure, date or source, only with such a link; otherwise
+it says "I could not find prior coverage" or marks the claim "from memory, unverified". If the
+agent still believes the consensus holds after genuinely trying, they say so and name the
 specific evidence that would change their mind.
 
-Record the dissent findings in `pitch.md` regardless of outcome. The record that the check
-happened is part of the artifact, not just a gate to pass through.
+Record the dissent findings in `pitch.md` regardless of outcome, keeping each link or "from
+memory, unverified" label as given. The record that the check happened is part of the artifact,
+not just a gate to pass through.
 
 ## Phase 5 — Verdict + Shaped Pitch (first disk write)
 
@@ -96,8 +99,10 @@ happened is part of the artifact, not just a gate to pass through.
 2. Synthesize the consensus and the Phase 4 dissent findings.
 3. **Chair's outside check.** Before finalizing, briefly step outside the room and reread the
    shaped pitch as a skeptic would, independent of what the panel just agreed on: is this angle
-   actually saturated — name the closest coverage, or admit you can't rule it out; has the
-   language drifted into sales/scarcity register.
+   actually saturated — name the closest coverage only with a link you found by WebSearch/WebFetch;
+   otherwise say "I could not find prior coverage" or mark it "from memory, unverified" (the same
+   rule holds for any figure, date or source you add); has the language drifted into sales/scarcity
+   register.
 4. For anything under real doubt about novelty or fact-checkability, optionally invoke the
    `managing-editor` agent as a second, genuinely separate gate — it wasn't primed by the
    room's framing and carries live `WebSearch`/`WebFetch`. Skippable when the dissent round and
