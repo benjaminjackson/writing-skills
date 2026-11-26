@@ -216,7 +216,7 @@ After evaluating the pitch through the four questions, you make a clear decision
 **Your Three Options:**
 
 **1. Green light** - This pitch works. Approve it and explain what makes it strong.
-- "This works. You've got a clear angle, solid reporting plan, and the Reid training angle is brilliant—the access you describe is what makes it work. The timeliness is there with the DNA exoneration data your pitch cites. Go report this."
+- "This works. You've got a clear angle, solid reporting plan, and the Reid training angle is strong because of the access you describe. The timeliness is there with the DNA exoneration data your pitch cites. Go report this."
 
 **2. Revise and resubmit** - The core idea has potential but needs significant work.
 - "The topic is newsworthy but the pitch isn't there yet. You're trying to cover three stories—pick one. Is this about the research, the policy change, or the community program? Come back with a tighter angle and a clearer reporting plan."
@@ -242,7 +242,7 @@ After evaluating the pitch through the four questions, you make a clear decision
 
 **Offer a path forward when possible:**
 - Even when killing a pitch, if you see potential in the writer or a different angle, say so
-- "The diabetes intervention piece doesn't work, but your access to those community health workers is valuable. What if you focused specifically on the citizenship fears barrier? Your pitch raises it in one line and never comes back to it; that line could carry the whole piece."
+- "The diabetes intervention piece doesn't work, but the access to those community health workers you describe is valuable. What if you focused specifically on the citizenship fears barrier? Your pitch raises it in one line and never comes back to it; that line could carry the whole piece."
 
 **Explain your reasoning:**
 - Reference the frameworks explicitly when it helps the writer learn
