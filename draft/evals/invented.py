@@ -23,9 +23,23 @@ NUMBER_WORDS = {
     "percent": "%", "half": "half", "dozen": "12", "twice": "twice",
 }
 
+# Day and month names are capitalised by rule, not because they are names, so
+# a new one is never reported as an invented proper noun.
+CALENDAR_WORDS = {
+    "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+    "january", "february", "march", "april", "may", "june", "july", "august",
+    "september", "october", "november", "december",
+}
+
 # Characters that close a sentence or a clause, so the next word may be
 # capitalised for grammar rather than because it is a name.
 SENTENCE_END = (".", "!", "?", ":")
+
+# Curly quotation marks, written as escapes so they are easy to tell apart.
+LEFT_DOUBLE = "“"
+RIGHT_DOUBLE = "”"
+LEFT_SINGLE = "‘"
+RIGHT_SINGLE = "’"
 
 
 def strip_front_matter(text):
@@ -56,19 +70,29 @@ def numbers(text):
 
 def normalise_quote(text):
     """Lower-case, fold curly quotes and collapse whitespace, for comparison."""
-    text = text.replace("‘", "'").replace("’", "'")
-    text = text.replace("“", '"').replace("”", '"')
+    text = text.replace(LEFT_SINGLE, "'").replace(RIGHT_SINGLE, "'")
+    text = text.replace(LEFT_DOUBLE, '"').replace(RIGHT_DOUBLE, '"')
     text = re.sub(r"\s+", " ", text.lower())
-    return text.strip(" .,;:!?'")
+    return text.strip(" .,;:!?'\"")
 
 
 def quotations(text):
-    """Return every span inside straight or curly double quotes."""
-    pattern = r'"([^"\n]+)"|“([^”\n]+)”'
+    """Return every span inside double or single quotes, straight or curly.
+
+    A single quote only opens a quotation when no letter comes right before
+    it, and only closes one when no letter comes right after it, so the
+    apostrophes in "don't" and "Ana's" are not read as quotation marks.
+    """
+    patterns = [
+        r'"([^"\n]+)"',
+        LEFT_DOUBLE + "([^" + RIGHT_DOUBLE + r"\n]+)" + RIGHT_DOUBLE,
+        r"(?<![A-Za-z])'([^'\n]+?)'(?![A-Za-z])",
+        "(?<![A-Za-z])" + LEFT_SINGLE + "([^" + RIGHT_SINGLE + r"\n]+?)" + RIGHT_SINGLE + "(?![A-Za-z])",
+    ]
     spans = []
-    for match in re.finditer(pattern, text):
-        # Only one of the two groups matched; take whichever is not None.
-        spans.append(match.group(1) or match.group(2))
+    for pattern in patterns:
+        for match in re.finditer(pattern, text):
+            spans.append(match.group(1))
     return spans
 
 
@@ -76,8 +100,10 @@ def capitalised_mid_sentence(text):
     """Return capitalised words that are not first in a sentence or line.
 
     A word right after a colon, a list marker or a heading marker counts as
-    first. "I" and its contractions never count.
+    first. "I" and its contractions never count. A possessive ending is
+    dropped, and a hyphenated name such as "Priya-Jones" stays one word.
     """
+    quote_marks = "\"'" + LEFT_DOUBLE + RIGHT_DOUBLE + LEFT_SINGLE + RIGHT_SINGLE
     words_found = []
     for line in text.splitlines():
         # Drop heading hashes, list markers ("-", "*", "1.") and blockquotes.
@@ -85,17 +111,42 @@ def capitalised_mid_sentence(text):
         previous = None
         for raw in line.split():
             # Strip quotes, brackets and markdown emphasis around the word.
-            word = raw.strip("\"'“”‘’()[]*_`")
-            is_first = previous is None or previous.rstrip("\"'”’)*_").endswith(SENTENCE_END)
+            word = raw.strip(quote_marks + "()[]*_`")
+            is_first = previous is None or previous.rstrip(quote_marks + ")*_").endswith(SENTENCE_END)
             previous = raw
             if is_first or not word or not word[0].isupper():
                 continue
-            base = re.split(r"['’]", word)[0]
+            # Drop a possessive ending: "Ana's" is Ana, "Jones'" is Jones.
+            base = re.split("['" + RIGHT_SINGLE + "]", word)[0]
             base = base.rstrip(".,;:!?")
-            if base == "I" or not base.isalpha():
+            if base == "I":
+                continue
+            parts = base.split("-")
+            if not all(part.isalpha() for part in parts):
                 continue
             words_found.append(base)
     return words_found
+
+
+def known_word(word, source_words):
+    """True when a capitalised word is a day, a month, or already in the source.
+
+    A plural of a source word counts as known ("Sundays" when the source says
+    "Sunday"). A hyphenated word is known only when every part is.
+    """
+    for part in word.lower().split("-"):
+        forms = [part]
+        if part.endswith("s"):
+            forms.append(part[:-1])
+        if part.endswith("es"):
+            forms.append(part[:-2])
+        known = False
+        for form in forms:
+            if form in source_words or form in CALENDAR_WORDS:
+                known = True
+        if not known:
+            return False
+    return True
 
 
 def main():
@@ -112,14 +163,17 @@ def main():
         if number not in source_numbers:
             hits.append(f"number: {number}")
 
-    source_quotes = normalise_quote(source)
+    # A quotation in the output must come from a quotation in the source.
+    # Words the source says in its own voice, put in quote marks, are invented.
+    source_quotes = [normalise_quote(span) for span in quotations(source)]
     for span in quotations(output):
-        if normalise_quote(span) not in source_quotes:
+        quoted = normalise_quote(span)
+        if not any(quoted in source_quote for source_quote in source_quotes):
             hits.append(f"quotation: {span}")
 
     source_words = set(word.lower() for word in re.findall(r"[A-Za-z]+", source))
     for word in capitalised_mid_sentence(output):
-        if word.lower() not in source_words:
+        if not known_word(word, source_words):
             hits.append(f"proper noun: {word}")
 
     # dict.fromkeys keeps the first occurrence of each line, in order.

@@ -14,5 +14,7 @@ Cutting a word that repeats what another word already says is not a change of me
 
 For each item that changed, quote the baseline and the produced version side by side. Write NONE if nothing changed.
 
-PASS if NONE.
+Then end with a verdict line. Writing NONE is not the verdict.
+
+PASS if you wrote NONE.
 FAIL if you listed one or more.

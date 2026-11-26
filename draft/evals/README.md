@@ -160,7 +160,7 @@ That is the suite doing its job. Fixing the skill is a separate decision from no
 
 ## Editor suite (critique and tighten)
 
-Five cases, tagged `editor`, test the `editor` sub-agent through the two skills that call it. Each case runs a slash command (`/critique draft.md` or `/tighten draft.md`) on a seeded copy of one fixture, and each has an `editor-ran` grader that fails if the skill never called the sub-agent. The critique cases also have `no-edit`: `Edit` is in their allowed tools on purpose, so a critique that edits the file can do it and gets caught.
+Five cases, tagged `editor`, test the `editor` sub-agent through the two skills that call it. Each case runs a slash command (`/critique draft.md` or `/tighten draft.md`) on a seeded copy of one fixture, and each has an `editor-ran` grader that fails unless the run made a sub-agent call whose `subagent_type` ends in `editor`. The critique cases also have `no-edit`, a script grader that runs `cmp` on the fixture and `draft.md` after the run, so an edit by any tool fails it, `Bash` included. `Edit` is in their allowed tools on purpose, so a critique that edits the file can do it and gets caught.
 
 | Case | Fixture | Graders | Protects |
 |---|---|---|---|
@@ -174,11 +174,13 @@ Five cases, tagged `editor`, test the `editor` sub-agent through the two skills 
 
 **"Quiet" is narrow on purpose.** On the clean twin, quiet means no note claims one of the three planted faults. It does not mean zero notes. The clean twin still has a vague claim and a few soft words, and a critique that notes them is right. The case tests false alarms on the faults the pair controls, and nothing else.
 
-**The invented-content script runs only on tighten's output file.** `invented.py INPUT OUTPUT` prints one `kind: item` line for every number, quotation and proper noun in the output that is not in the input, and exits 1 on any. It runs on the edited `draft.md`, never on critique's report, because a critique always names Deirdre and quotes the draft back with fixes, so it would always fail. The script cannot spot:
+**Calibration covers each detector and each fault on its own.** `invented.py` has one known-bad file per thing it detects: a number, a single-quoted quotation, the input's own words put in quote marks, and a hyphenated name. `faults-gone` has one known-bad file per planted fault. `changed-little` and the clean twin's `nothing-invented` have a good and a bad file each.
+
+**The invented-content script runs only on tighten's output file.** `invented.py INPUT OUTPUT` prints one `kind: item` line for every number, quotation and proper noun in the output that is not in the input, and exits 1 on any. A quotation, in single or double quotes, must come from a quotation in the input; the input's own words put in quote marks count as invented. A plural or possessive of a word in the input is not a new proper noun, and neither is a day or a month. It runs on the edited `draft.md`, never on critique's report, because a critique always names Deirdre and quotes the draft back with fixes, so it would always fail. The script cannot spot:
 
 - a new name at the start of a sentence, or after a colon, because a capital there is grammar, not a name. The fixtures keep their real name mid-sentence for this reason.
 - an invented claim with no number, quote or name in it, such as a new reason or a new anecdote. `meaning-kept` covers that.
-- a number word it does not know, such as "thirty".
+- a number word or phrase outside its list (zero to twenty, hundred, thousand, million, percent, half, dozen, twice), such as "thirty", "a third" or "doubled". No list covers them all.
 
 `type: script` is a grader type this runner adds. The native `claude plugin eval` harness may not support it. The grader's `command` can use `{evals}`, `{input}` (the grader's `input` file) and `{output}` (the file the run wrote). Exit 0 is a pass, and stdout is the note.
 
@@ -189,7 +191,7 @@ Five cases, tagged `editor`, test the `editor` sub-agent through the two skills 
 - each run's grader results, notes and output
 - a pass count per grader, such as `2/3`
 
-The runner does not save results when `draft/` has uncommitted changes outside `draft/evals`, because those results would name a commit they did not measure. `--runs` defaults to 1, so the skeleton cases do not cost three times as much.
+Results are saved only when `--runs` is given; a plain run saves nothing, and `--runs` below 1 is refused. The runner does not save results when `draft/` has uncommitted changes anywhere outside `draft/evals/results/`, the suite included, because those results would name commits they did not measure. Without `--runs` each case runs once, so the skeleton cases do not cost three times as much.
 
 Read a score change against the spread over 3 runs, not against one run. A grader that went from 3/3 to 2/3 after an `editor.md` change has moved by one run, and three runs cannot tell one run of movement from noise. A move from 3/3 to 0/3, or the reverse, is a real change. Rerun any change to `editor.md` with `--tag editor --runs 3` and compare the new `results/` against the committed ones.
 

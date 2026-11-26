@@ -1,7 +1,7 @@
 ---
 type: tool_used
 tool: [Agent, Task]
-input_match: editor
+input_match: '"subagent_type": "[^"]*editor"'
 min: 1
 weight: 1
 ---

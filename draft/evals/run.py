@@ -145,17 +145,18 @@ def read_verdict(out):
     return "FAIL"
 
 
-def run_script(g, input_path, output_path, cwd):
-    """Run a `type: script` grader's command. Pass is exit 0; the note is stdout.
+def run_script(grader, input_path, output_path, cwd):
+    """Run a `type: script` grader's command. Pass is exit 0; the note is its output.
 
     The command may use {evals}, {input} and {output}: this directory, the
     grader's `input` file, and the file the run wrote (its `focus`).
     """
-    command = (g["command"].replace("{evals}", shlex.quote(str(EVALS)))
+    command = (grader["command"].replace("{evals}", shlex.quote(str(EVALS)))
                .replace("{input}", shlex.quote(str(input_path)))
                .replace("{output}", shlex.quote(str(output_path))))
     proc = subprocess.run(command, shell=True, cwd=cwd, capture_output=True, text=True)
-    note = proc.stdout.strip().replace("\n", "; ") or "no output"
+    # Some tools, cmp among them, write their message to stderr.
+    note = (proc.stdout.strip() or proc.stderr.strip()).replace("\n", "; ") or "no output"
     return proc.returncode == 0, f"exit {proc.returncode}: {note}"
 
 
@@ -196,21 +197,25 @@ def run_once(case_dir, prompt, meta, cfg):
 
     results = []
     artifact = {"last_message": last}
-    for gf in sorted((case_dir / "graders").glob("*.md")):
-        g, rubric = split_front_matter(gf)
-        focus = g.get("focus")
-        if isinstance(focus, dict) and focus.get("source") == "file":
+    for grader_file in sorted((case_dir / "graders").glob("*.md")):
+        grader, rubric = split_front_matter(grader_file)
+        focus = grader.get("focus")
+        focus_is_file = isinstance(focus, dict) and focus.get("source") == "file"
+        if focus_is_file:
             artifact[focus["path"]] = read_target(focus, work, last)
-        if g["type"] == "tool_used":
-            ok, note = grade_tool_used(g, tools)
-        elif g["type"] == "regex":
-            ok, note = grade_regex(g, read_target(g.get("target"), work, last))
-        elif g["type"] == "script":
-            ok, note = run_script(g, EVALS / g["input"], Path(work) / focus["path"], work)
+        if grader["type"] == "tool_used":
+            ok, note = grade_tool_used(grader, tools)
+        elif grader["type"] == "regex":
+            ok, note = grade_regex(grader, read_target(grader.get("target"), work, last))
+        elif grader["type"] == "script" and not (focus_is_file and grader.get("input")):
+            # A script compares two files, so it needs both named.
+            ok, note = False, "script grader needs `input` and `focus: {source: file, path: ...}`"
+        elif grader["type"] == "script":
+            ok, note = run_script(grader, EVALS / grader["input"], Path(work) / focus["path"], work)
         else:
             target = focus or {"source": "file", "path": "post.md"}
-            ok, note = grade_llm(g, rubric, read_target(target, work, last), work, gf.stem)
-        results.append((gf.stem, ok, note))
+            ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
+        results.append((grader_file.stem, ok, note))
     return results, work, artifact
 
 
@@ -234,6 +239,9 @@ def git(*args):
 # Everything under draft/ except the suite itself: the skills, the agent and
 # the references the runs exercise. Results are pinned to its last commit.
 SKILL_PATHS = ["--", "draft", ":!draft/evals"]
+# What must be committed before a result is saved: the skill and the suite,
+# so head_sha describes both. Only the saved results themselves may differ.
+MEASURED_PATHS = ["--", "draft", ":!draft/evals/results"]
 
 
 def save_results(name, runs):
@@ -248,14 +256,15 @@ def save_results(name, runs):
         "pass_counts": {},
         "results": [],
     }
+    passes = {}
     for results, _work, artifact in runs:
-        out["results"].append({
-            "graders": [{"name": g, "pass": ok, "note": note} for g, ok, note in results],
-            "artifact": artifact,
-        })
-    for gname in [g for g, _ok, _note in runs[0][0]]:
-        passes = sum(1 for results, _w, _a in runs for g, ok, _n in results if g == gname and ok)
-        out["pass_counts"][gname] = f"{passes}/{len(runs)}"
+        graders = []
+        for grader_name, ok, note in results:
+            graders.append({"name": grader_name, "pass": ok, "note": note})
+            passes[grader_name] = passes.get(grader_name, 0) + (1 if ok else 0)
+        out["results"].append({"graders": graders, "artifact": artifact})
+    for grader_name, count in passes.items():
+        out["pass_counts"][grader_name] = f"{count}/{len(runs)}"
     path = EVALS / "results" / f"{name}.json"
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(out, indent=2) + "\n")
@@ -278,32 +287,41 @@ def calibrate():
         ("facts-match-claim-width/graders/facts-prove-the-claim-above.md", "width"),
         ("critique-flags-planted-faults/graders/raises-all-three.md", "raised"),
         ("critique-quiet-on-clean-twin/graders/no-false-alarms.md", "falsealarm"),
-        ("tighten-fixes-planted-faults/graders/faults-gone.md", "faultsgone"),
+        # One known-bad file per planted fault, so each fault is shown to fail.
+        ("tighten-fixes-planted-faults/graders/faults-gone.md", "faultsgone",
+         ("bad-throat", "bad-doublet", "bad-this", "good")),
         ("tighten-fixes-planted-faults/graders/meaning-kept.md", "meaning"),
         ("tighten-light-on-clean-twin/graders/meaning-kept.md", "meaningclean"),
         ("critique-treats-praise-as-content/graders/praise-is-content.md", "praise"),
     ]
     # Script graders, run on their own known-bad and known-good output files.
+    # invented.py gets one known-bad file per thing it detects.
     script_pairs = [
-        ("tighten-fixes-planted-faults/graders/nothing-invented.md", "invented"),
+        ("tighten-fixes-planted-faults/graders/nothing-invented.md", "invented",
+         ("bad", "bad-number", "bad-quote", "bad-requote", "bad-name", "good")),
+        ("tighten-light-on-clean-twin/graders/nothing-invented.md", "inventedclean", ("bad", "good")),
+        ("tighten-light-on-clean-twin/graders/changed-little.md", "changed", ("bad", "good")),
     ]
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True
-    for grader_path, stem in pairs:
-        g, rubric = split_front_matter(EVALS / grader_path)
-        for want_pass, suffix in ((False, "bad"), (True, "good")):
-            art = (EVALS / "calibration" / f"{stem}-{suffix}.md").read_text()
-            got, note = grade_llm(g, rubric, art, work)
+    for grader_path, stem, *suffix_list in pairs:
+        grader, rubric = split_front_matter(EVALS / grader_path)
+        suffixes = suffix_list[0] if suffix_list else ("bad", "good")
+        for suffix in suffixes:
+            want_pass = suffix.startswith("good")
+            artifact_text = (EVALS / "calibration" / f"{stem}-{suffix}.md").read_text()
+            got, note = grade_llm(grader, rubric, artifact_text, work)
             ok = got == want_pass
             allok &= ok
             verdict = "PASS" if got else "FAIL"
             print(f"  {'ok  ' if ok else 'BAD '} {stem}-{suffix}: judge said {verdict}, "
                   f"wanted {'PASS' if want_pass else 'FAIL'}")
-    for grader_path, stem in script_pairs:
-        g, _rubric = split_front_matter(EVALS / grader_path)
-        for want_pass, suffix in ((False, "bad"), (True, "good")):
-            art = EVALS / "calibration" / f"{stem}-{suffix}.md"
-            got, note = run_script(g, EVALS / g["input"], art, work)
+    for grader_path, stem, suffixes in script_pairs:
+        grader, _rubric = split_front_matter(EVALS / grader_path)
+        for suffix in suffixes:
+            want_pass = suffix.startswith("good")
+            artifact_path = EVALS / "calibration" / f"{stem}-{suffix}.md"
+            got, note = run_script(grader, EVALS / grader["input"], artifact_path, work)
             ok = got == want_pass
             allok &= ok
             print(f"  {'ok  ' if ok else 'BAD '} {stem}-{suffix}: script said "
@@ -312,13 +330,22 @@ def calibrate():
     return 0 if allok else 1
 
 
+def positive_int(text):
+    """argparse type for --runs: a whole number of at least 1."""
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError(f"must be at least 1, got {value}")
+    return value
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--calibrate", action="store_true")
     ap.add_argument("--tag", action="append", default=[])
     ap.add_argument("--case", default=None)
-    ap.add_argument("--runs", type=int, default=1,
-                    help="agent runs per case, each in a new temp dir (default 1)")
+    ap.add_argument("--runs", type=positive_int, default=None,
+                    help="agent runs per case, each in a new temp dir, saved to "
+                         "results/<case>.json (without it: one run, nothing saved)")
     args = ap.parse_args()
 
     if args.calibrate:
@@ -327,23 +354,28 @@ def main():
     cases = sorted(d for d in EVALS.iterdir()
                    if (d / "prompt.md").exists()
                    and (not args.case or d.name == args.case))
-    # A result is only worth keeping if it says which skill it measured, so
-    # uncommitted skill changes mean the run is not saved.
-    dirty = git("status", "--porcelain", *SKILL_PATHS)
-    if dirty:
-        print("NOT SAVING results: uncommitted changes under draft/ outside draft/evals:\n" + dirty)
+    # Results are saved only when --runs is given. A saved result is only worth
+    # keeping if it says what it measured, so uncommitted changes to the skill
+    # or the suite mean the run is not saved.
+    save = args.runs is not None
+    if save:
+        dirty = git("status", "--porcelain", *MEASURED_PATHS)
+        if dirty:
+            print("NOT SAVING results: uncommitted changes under draft/ "
+                  "outside draft/evals/results:\n" + dirty)
+            save = False
     failed = 0
-    for c in cases:
-        out = score_case(c, args.tag, args.runs)
+    for case_dir in cases:
+        out = score_case(case_dir, args.tag, args.runs or 1)
         if not out:
             continue
         name, runs = out
-        for i, (results, work, _artifact) in enumerate(runs, 1):
-            for gname, ok, note in results:
-                print(f"  {'ok  ' if ok else 'FAIL'} {name} [run {i}] / {gname}: {note}")
+        for run_number, (results, work, _artifact) in enumerate(runs, 1):
+            for grader_name, ok, note in results:
+                print(f"  {'ok  ' if ok else 'FAIL'} {name} [run {run_number}] / {grader_name}: {note}")
                 failed += 0 if ok else 1
             print(f"       artifacts: {work}")
-        if not dirty:
+        if save:
             print(f"       saved: {save_results(name, runs).relative_to(REPO)}")
     print(f"\n{failed} grader failure(s)")
     sys.exit(1 if failed else 0)

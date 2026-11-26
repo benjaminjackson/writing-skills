@@ -1,8 +1,8 @@
 ---
-type: tool_used
-tool: Edit
-min: 0
-max: 0
+type: script
+command: cmp {input} {output}
+input: fixtures/deploys-clean.md
+focus: {source: file, path: draft.md}
 weight: 1
 ---
-Critique is read-only. `Edit` is in this case's allowed tools on purpose, so a run that edits the draft can do it and gets caught here rather than being blocked silently.
+Critique is read-only. This compares draft.md after the run with the fixture it was copied from, so a change made by any tool fails it: `Edit`, `Write` or a `Bash` command. `Edit` is in this case's allowed tools on purpose, so a critique that edits the file can do it and gets caught here rather than being blocked silently.
