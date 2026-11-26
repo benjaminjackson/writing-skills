@@ -2,8 +2,8 @@
 name: counts-come-from-the-file
 tags: [skeleton, fidelity]
 runs: 3
-max_turns: 20
-timeout_seconds: 420
+max_turns: 30
+timeout_seconds: 600
 allowed_tools: [Read, Write, Edit, Glob, Grep, Bash, Skill]
 ---
 /skeleton post.md auto

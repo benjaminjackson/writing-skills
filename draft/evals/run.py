@@ -124,7 +124,13 @@ def grade_tool_used(g, tools):
     return ok, f"{len(hits)} matching call(s), wanted min={lo} max={hi}"
 
 
-def grade_regex(g, text):
+def grade_regex(g, workdir, last_message):
+    """Match the pattern against the target; a file target that was never written fails."""
+    target = g.get("target")
+    if isinstance(target, dict) and target.get("source") == "file":
+        if not (Path(workdir) / target["path"]).exists():
+            return False, f"{target['path']} was not created"
+    text = read_target(target, workdir, last_message)
     hits = re.findall(g["pattern"], text, re.M if "m" in (g.get("flags") or "") else 0)
     want = g.get("match", "contains")
     ok = (len(hits) == 0) if want == "not_contains" else (len(hits) > 0)
@@ -192,7 +198,7 @@ def score_case(case_dir, tags):
         if g["type"] == "tool_used":
             ok, note = grade_tool_used(g, tools)
         elif g["type"] == "regex":
-            ok, note = grade_regex(g, read_target(g.get("target"), work, last))
+            ok, note = grade_regex(g, work, last)
         else:
             target = g.get("focus") or {"source": "file", "path": "post.md"}
             ok, note = grade_llm(g, rubric, read_target(target, work, last), work, gf.stem)
