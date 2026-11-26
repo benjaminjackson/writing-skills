@@ -304,6 +304,9 @@ def calibrate():
         ("tighten-fixes-planted-faults/graders/meaning-kept.md", "meaning"),
         ("tighten-light-on-clean-twin/graders/meaning-kept.md", "meaningclean"),
         ("critique-treats-praise-as-content/graders/praise-is-content.md", "praise"),
+        ("critique-flags-planted-faults-long/graders/raises-all-three.md", "raisedlong"),
+        ("tighten-fixes-planted-faults-long/graders/faults-gone.md", "faultsgonelong", ("bad-throat", "bad-doublet", "bad-this", "good")),
+        ("tighten-fixes-planted-faults-long/graders/meaning-kept.md", "meaninglong"),
     ]
     # Script graders, run on their own known-bad and known-good output files.
     # invented.py gets one known-bad file per thing it detects.
@@ -312,6 +315,7 @@ def calibrate():
          ("bad", "bad-number", "bad-quote", "bad-requote", "bad-name", "good")),
         ("tighten-light-on-clean-twin/graders/nothing-invented.md", "inventedclean", ("bad", "good")),
         ("tighten-light-on-clean-twin/graders/changed-little.md", "changed", ("bad", "good")),
+        ("tighten-fixes-planted-faults-long/graders/nothing-invented.md", "inventedlong", ("bad", "good")),
     ]
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True
