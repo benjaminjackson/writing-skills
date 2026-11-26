@@ -41,16 +41,17 @@ instead:
 - **Parentheses** when the aside is truly optional.
 - Nothing at all: cut the aside, since it is usually the fat from section 4.
 
-Before you save any file or print any message, run this on the saved file and delete every
-`—` and `–` on the lines it prints:
+After you save a file, and before you report or commit it, run this on the file and replace
+each `—` and `–` on the lines it prints as the list above says:
 
 ```sh
 grep -nE "$(printf '\342\200\224|\342\200\223')" FILE
 ```
 
 It matches U+2014 and U+2013 by their UTF-8 bytes, so it works with BSD and GNU grep in any
-locale. No output means the file is clean. For a commit message or PR description, save it to a
-file and run the same command on that file before you use it. This check is not optional and it
+locale. No output means the file is clean. A message gets the same check: write any chat reply,
+commit message, or PR description to a scratch file first, run the same command on that file,
+and send the message only when the command prints nothing. This check is not optional and it
 is not "usually fine to skip."
 
 ## 1. Name the reader
@@ -95,11 +96,21 @@ for a skill that had been deleted from the repo months earlier.)
 with a command, not by eye. To print the length of one line of a file (line 1 here):
 
 ```sh
-sed -n '1p' FILE | tr -d '\n' | wc -m
+sed -n '1p' FILE | tr -d '\n' | LC_ALL=en_US.UTF-8 wc -m
 ```
 
-The number it prints is the length in characters. A limit you plan to eyeball at the end is a
-limit you will break. The commit subject has its own target: see section 7.
+A field that spans several lines, such as a YAML `description: >-` block, is measured as the
+whole field value, not one line of it: join its lines with single spaces, then count. For a
+top-level field named `description`:
+
+```sh
+awk '/^description:/{f=1; next} f && /^[^ ]/{f=0} f' FILE | sed 's/^ *//' | paste -sd ' ' - | tr -d '\n' | LC_ALL=en_US.UTF-8 wc -m
+```
+
+The number it prints is the length in characters. `wc -m` counts characters only in a UTF-8
+locale; in the C locale it counts bytes, so keep `LC_ALL=en_US.UTF-8` on the command. A limit
+you plan to eyeball at the end is a limit you will break.
+The commit subject has its own target: see section 7.
 
 ## 3. What never gets written
 
@@ -196,15 +207,16 @@ leakage does the most damage, and the reader, someone bisecting a regression eig
 from now, is the least equipped to survive it.
 
 Read the repo's own rules before writing either, and treat them as fixed: its
-PULL_REQUEST_TEMPLATE and CONTRIBUTING files, the style of recent subjects in
-`git log --oneline -20`, and the user's own commit and PR instructions. To find the files:
+PULL_REQUEST_TEMPLATE and CONTRIBUTING files and the style of recent subjects in
+`git log --oneline -20`. To find the files:
 
 ```sh
 find . -maxdepth 3 \( -iname 'pull_request_template*' -o -iname 'contributing*' \) -not -path './node_modules/*'
 ```
 
 This section's defaults apply only where those and the user's own commit and PR instructions
-are silent.
+are silent. When the repo's rules and the user's own instructions conflict, the user's own
+instructions win.
 
 Everything above applies, including section 0: no em dashes in a subject line or a body.
 These are the parts that bite hardest here:
@@ -218,7 +230,6 @@ These are the parts that bite hardest here:
   "as we decided." The reviewer was not in the room and the future reader never will be.
 - **The subject line is a claim about behavior**, in the imperative: what the tree does after
   this commit that it didn't before. Aim for 50 characters, a target rather than a hard limit.
-  To measure it: `head -n 1 MSGFILE | tr -d '\n' | wc -m`.
 - **Verify the body against the diff, not against your memory of the work.** Read the actual
   patch before describing it. A commit message that describes an earlier draft of the change
   is the same failure as a doc that describes deleted code.
