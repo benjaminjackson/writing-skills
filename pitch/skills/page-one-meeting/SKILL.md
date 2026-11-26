@@ -61,13 +61,14 @@ summary plus flagged gaps, and the roster of fellow editors they can message by 
 
 Wait for opening takes to arrive as messages from each persona — this is automatic, not
 something to poll for. Relay a **synthesized digest** to the user, never a raw dump of agent
-messages.
+messages; keep any link or "from memory, unverified" label a persona gave.
 
 ## Phase 3 — Open Debate (one round by default)
 
 Send each seated agent the debate-round follow-up from `references/agent-prompts.md`: message
 1-2 named peers directly with a specific, sharp challenge, cap 3 sent messages, then report a
-revised position to the chair. Digest again. Default to a single round — only repeat if
+revised position to the chair. Digest again, and keep any link or "from memory, unverified"
+label a persona gave. Default to a single round — only repeat if
 positions are still wildly split after this one.
 
 ## Phase 4 — Mandatory Dissent Round (structural, not discretionary)

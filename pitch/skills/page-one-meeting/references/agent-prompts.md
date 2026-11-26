@@ -30,6 +30,11 @@ Evaluate through YOUR lens. Form an opinion — don't hedge into blandness, land
 Send your opening take to the chair via SendMessage(to: "main", ...): 3-5 sentences, your
 verdict-leaning read, and the one thing you'd fight for or against. A follow-up will direct an
 open-debate round — stay available, don't try to conclude the meeting yourself.
+
+Before you claim an angle has been done, or that no one has covered it, search with
+WebSearch/WebFetch and name the link you found; give a figure, date or source only with a link.
+Only when the search confirms nothing, say "I could not find prior coverage", or mark what you
+still remember "from memory, unverified".
 ```
 
 ## Debate-round follow-up (Phase 3) — sent individually to each seated agent
@@ -39,6 +44,10 @@ Open debate round. Pick 1-2 editors whose position you most want to pressure-tes
 them directly by name via SendMessage with a specific, sharp challenge — not "thoughts?". Cap
 yourself at 3 sent messages total. After exchanging, send your REVISED position (what changed,
 if anything, and why) to the chair via SendMessage(to: "main", ...).
+Before you make a prior-coverage claim or give a figure, date or source, in a challenge or in
+your revised position, search with WebSearch/WebFetch and give the link you found. Only when the
+search confirms nothing, say "I could not find prior coverage", or mark it
+"from memory, unverified".
 ```
 
 ## Dissent-round assignment (Phase 4)
