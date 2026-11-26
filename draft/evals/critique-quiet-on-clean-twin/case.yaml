@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: critique-quiet-on-clean-twin
+context:
+  scaffold_script: cp "$EVAL_FIXTURES/deploys-clean.md" draft.md
