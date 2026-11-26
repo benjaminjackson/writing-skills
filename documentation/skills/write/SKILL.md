@@ -91,16 +91,15 @@ for a skill that had been deleted from the repo months earlier.)
 **Concrete values come from a run or a repo file, never from memory.** Example output, the line that shows success, version prerequisites, sample config values, and URLs must come from running the command or from a repo file (`.ruby-version`, the gemspec's `required_ruby_version`, `package.json` `engines`, the config file itself). If you can't get one, leave it out, ask the user, or list the gap in the section 8 report. Don't write a plausible one.
 
 **Check hard limits before writing, not after.** If a field has a documented maximum, such as a
-1024-character skill description, a 72-character commit subject, or a 160-character meta
-description, measure the saved text with a command, not by eye. To print the length of one
-line of a file (line 1 here):
+1024-character skill description or a 160-character meta description, measure the saved text
+with a command, not by eye. To print the length of one line of a file (line 1 here):
 
 ```sh
 sed -n '1p' FILE | tr -d '\n' | wc -m
 ```
 
 The number it prints is the length in characters. A limit you plan to eyeball at the end is a
-limit you will break.
+limit you will break. The commit subject has its own target: see section 7.
 
 ## 3. What never gets written
 
@@ -196,6 +195,17 @@ long session, when the session is the only thing in your head. That makes it the
 leakage does the most damage, and the reader, someone bisecting a regression eighteen months
 from now, is the least equipped to survive it.
 
+Read the repo's own rules before writing either, and treat them as fixed: its
+PULL_REQUEST_TEMPLATE and CONTRIBUTING files, the style of recent subjects in
+`git log --oneline -20`, and the user's own commit and PR instructions. To find the files:
+
+```sh
+find . -maxdepth 3 \( -iname 'pull_request_template*' -o -iname 'contributing*' \) -not -path './node_modules/*'
+```
+
+This section's defaults apply only where those and the user's own commit and PR instructions
+are silent.
+
 Everything above applies, including section 0: no em dashes in a subject line or a body.
 These are the parts that bite hardest here:
 
@@ -206,8 +216,9 @@ These are the parts that bite hardest here:
   is the only thing a commit message adds. Don't narrate the patch back to them.
 - **No conversational residue.** "As requested," "per the discussion," "addressing the feedback,"
   "as we decided." The reviewer was not in the room and the future reader never will be.
-- **The subject line is a claim about behavior**, in the imperative, under 50 characters: what
-  the tree does after this commit that it didn't before.
+- **The subject line is a claim about behavior**, in the imperative: what the tree does after
+  this commit that it didn't before. Aim for 50 characters, a target rather than a hard limit.
+  To measure it: `head -n 1 MSGFILE | tr -d '\n' | wc -m`.
 - **Verify the body against the diff, not against your memory of the work.** Read the actual
   patch before describing it. A commit message that describes an earlier draft of the change
   is the same failure as a doc that describes deleted code.
