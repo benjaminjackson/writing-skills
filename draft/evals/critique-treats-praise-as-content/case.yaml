@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: critique-treats-praise-as-content
+context:
+  scaffold_script: cp "$EVAL_FIXTURES/praise-piece.md" draft.md

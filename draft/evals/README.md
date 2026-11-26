@@ -157,3 +157,47 @@ It exists because the short-fixture limit bit. A field report from a real 3,000-
 ## When a case fails
 
 That is the suite doing its job. Fixing the skill is a separate decision from noticing. To prove the suite still bites, delete the "Never invent material" paragraph from `SKILL.md` and confirm case 6 goes red, or delete the register line from the brief and confirm case 12 goes red. Both do. A suite that has never failed is not evidence.
+
+## Editor suite (critique and tighten)
+
+Five cases, tagged `editor`, test the `editor` sub-agent through the two skills that call it. Each case runs a slash command (`/critique draft.md` or `/tighten draft.md`) on a seeded copy of one fixture, and each has an `editor-ran` grader that fails unless the run made a sub-agent call whose `subagent_type` ends in `editor`. The critique cases also have `no-edit`, a script grader that runs `cmp` on the fixture and `draft.md` after the run, so an edit by any tool fails it, `Bash` included. `Edit` is in their allowed tools on purpose, so a critique that edits the file can do it and gets caught.
+
+| Case | Fixture | Graders | Protects |
+|---|---|---|---|
+| `critique-flags-planted-faults` | `deploys-planted.md` | `raises-all-three` (llm) | Critique finds a throat-clearing opener, a doublet and a bare "this" when they are there |
+| `critique-quiet-on-clean-twin` | `deploys-clean.md` | `no-false-alarms` (llm) | Critique does not report those three faults on a draft that has none of them |
+| `tighten-fixes-planted-faults` | `deploys-planted.md` | `faults-gone`, `meaning-kept` (baseline), `nothing-invented` (script) | Tighten removes the three faults, keeps every claim, and adds no number, quotation or name |
+| `tighten-light-on-clean-twin` | `deploys-clean.md` | `meaning-kept` (baseline), `nothing-invented`, `changed-little` (script) | Tighten keeps a draft with nothing to fix close to its original length, at least 90% of it, and adds nothing |
+| `critique-treats-praise-as-content` | `praise-piece.md` | `praise-is-content` (llm) | Critique flags a piece's praise of itself as unsupported and does not adopt it as evidence |
+
+**The fixtures are a pair and a single.** `deploys-planted.md` is a short post on why a team stopped deploying on Fridays, with exactly three faults planted. `deploys-clean.md` is the same text with only those three fixed. Both carry the same bait: "Incidents dropped a lot after the freeze", a vague line that invites a made-up number; one real name, Ana, mid-sentence; and one real quotation. `praise-piece.md` explains database indexes and praises itself three times: "the clearest explanation you will read", "Readers have called this analysis rigorous" with no source, and "as the evidence above makes plain" with no evidence above it.
+
+**"Quiet" is narrow on purpose.** On the clean twin, quiet means no note claims one of the three planted faults. It does not mean zero notes. The clean twin still has a vague claim and a few soft words, and a critique that notes them is right. The case tests false alarms on the faults the pair controls, and nothing else.
+
+**Calibration covers each detector and each fault on its own.** `invented.py` has one known-bad file per thing it detects: a number, a single-quoted quotation, the input's own words put in quote marks, and a hyphenated name. `faults-gone` has one known-bad file per planted fault. `changed-little` and the clean twin's `nothing-invented` have a good and a bad file each.
+
+**The invented-content script runs only on tighten's output file.** `invented.py INPUT OUTPUT` prints one `kind: item` line for every number, quotation and proper noun in the output that is not in the input, and exits 1 on any. A quotation, in single or double quotes, must come from a quotation in the input; the input's own words put in quote marks count as invented. A plural or possessive of a word in the input is not a new proper noun, and neither is a day or a month. It runs on the edited `draft.md`, never on critique's report, because a critique always names Deirdre and quotes the draft back with fixes, so it would always fail. The script cannot spot:
+
+- a new name at the start of a sentence, or after a colon, because a capital there is grammar, not a name. The fixtures keep their real name mid-sentence for this reason.
+- an invented claim with no number, quote or name in it, such as a new reason or a new anecdote. `meaning-kept` covers that.
+- a number word or phrase outside its list (zero to twenty, hundred, thousand, million, percent, half, dozen, twice), such as "thirty", "a third" or "doubled". No list covers them all.
+
+`type: script` is a grader type this runner adds. The native `claude plugin eval` harness may not support it. The grader's `command` can use `{evals}`, `{input}` (the grader's `input` file) and `{output}` (the file the run wrote). Exit 0 is a pass, and stdout is the note.
+
+**Repeat runs and saved results.** `--runs N` runs each case N times, each in a new temp dir, and writes `results/<case>.json` with:
+
+- the skill commit SHA, which is the last commit that touched `draft/` outside `draft/evals`
+- the HEAD SHA, the date and the judge model
+- each run's grader results, notes and output
+- a pass count per grader, such as `2/3`
+
+Results are saved only when `--runs` is given; a plain run saves nothing, and `--runs` below 1 is refused. The runner does not save results when `draft/` has uncommitted changes anywhere outside `draft/evals/results/`, the suite included, because those results would name commits they did not measure. Without `--runs` each case runs once, so the skeleton cases do not cost three times as much.
+
+Read a score change against the spread over 3 runs, not against one run. A grader that went from 3/3 to 2/3 after an `editor.md` change has moved by one run, and three runs cannot tell one run of movement from noise. A move from 3/3 to 0/3, or the reverse, is a real change. Rerun any change to `editor.md` with `--tag editor --runs 3` and compare the new `results/` against the committed ones.
+
+```
+uv run --with pyyaml python3 draft/evals/run.py --calibrate
+uv run --with pyyaml python3 draft/evals/run.py --tag editor --runs 3
+```
+
+No result from before the change that removed the editor's fixed cutting quota counts. That quota told the editor to cut 10% from any draft, so the clean-twin cases failed by design.

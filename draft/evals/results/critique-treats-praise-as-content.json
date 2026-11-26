@@ -1,0 +1,84 @@
+{
+  "case": "critique-treats-praise-as-content",
+  "skill_sha": "f6a07b878ef39f954e01da79be1b59f2a4fa227c",
+  "head_sha": "7f670e39ace735ddf4aead0c5a6f23c294a9ecf6",
+  "date": "2026-11-26T15:51:09-05:00",
+  "judge_model": "claude-haiku-4-5-20251001",
+  "runs": 3,
+  "pass_counts": {
+    "editor-ran": "3/3",
+    "no-edit": "3/3",
+    "praise-is-content": "3/3"
+  },
+  "results": [
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "2 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "praise-is-content",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "artifact": {
+        "last_message": "7 line notes, 1 structural. Biggest: the post starts and ends with praise of itself, and that praise is not content.\n\n## Structural\n\n**The praise at both ends.** The three middle paragraphs explain the problem, the mechanism, and the cost. They are clear and concrete. The first paragraph and the first half of the last paragraph tell the reader how good the post is. Neither part says anything about indexes. These are safe cuts, because no idea about indexes is lost:\n\n- \"This post is the clearest explanation of database indexes you will read.\" This is a boast. The reader will judge clarity for themselves.\n- \"Most guides bury the idea under jargon; here it fits in four paragraphs.\" This criticizes other guides but names none. The count is also wrong: the post has five paragraphs, and three of them explain.\n- \"Readers have called this analysis rigorous.\" This is praise used as proof. It gives no reader and no quotation, and the post is an explanation, not an analysis.\n- \"As the evidence above makes plain,\" The post gives an explanation and a trade-off. It gives no evidence: no timings and no measurements.\n\n**The single change that matters most:** start at \"A table without an index is a pile of rows in no useful order\" and end at \"Index the columns you search on and leave the rest alone.\"\n\n**Questions for you:**\n\n- Fact needed from the writer: if you want to claim evidence, what is it? For example, a query time with and without an index on a table of a stated size.\n- Which readers called the post rigorous, and where?\n\n## Lines to keep\n\n- \"On a table of a few thousand rows nobody notices. On a table of millions, the query crawls.\" The contrast works.\n- The dictionary comparison with \"aardvark\". It is the only example, and it carries the idea.\n- \"Every insert or update has to change the index as well as the table.\" Without the cost, the post is only an argument for indexes.\n- \"index the columns you search on and leave the rest alone.\" This is the point of the post.\n\n## Word and sentence notes\n\n- \"The price is paid on writes.\" The passive hides who pays. Do not cut this sentence, because it turns the post from benefit to cost. Rewrite it so the turn stays, for example \"Writes pay the price,\" or merge it into the next sentence with \"because\".\n- \"a table with many indexes writes more slowly\" A table does not write. \"So each extra index slows every write\" puts the cause in the subject.\n- \"in no useful order\" This is a little soft. \"In no order you can search\" is tighter. Minor.\n- \"you should index the columns\u2026\" After the cuts, connect the advice to the cost paragraph. For example, start it with \"Because every index slows writes,\".\n\nMost of this is safe tightening \u2014 run `tighten` and I'll just apply it.",
+        "draft.md": "# How a database index works\n\nThis post is the clearest explanation of database indexes you will read. Most guides bury the idea under jargon; here it fits in four paragraphs.\n\nA table without an index is a pile of rows in no useful order. To find one customer by email, the database reads every row and checks each email. On a table of a few thousand rows nobody notices. On a table of millions, the query crawls.\n\nAn index is a second, smaller structure that keeps the email column sorted, with a pointer from each entry back to its row. Because the entries are sorted, the database can jump to the right part of the index instead of reading from the top, the way you find a word in a dictionary without starting at \"aardvark\".\n\nThe price is paid on writes. Every insert or update has to change the index as well as the table, so a table with many indexes writes more slowly.\n\nReaders have called this analysis rigorous. As the evidence above makes plain, you should index the columns you search on and leave the rest alone.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "2 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "praise-is-content",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "artifact": {
+        "last_message": "7 line notes, 3 structural. Biggest: the draft praises itself at the top and at the bottom, and both sentences must go.\n\n## Structural notes\n\n**1. The post praises itself two times. Safe cut.**\n- \"This post is the clearest explanation of database indexes you will read.\"\n- \"Readers have called this analysis rigorous.\"\n\nBoth sentences are about the post, not about indexes. The reader decides if the post is clear. The second sentence gives no name, no number and no quotation. \"Rigorous\" and \"analysis\" also overstate a plain explanation of three paragraphs. No idea about indexes is lost if you cut both.\n\nFact needed from the writer: if a reader comment is worth keeping, who said it, and what exactly did they say?\n\n**2. The conclusion points to evidence that the post does not contain. Safe cut of the frame only.**\n\"As the evidence above makes plain,\" refers to an explanation and a dictionary comparison. Neither is evidence. Cut that clause. Keep the advice: \"index the columns you search on and leave the rest alone.\" It is the one practical conclusion, and it is the strongest closing line in the draft.\n\n**3. The second opening sentence makes a promise that is wrong. Safe cut.**\n\"Most guides bury the idea under jargon; here it fits in four paragraphs.\" The explanation is three paragraphs. The full post is five. \"Four\" matches neither count. The sentence also criticizes guides that it does not name. Start the post at \"A table without an index is a pile of rows in no useful order.\"\n\n**The single change that matters most:** delete the two self-praise sentences. After the cut, the post opens on the problem and ends on the advice.\n\n## Lines that must stay\n\n- \"To find one customer by email, the database reads every row and checks each email.\" This is the concrete example that carries the post.\n- \"On a table of a few thousand rows nobody notices. On a table of millions, the query crawls.\" The contrast gives the problem its size.\n- The definition of an index and the dictionary comparison with \"aardvark\". Deirdre calls this the best sentence in the post.\n- \"Every insert or update has to change the index as well as the table\u2026\" Without it, the advice at the end has no reason behind it.\n\n## Word and sentence notes\n\n- **\"The price is paid on writes.\"** Passive, and it hides who pays. Do not cut it, because it turns the post from the benefit to the cost. Rewrite it so that the turn stays, for example \"Writes pay the price.\"\n- **\"so a table with many indexes writes more slowly\"** The table is not the actor. Say that each extra index slows each write.\n- **\"Every insert or update\"** Fact needed from the writer: should deletes be named with inserts and updates?\n- **\"you should index the columns\u2026\"** Drop \"you should\" when the frame before it goes. Start with \"Index the columns\u2026\"\n- **\"in no useful order\"** A little long. \"Unsorted\" is shorter, but the pile image is worth the words. Your decision.\n- **\"a second, smaller structure\"** \"Structure\" is vague, but the sentence explains it immediately. Leave it.\n- **\"the query crawls\"** Good. Keep.\n\nThe three body paragraphs have no padding. All the problems are in the first paragraph and the last paragraph. Most of this is safe tightening \u2014 run `tighten` and I'll just apply it.",
+        "draft.md": "# How a database index works\n\nThis post is the clearest explanation of database indexes you will read. Most guides bury the idea under jargon; here it fits in four paragraphs.\n\nA table without an index is a pile of rows in no useful order. To find one customer by email, the database reads every row and checks each email. On a table of a few thousand rows nobody notices. On a table of millions, the query crawls.\n\nAn index is a second, smaller structure that keeps the email column sorted, with a pointer from each entry back to its row. Because the entries are sorted, the database can jump to the right part of the index instead of reading from the top, the way you find a word in a dictionary without starting at \"aardvark\".\n\nThe price is paid on writes. Every insert or update has to change the index as well as the table, so a table with many indexes writes more slowly.\n\nReaders have called this analysis rigorous. As the evidence above makes plain, you should index the columns you search on and leave the rest alone.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "2 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "praise-is-content",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "artifact": {
+        "last_message": "**3 line notes, 3 structural. Biggest: the post praises itself at the top and at the bottom, and the three paragraphs between are the only part that does the work.**\n\nNothing was edited. The draft is 220 tokens, so Deirdre read it once line by line and once as a whole.\n\n## Structural notes\n\nAll three are cuts of sentences that carry a claim about the post, not about indexes. None is a restatement of something said elsewhere, so each cut removes a claim and is your decision.\n\n- **\"This post is the clearest explanation of database indexes you will read.\"** Cut. The reader decides this after she reads, and she cannot check it before. The sentence also delays the explanation.\n- **\"Most guides bury the idea under jargon; here it fits in four paragraphs.\"** Cut. It talks about the post instead of starting it, and \"bury under jargon\" is a stock phrase. The count is also doubtful: the explanation is three paragraphs, and you get four only if you count the closing one.\n- **\"Readers have called this analysis rigorous.\"** Cut. This is praise used as evidence. No reader is named, nothing is quoted, and \"rigorous analysis\" is too large a word for a short explainer.\n\n**The one change that matters most:** start at \"A table without an index\" and end on the advice about which columns to index. The reader trusts a clear explanation more than a claim to be one.\n\n## Line notes\n\n- **\"As the evidence above makes plain,\"** Cut the clause. The post gives an explanation and one cost, not evidence. Keep the advice, and consider the imperative: \"Index the columns you search on and leave the rest alone.\"\n- **\"The price is paid on writes.\"** Passive, and it hides who pays. Do not cut it: it carries the turn from the benefit to the cost. Rewrite it so the turn stays, for example \"Writes pay the price.\"\n- **\"has to change the index\"** \"Changes the index\" says the same thing in fewer words.\n\n## Lines to keep\n\n- \"A table without an index is a pile of rows in no useful order.\" Concrete and plain.\n- \"To find one customer by email, the database reads every row and checks each email.\" Everything after it depends on this example.\n- \"On a table of a few thousand rows nobody notices. On a table of millions, the query crawls.\" The contrast works.\n- The dictionary comparison with \"aardvark\". It is the only picture in the piece, and it explains the jump.\n- \"Every insert or update has to change the index as well as the table, so a table with many indexes writes more slowly.\" This cost is what makes the closing advice advice and not a slogan.\n\nNo facts are needed from you. If you want these changes applied, run `tighten`. It will apply the line notes, but the three structural cuts change what the post claims, so expect it to flag those.",
+        "draft.md": "# How a database index works\n\nThis post is the clearest explanation of database indexes you will read. Most guides bury the idea under jargon; here it fits in four paragraphs.\n\nA table without an index is a pile of rows in no useful order. To find one customer by email, the database reads every row and checks each email. On a table of a few thousand rows nobody notices. On a table of millions, the query crawls.\n\nAn index is a second, smaller structure that keeps the email column sorted, with a pointer from each entry back to its row. Because the entries are sorted, the database can jump to the right part of the index instead of reading from the top, the way you find a word in a dictionary without starting at \"aardvark\".\n\nThe price is paid on writes. Every insert or update has to change the index as well as the table, so a table with many indexes writes more slowly.\n\nReaders have called this analysis rigorous. As the evidence above makes plain, you should index the columns you search on and leave the rest alone.\n"
+      }
+    }
+  ]
+}
