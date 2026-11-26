@@ -8,4 +8,4 @@ weight: 1
 ---
 A 200-word LinkedIn post takes no headings. Stage 5 adds them only where a group is real, meaning several paragraphs serving one sub-claim, and four short paragraphs cannot contain one.
 
-This is the suite's only regex grader, and it asserts a character sequence rather than a meaning: does a markdown ATX heading appear in the file. A judge would be worse at this, not better.
+This is one of two regex graders in the suite, and it asserts a character sequence rather than a meaning: does a markdown ATX heading appear in the file. A judge would be worse at this, not better.
