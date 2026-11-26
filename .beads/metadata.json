@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "writing_skills",
+  "project_id": "1cc70bf5-9646-4be4-bc84-c10f9ebb3403"
+}
