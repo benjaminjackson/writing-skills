@@ -82,3 +82,4 @@ not skipped.
 Synthesize incoming agent messages into a short digest at the end of each phase. Never paste
 raw agent messages to the user — that's noise, not signal, and it's easy to lose
 this discipline without saying it explicitly.
+Keep each link, "from memory, unverified" label or "I could not find prior coverage" as given.

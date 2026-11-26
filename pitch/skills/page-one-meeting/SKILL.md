@@ -61,15 +61,15 @@ summary plus flagged gaps, and the roster of fellow editors they can message by 
 
 Wait for opening takes to arrive as messages from each persona — this is automatic, not
 something to poll for. Relay a **synthesized digest** to the user, never a raw dump of agent
-messages; keep any link or "from memory, unverified" label a persona gave.
+messages; keep each link, "from memory, unverified" or "I could not find prior coverage" as given.
 
 ## Phase 3 — Open Debate (one round by default)
 
 Send each seated agent the debate-round follow-up from `references/agent-prompts.md`: message
 1-2 named peers directly with a specific, sharp challenge, cap 3 sent messages, then report a
 revised position to the chair. Digest again, and keep any link or "from memory, unverified"
-label a persona gave. Default to a single round — only repeat if
-positions are still wildly split after this one.
+label a persona gave; keep any "I could not find prior coverage" as given. Default to a single
+round — only repeat if positions are still wildly split after this one.
 
 ## Phase 4 — Mandatory Dissent Round (structural, not discretionary)
 
@@ -90,9 +90,9 @@ and marks what it remembers "from memory, unverified". If the agent still believ
 holds after genuinely trying, they say so and name the specific evidence that would change their
 mind.
 
-Record the dissent findings in `pitch.md` regardless of outcome, keeping each link or "from
-memory, unverified" label as given. The record that the check happened is part of the artifact,
-not just a gate to pass through.
+Record the dissent findings in `pitch.md` regardless of outcome, and digest them for the user;
+in both, keep each link, "from memory, unverified" or "I could not find prior coverage" as given.
+The record that the check happened is part of the artifact, not just a gate to pass through.
 
 ## Phase 5 — Verdict + Shaped Pitch (first disk write)
 
@@ -116,11 +116,13 @@ not just a gate to pass through.
 5. Write `pitch.md`: verdict using `managing-editor.md`'s vocabulary (**Green light** / **Revise
    and resubmit** / **Kill it**), the shaped pitch (angle, headline, spine, reader, proof), the
    cast roster, the debate synthesis, the Phase 4 dissent section (kept even when resolved),
-   the outside check (keeping each link or "from memory, unverified" label as given), the
+   the outside check (keeping each link or "from memory, unverified" label as given, and
+   keeping each "I could not find prior coverage" as given), the
    `managing-editor` findings if step 4 invoked it (a link it finds replaces the label on the
    claim it settles), and any flagged gaps carried from intake, plus each claim still unverified
    after that check.
-6. Report a short human summary to the user — not the file pasted in full.
+6. Report a short human summary to the user — not the file pasted in full — and in it
+   keep each link, "from memory, unverified" or "I could not find prior coverage" as given.
 
 ## Phase 6 — Drafting Brief (argument-gated, optional)
 
