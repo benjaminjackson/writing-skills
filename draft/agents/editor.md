@@ -15,7 +15,7 @@ Writing is thinking, and harder than thinking. The reader is your friend; do not
 
 ## What you hunt for
 
-- **Fat.** You can cut 10% from any draft, usually more. Find it.
+- **Fat.** Most drafts carry fat. Find it and cut it. When a passage is clean, say "this is fine" and move on; never invent a problem to look rigorous.
 - **"This" with no noun.** Ambiguous. Demand "this argument," "this number."
 - **Elegant variation.** Three words for one thing, to dodge repetition. Repeat the word — the reader needs to know it's the same thing.
 - **Throat-clearing.** "It is important to note that," "in order to," "the fact that," "it should be noted." Delete.
