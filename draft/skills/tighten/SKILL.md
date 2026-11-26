@@ -46,7 +46,9 @@ apply step.
    granular prompt. Collect the line-by-line notes.
 3. **Pass 2 — whole doc.** Launch the holistic pass with the whole-doc prompt.
 4. **Triage.** Merge Pass 1 + Pass 2 findings, dedupe overlaps, and sort each into surgical or
-   substantive per the shared method file.
+   substantive per the shared method file. When a note that contains
+   "Fact needed from the writer:" and a cut land on the same sentence, the fact-needed note
+   wins: the sentence stays and is listed in the report.
 5. **Apply everything.** Make every surgical and substantive edit via exact find-and-replace.
    Semantic-duplicate cuts — heading-echoes, restatements, closing flourishes that only
    restate — are surgical and apply by default. Concreteness-for-brevity cuts and any length
@@ -55,9 +57,11 @@ apply step.
    the document is over 4,000 tokens, ask one line; otherwise default to preserve and note
    the call in the report. The other exception: an edit that flattens emotional meaning or
    kills a deliberate cadence (see "protect the emotional and rhythmic lines") — skip it and
-   note it in the report instead of applying it. A cut that removes the link between the sentence before and
-   the sentence after is not applied either: rewrite that sentence so the link survives (see
-   **Guardrails**). Nothing else waits for approval; this skill
+   note it in the report instead of applying it. A cut that removes the link between two
+   sentences is not applied either: rewrite that sentence so the link survives (see the
+   linking-sentence rule in [../../references/deirdre-method.md](../../references/deirdre-method.md)).
+   When a note contains "Fact needed from the writer:", apply its other fixes, leave the
+   vague phrase as written, and list it in the report. Nothing else waits for approval; this skill
    never asks for sign-off, it applies.
 6. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
    (`MM-DD-YYYY`). Skip files without frontmatter.
@@ -77,6 +81,8 @@ apply step.
   look — number each, show before→after, and say why it was safe to apply.
 - **Call out anything skipped.** If an edit was held back for flattening emotion or killing a
   cadence, name it and say why, so the user knows it wasn't missed, it was a judgment call.
+- **List the facts needed.** A phrase whose note contains "Fact needed from the writer:" was
+  left as written. Quote each one and say what fact it needs, so the writer can supply it.
 
 ## Guardrails
 
@@ -87,4 +93,6 @@ calibration, not approval. Editing local markdown is automatic in this project �
 always applies its edits, both surgical and substantive, with no per-edit approval step.
 Never sends, posts, or touches anything outside the local file(s) it's given.
 
-A sentence that carries the link between the sentence before it and the sentence after it is not fat, even when the editor flags it. Rewrite it so the link survives; never cut it. Connectives and causal words ("so," "but," "because," "that changed when") are the last words to cut, not the first. Cut events and restated facts before you cut the words that join them: when a draft is cut as a list of facts, the links go first, and the piece turns into "and then, and then" with no turn. This applies inside a paragraph as well as between paragraphs.
+Fixes follow the no-new-facts rule in "How you respond" in [../../agents/editor.md](../../agents/editor.md), and so do your own rewrites: when a note contains "Fact needed from the writer:", apply its other fixes, leave the vague phrase as written, and list it in the report.
+
+Never cut a sentence that links the one before it to the one after it, even when the editor flags it; rewrite it so the link survives. The full linking-sentence rule is under "Reading rules" in [../../references/deirdre-method.md](../../references/deirdre-method.md).
