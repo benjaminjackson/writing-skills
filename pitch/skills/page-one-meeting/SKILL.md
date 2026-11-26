@@ -129,6 +129,14 @@ that, especially across a new session. Assign one section per persona (mirrors t
 `references/pitch-brief-template.md`), each pulling real published analogues via
 `WebSearch`/`WebFetch`. Write `pitch-brief.md`.
 
+Pass each persona this labeling rule word for word:
+
+Every figure, date or source in the brief keeps the link or "from memory, unverified" label
+it has in `pitch.md`. A new figure, date or source needs a link from `WebSearch`/`WebFetch` or
+the label "from memory, unverified". A link found now replaces the label on the claim it settles.
+Section 8 always stays and lists every claim the brief still marks "from memory, unverified".
+The template's other sections can adapt in number and order.
+
 ## Reference files
 
 Load these only when the phase that needs them is reached:
