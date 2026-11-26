@@ -55,9 +55,10 @@ apply step.
    the document is over 4,000 tokens, ask one line; otherwise default to preserve and note
    the call in the report. The other exception: an edit that flattens emotional meaning or
    kills a deliberate cadence (see "protect the emotional and rhythmic lines") — skip it and
-   note it in the report instead of applying it. A cut that removes the link between the sentence before and
-   the sentence after is not applied either: rewrite that sentence so the link survives (see
-   **Guardrails**). A note that ends "Fact needed from the writer" is not applied: leave the
+   note it in the report instead of applying it. A cut that removes the link between two
+   sentences is not applied either: rewrite that sentence so the link survives (see the
+   linking-sentence rule in [../../references/deirdre-method.md](../../references/deirdre-method.md)).
+   A note that ends "Fact needed from the writer" is not applied: leave the
    sentence as written and list it in the report. Nothing else waits for approval; this skill
    never asks for sign-off, it applies.
 6. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
@@ -92,4 +93,4 @@ Never sends, posts, or touches anything outside the local file(s) it's given.
 
 Fixes follow the no-new-facts rule in "How you respond" in [../../agents/editor.md](../../agents/editor.md), and so do your own rewrites: when a note ends "Fact needed from the writer," leave the sentence as written and list it in the report.
 
-A sentence that carries the link between the sentence before it and the sentence after it is not fat, even when the editor flags it. Rewrite it so the link survives; never cut it. Connectives and causal words ("so," "but," "because," "that changed when") are the last words to cut, not the first. Cut events and restated facts before you cut the words that join them: when a draft is cut as a list of facts, the links go first, and the piece turns into "and then, and then" with no turn. This applies inside a paragraph as well as between paragraphs.
+Never cut a sentence that links the one before it to the one after it, even when the editor flags it; rewrite it so the link survives. The full linking-sentence rule is under "Reading rules" in [../../references/deirdre-method.md](../../references/deirdre-method.md).

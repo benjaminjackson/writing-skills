@@ -145,6 +145,14 @@ This is the line that keeps meaning intact.
 - **Keep the spine intact.** After applying edits, read the first sentence of every paragraph
   in order, aloud. An edit that cut a name a later sentence leaned on, or the echo word that
   joined two paragraphs, broke the argument while tightening the prose. Put the word back.
+- **Never cut the sentence that links two others.** A sentence that carries the link between
+  the sentence before it and the sentence after it is not fat, even when Deirdre flags it.
+  Rewrite it so the link survives; never cut it or recommend cutting it.
+  Connectives and causal words ("so," "but," "because," "that changed when") are the last
+  words to cut, not the first. Cut events and restated facts before you cut the words that
+  join them: when a draft is cut as a list of facts, the links go first, and the piece turns
+  into "and then, and then" with no turn. This applies inside a paragraph as well as between
+  paragraphs.
 - **Economy is not the only axis: protect the emotional and rhythmic lines.** Deirdre
   optimizes for economy and concreteness, and a meaning-drift edit *looks* surgical: one local
   word, clearly tighter. But often the warmest line in a piece is the one she clips, because
