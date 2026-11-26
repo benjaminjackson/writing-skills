@@ -59,7 +59,7 @@ def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None
 
 
 def parse_stream(raw):
-    """Return (last_assistant_text, [tool_call_json_strings], cost), where cost holds total_cost_usd, duration_ms and num_turns from the final result event, or is empty."""
+    """Return (last_assistant_text, [tool_call_json_strings], cost), where cost holds total_cost_usd from the final result event and duration_ms and num_turns summed over all result events, or is empty."""
     last, tools, cost = "", [], {}
     for line in raw.splitlines():
         line = line.strip()
@@ -70,7 +70,12 @@ def parse_stream(raw):
         except json.JSONDecodeError:
             continue
         if ev.get("type") == "result":
-            cost = {k: ev.get(k) for k in ("total_cost_usd", "duration_ms", "num_turns")}
+            # A run whose sub-agents finish in the background resumes and ends with one
+            # result event per segment. total_cost_usd already covers the whole session,
+            # but duration_ms and num_turns count only their own segment, so those add up.
+            cost = {"total_cost_usd": ev.get("total_cost_usd"),
+                    "duration_ms": (cost.get("duration_ms") or 0) + (ev.get("duration_ms") or 0),
+                    "num_turns": (cost.get("num_turns") or 0) + (ev.get("num_turns") or 0)}
             if ev.get("result"):
                 last = ev["result"]
         for block in (ev.get("message") or {}).get("content", []) or []:

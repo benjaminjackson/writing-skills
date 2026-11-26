@@ -193,7 +193,7 @@ Seven cases, tagged `editor`, test the `editor` sub-agent through the two skills
 - the skill commit SHA, which is the last commit that touched `draft/` outside `draft/evals`
 - the HEAD SHA, the date and the judge model
 - each run's grader results, notes and output
-- each run's `total_cost_usd`, `duration_ms` and `num_turns`, from the agent run's final result event. Judge calls are not counted. A run that hit the 1,800-second limit has no result event, so its three fields are null.
+- each run's `total_cost_usd`, `duration_ms` and `num_turns`. A run whose sub-agents finish in the background ends with one result event per segment; `total_cost_usd` comes from the last one, which covers the whole session, and `duration_ms` and `num_turns` are summed over all of them. Judge calls are not counted. A run that hit the 1,800-second limit has no result event, so its three fields are null.
 - a pass count per grader, such as `2/3`
 
 Results are saved only when `--runs` is given; a plain run saves nothing, and `--runs` below 1 is refused. The runner does not save results when `draft/` has uncommitted changes anywhere outside `draft/evals/results/`, the suite included, because those results would name commits they did not measure. Without `--runs` each case runs once, so the skeleton cases do not cost three times as much.
