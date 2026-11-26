@@ -74,12 +74,41 @@ def parse_stream(raw):
     return last, tools
 
 
+# Optional BOM and blank lines, then an optional "---" frontmatter block (group 1, kept),
+# then the skeleton skill's marked block from its first line to the next "-->" line,
+# plus the blank lines after it. re.S lets "." match newlines; re.M lets "^" match at
+# each line start; "*?" takes the shortest match, so it stops at the first closing line.
+SETTLED_BLOCK = re.compile(
+    r"\A\ufeff?(?:[ \t]*\r?\n)*"
+    r"(---[ \t]*\r?\n.*?\r?\n---[ \t]*(?:\r?\n|\Z))?"
+    r"(?:[ \t]*\r?\n)*"
+    r"<!-- skeleton: settled decisions[ \t]*\r?\n.*?^-->[ \t]*(?:\r?\n|\Z)"
+    r"(?:[ \t]*\r?\n)*",
+    re.S | re.M,
+)
+
+
+def strip_leading_comment(text):
+    """Remove the skeleton skill's settled-decisions block from the top of text.
+
+    The skill keeps the writer's settled decisions in a comment block that opens with
+    "<!-- skeleton: settled decisions", directly after any frontmatter. Graders should judge
+    the draft, not the brief, so the block goes and the frontmatter stays. Any other leading
+    comment, such as a writer's own comment log, is left alone.
+    """
+    match = SETTLED_BLOCK.match(text)
+    if not match:
+        return text
+    frontmatter = match.group(1) or ""
+    return frontmatter + text[match.end():]
+
+
 def read_target(spec, workdir, last_message):
     if not spec or spec == "last_message":
         return last_message
     if isinstance(spec, dict) and spec.get("source") == "file":
         f = Path(workdir) / spec["path"]
-        return f.read_text() if f.exists() else f"({spec['path']} was not created)"
+        return strip_leading_comment(f.read_text()) if f.exists() else f"({spec['path']} was not created)"
     return last_message
 
 

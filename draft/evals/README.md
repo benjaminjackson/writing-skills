@@ -123,6 +123,8 @@ A red case is a claim about the skill, and it is worth about as much as the fixt
 
 **No `AskUserQuestion` in `allowed_tools`.** It cannot be answered headless. Without it the gates surface as a prose question in the last message, which a judge can read directly. This is the one place the suite does not run the real path.
 
+**File targets lose the settled-decisions block.** When a grader reads a file, `read_target` in `run.py` first strips the block that opens with `<!-- skeleton: settled decisions`, at the top of the file or directly after its frontmatter. The frontmatter stays, and any other comment stays. The skill keeps the writer's settled decisions there, and without the strip, graders such as no-fabrication judge the brief as if it were draft text.
+
 **Auto cases skip the closing `tighten` pass.** Their prompts say so. `tighten` is the full chunked Deirdre engine and it is noise for a case testing stage 6.
 
 **One long fixture, and only two cases use it.** Every other fixture stays under 2,000 characters, because judges get noisy on long inputs. `search-plan-draft.md` is about 1,200 words, and cases 12 to 15 are the only ones that read it. Case 14 reads `search-plan-orgs.json` alongside it, so the memo and the data disagree and the run has to pick.

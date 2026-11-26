@@ -41,8 +41,18 @@ instead:
 - **Parentheses** when the aside is truly optional.
 - Nothing at all: cut the aside, since it is usually the fat from section 4.
 
-Before you save any file or print any message, search your text for `—` and `–` and remove
-every one. This check is not optional and it is not "usually fine to skip."
+After you save a file, and before you report or commit it, run this on the file and replace
+each `—` and `–` on the lines it prints as the list above says:
+
+```sh
+grep -nE "$(printf '\342\200\224|\342\200\223')" FILE
+```
+
+It matches U+2014 and U+2013 by their UTF-8 bytes, so it works with BSD and GNU grep in any
+locale. No output means the file is clean. A message gets the same check: write any chat reply,
+commit message, or PR description to a scratch file first, run the same command on that file,
+and send the message only when the command prints nothing. This check is not optional and it
+is not "usually fine to skip."
 
 ## 1. Name the reader
 
@@ -79,10 +89,28 @@ current code and call the doc updated; there is nothing under it to sync. (A rea
 install guide walked users through a `.env` file, a Node check, and hand-editing a JSON config,
 for a skill that had been deleted from the repo months earlier.)
 
+**Concrete values come from a run or a repo file, never from memory.** Example output, the line that shows success, version prerequisites, sample config values, and URLs must come from running the command or from a repo file (`.ruby-version`, the gemspec's `required_ruby_version`, `package.json` `engines`, the config file itself). If you can't get one, leave it out, ask the user, or list the gap in the section 8 report. Don't write a plausible one.
+
 **Check hard limits before writing, not after.** If a field has a documented maximum, such as a
-1024-character skill description, a 72-character commit subject, or a 160-character meta
-description, measure it while drafting. A limit you plan to eyeball at the end is a limit you
-will break.
+1024-character skill description or a 160-character meta description, measure the saved text
+with a command, not by eye. To print the length of one line of a file (line 1 here):
+
+```sh
+sed -n '1p' FILE | tr -d '\n' | LC_ALL=en_US.UTF-8 wc -m
+```
+
+A field that spans several lines, such as a YAML `description: >-` block, is measured as the
+whole field value, not one line of it: join its lines with single spaces, then count. For a
+top-level field named `description`:
+
+```sh
+awk '/^description:/{f=1; next} f && /^[^ ]/{f=0} f' FILE | sed 's/^ *//' | paste -sd ' ' - | tr -d '\n' | LC_ALL=en_US.UTF-8 wc -m
+```
+
+The number it prints is the length in characters. `wc -m` counts characters only in a UTF-8
+locale; in the C locale it counts bytes, so keep `LC_ALL=en_US.UTF-8` on the command. A limit
+you plan to eyeball at the end is a limit you will break.
+The commit subject has its own target: see section 7.
 
 ## 3. What never gets written
 
@@ -155,7 +183,7 @@ A README has more readers than any other doc, and most of them are still decidin
 1. **What is it?** One sentence under the title: what it does, and for whom. Name the outcome, not the adjectives. "A CLI that turns a folder of Markdown files into a static site," not "a fast, extensible framework." If someone reads the first ten lines and still can't say whether this is a library, an app, or a game, the README has failed.
 2. **Is it for me?** Two or three sentences on the problem it solves and who has that problem. If readers are likely comparing it with a known alternative, say how it differs. This comes before installation so the wrong reader can leave early.
 3. **What does it look like?** Show it before you explain it. A screenshot for a UI, a real command and its real output for a CLI, a short code example and its result for a library. The example comes before the definition.
-4. **How do I try it?** A quick start that works on the first try. Prerequisites with versions ("Ruby 3.2 or later"). Commands in copyable code blocks, never only in an image. Then what success looks like: the URL, the output line, the screen. Without that last part the reader can't tell success from the silent failure in section 5. Your machine already has the step you forgot to write down, so a quick start you did not run in a clean environment goes in the section 8 report.
+4. **How do I try it?** A quick start that works on the first try. Prerequisites with the versions the repo pins, found as section 2 says. Commands in copyable code blocks, never only in an image. Then what success looks like, copied from a real run: the URL, the output line, the screen. Without that last part the reader can't tell success from the silent failure in section 5. Your machine already has the step you forgot to write down, so a quick start you did not run in a clean environment goes in the section 8 report.
 5. **How do I use it for real?** The three to five tasks most readers came for, each with a short example. Configuration goes in a table with four columns: name, required or not, default, and what it does. Placeholder values only, never real ones.
 6. **How do I work on it?** How to install the dev dependencies, run the tests, and send a change. The test command also tells a new contributor that their setup works.
 7. **Can I trust it?** The license (linked to the file), the status (stable, beta, unmaintained), where to ask questions, where to report a security problem privately, and who maintains it.
@@ -169,7 +197,7 @@ The rest:
 - **Relative links to files in the repo.** `[Contributing](CONTRIBUTING.md)`, not a full github.com URL, because absolute links break in clones and on other branches. Keep each link's text on one line; GitHub does not render a link whose text wraps. Every linked file is a path, so section 2 applies: confirm it exists.
 - **A project tree, if there is one,** shows two or three levels, notes only the directories whose names don't explain them, and leaves out generated folders (`node_modules`, `dist`, `.git`).
 - **Badges** for build status, version, and license, if any. Not a wall of them above the first sentence.
-- **Define the project's own words.** If the code gives a common word a specific meaning ("a batch is one night's imports"), say so once, where the word first appears. Then use that word and no other (section 4).
+- **Define the project's own words.** If the code gives a common word a specific meaning, say so once, where the word first appears, and take the meaning from the code, not from a guess. Then use that word and no other (section 4).
 
 ## 7. Commit messages and pull requests
 
@@ -177,6 +205,18 @@ A commit message is documentation with a hostile deadline: it gets written at th
 long session, when the session is the only thing in your head. That makes it the place session
 leakage does the most damage, and the reader, someone bisecting a regression eighteen months
 from now, is the least equipped to survive it.
+
+Read the repo's own rules before writing either, and treat them as fixed: its
+PULL_REQUEST_TEMPLATE and CONTRIBUTING files and the style of recent subjects in
+`git log --oneline -20`. To find the files:
+
+```sh
+find . -maxdepth 3 \( -iname 'pull_request_template*' -o -iname 'contributing*' \) -not -path './node_modules/*'
+```
+
+This section's defaults apply only where those and the user's own commit and PR instructions
+are silent. When the repo's rules and the user's own instructions conflict, the user's own
+instructions win.
 
 Everything above applies, including section 0: no em dashes in a subject line or a body.
 These are the parts that bite hardest here:
@@ -188,8 +228,8 @@ These are the parts that bite hardest here:
   is the only thing a commit message adds. Don't narrate the patch back to them.
 - **No conversational residue.** "As requested," "per the discussion," "addressing the feedback,"
   "as we decided." The reviewer was not in the room and the future reader never will be.
-- **The subject line is a claim about behavior**, in the imperative, under 50 characters: what
-  the tree does after this commit that it didn't before.
+- **The subject line is a claim about behavior**, in the imperative: what the tree does after
+  this commit that it didn't before. Aim for 50 characters, a target rather than a hard limit.
 - **Verify the body against the diff, not against your memory of the work.** Read the actual
   patch before describing it. A commit message that describes an earlier draft of the change
   is the same failure as a doc that describes deleted code.
@@ -201,6 +241,8 @@ These are the parts that bite hardest here:
 
 When you finish, tell the user, **in chat, not in the doc**, what you actually confirmed and
 what you only reasoned about. Which paths you grepped. Which commands you ran.
+Name every concrete value you left out or asked about because no run or repo file gave it:
+example output, a success line, a version prerequisite, a config value, a URL.
 
 "I did not install these packages into a clean environment and run the setup" is a sentence you
 are allowed to write, and the user is far better off for reading it. Gloss over it and the next
