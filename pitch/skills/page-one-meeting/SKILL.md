@@ -127,9 +127,15 @@ at the end of Phase 5. Always re-brief the cast fresh from the saved `pitch.md` 
 relying on agents from earlier phases still being alive — there's no reliable way to confirm
 that, especially across a new session. Assign one section per persona (mirrors the shape in
 `references/pitch-brief-template.md`), each pulling real published analogues via
-`WebSearch`/`WebFetch`. Tell each persona to keep each link or "from memory, unverified" label as
-given in `pitch.md`; the template's section count and order can adapt, its labeling rules cannot.
-Write `pitch-brief.md`.
+`WebSearch`/`WebFetch`. Write `pitch-brief.md`.
+
+Pass each persona this labeling rule word for word:
+
+Every figure, date or source in the brief keeps the link or "from memory, unverified" label
+it has in `pitch.md`. A new figure, date or source needs a link from `WebSearch`/`WebFetch` or
+the label "from memory, unverified". A link found now replaces the label on the claim it settles.
+Section 8 always stays and lists every claim the brief still marks "from memory, unverified".
+The template's other sections can adapt in number and order.
 
 ## Reference files
 
