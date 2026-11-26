@@ -61,13 +61,14 @@ summary plus flagged gaps, and the roster of fellow editors they can message by 
 
 Wait for opening takes to arrive as messages from each persona — this is automatic, not
 something to poll for. Relay a **synthesized digest** to the user, never a raw dump of agent
-messages.
+messages; keep any link or "from memory, unverified" label a persona gave.
 
 ## Phase 3 — Open Debate (one round by default)
 
 Send each seated agent the debate-round follow-up from `references/agent-prompts.md`: message
 1-2 named peers directly with a specific, sharp challenge, cap 3 sent messages, then report a
-revised position to the chair. Digest again. Default to a single round — only repeat if
+revised position to the chair. Digest again, and keep any link or "from memory, unverified"
+label a persona gave. Default to a single round — only repeat if
 positions are still wildly split after this one.
 
 ## Phase 4 — Mandatory Dissent Round (structural, not discretionary)
@@ -104,14 +105,19 @@ not just a gate to pass through.
    the link you found; only when the search confirms nothing, say "I could not find prior coverage",
    or mark what you still remember "from memory, unverified" (the same rule holds for any figure,
    date or source you add); has the language drifted into sales/scarcity register.
-4. For anything under real doubt about novelty or fact-checkability, optionally invoke the
-   `managing-editor` agent as a second, genuinely separate gate — it wasn't primed by the
+4. If any claim is marked "from memory, unverified", it is not resolved and sends the pitch to the `managing-editor` agent:
+   pass the agent each such claim word for word and ask for a link for each one.
+   Otherwise, for anything under real doubt about novelty or fact-checkability, optionally invoke
+   the `managing-editor` agent as a second, genuinely separate gate — it wasn't primed by the
    room's framing and carries live `WebSearch`/`WebFetch`. Skippable when the dissent round and
    outside check already resolved the question.
 5. Write `pitch.md`: verdict using `managing-editor.md`'s vocabulary (**Green light** / **Revise
    and resubmit** / **Kill it**), the shaped pitch (angle, headline, spine, reader, proof), the
    cast roster, the debate synthesis, the Phase 4 dissent section (kept even when resolved),
-   the outside check, and any flagged gaps carried from intake.
+   the outside check (keeping each link or "from memory, unverified" label as given), the
+   `managing-editor` findings if step 4 invoked it (a link it finds replaces the label on the
+   claim it settles), and any flagged gaps carried from intake, plus each claim still unverified
+   after that check.
 6. Report a short human summary to the user — not the file pasted in full.
 
 ## Phase 6 — Drafting Brief (argument-gated, optional)
