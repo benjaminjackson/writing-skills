@@ -12,6 +12,8 @@ Do not judge whether the edit is good. Do one extraction task:
 
 Cutting a word that repeats what another word already says is not a change of meaning. Turning "a lot" into a figure is a change of meaning.
 
+Changing the words that introduce a quotation is not a change of meaning when the quoted words stay the same. "Ana put it plainly:" and "Ana said:" make the same claim, because the quotation itself shows how she put it.
+
 For each item that changed, quote the baseline and the produced version side by side. Write NONE if nothing changed.
 
 Then end with a verdict line. Writing NONE is not the verdict.
