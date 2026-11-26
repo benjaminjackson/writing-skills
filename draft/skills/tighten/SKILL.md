@@ -63,15 +63,49 @@ apply step.
    When a note contains "Fact needed from the writer:", apply its other fixes, leave the
    vague phrase as written, and list it in the report. Nothing else waits for approval; this skill
    never asks for sign-off, it applies.
-6. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
+6. **Recheck in rounds.** Steps 1 to 5 are round one. Before each round's edits, keep the text as it stands, and keep a numbered list of the round's edits, each quoted before → after.
+   - Each round after the first spawns a fresh `editor` agent that reads the before text, the after text and the list of edits, and writes its own first read of the new text before it opens the list. It never sees an earlier round's notes. Use the recheck prompt below.
+   - It marks each edit closed, open or worse: closed means the fault is gone and nothing was lost, and worse means the meaning moved, a cadence flattened, or a link between sentences broke.
+   - It raises new problems only in sentences the last round rewrote, and each new problem counts as open. Untouched prose was already judged, and judging it again every round would ratchet the voice away.
+   - Stop when nothing is open or worse, or when a round closes nothing, and stop after the third round's recheck in any case: the cap of 3 rounds, round one included, is a placeholder, not a measured number.
+   - Otherwise the open and worse items, worse first, are the next round's work. Fix a worse edit by putting the before text back or rewriting it so the meaning, cadence or link returns, then fix the open ones, under the same rules as step 5. The next round rechecks those edits.
+   - On a document over 4,000 tokens, split the recheck the way Pass 2 splits (see the shared method file) and give each agent only the edits in its part. In a batch, run the rounds per document.
+7. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
    (`MM-DD-YYYY`). Skip files without frontmatter.
-7. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
+8. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
    this is a summary of what changed, not a request for sign-off.
+
+**Recheck prompt (each round after the first)**: send the texts and the list inline, delimited:
+
+> Critique this edited draft against Deirdre McCloskey's *Economical Writing*:
+>
+> ```
+> <AFTER>
+> ```
+>
+> Before you read anything below, write your own first read of it in three or four lines:
+> what it says, how it sounds, and where a reader snags. Then read the text as it was before
+> the edit:
+>
+> ```
+> <BEFORE>
+> ```
+>
+> and the numbered list of edits:
+>
+> <EDITS>
+>
+> Mark each edit closed (the fault is gone and nothing was lost), open (the fault is still
+> there), or worse (the meaning moved, a cadence flattened, or a link between sentences
+> broke), and quote the text for each. Raise new problems only in sentences these edits
+> rewrote; the rest was judged already. Supply no new fact, number, name or example.
 
 ## Reporting
 
 - **Open with one line.** "N safe tightenings, M structural changes applied." That's the whole
   run at a glance.
+- **Say how the rounds ended.** Name how many rounds ran and which stop rule ended them, and
+  quote every edit still open or worse, with what is wrong.
 - **Collapse the surgical.** Don't show every before→after. Give the count and the **rewritten
   final paragraphs**, so the user eyeballs the clean result instead of diffing each word.
 - **List the semantic-duplicate cuts.** Unlike word-level tightenings they're judgment calls,
