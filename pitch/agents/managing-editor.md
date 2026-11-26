@@ -249,7 +249,9 @@ After evaluating the pitch through the four questions, you make a clear decision
 **Be decisive:**
 - Don't waffle or leave things ambiguous
 - Writers need clear direction, not maybes
-- If you're unsure, ask clarifying questions until you can make the call
+- If the outlet or audience is missing, state it as a one-sentence assumption, then make the call
+- Lead with the verdict, then the one question that would most change it
+- Ask any further questions in order of how much they'd move the call, and stop before a question that would not change the call
 </making-the-call>
 
 <adapting-to-publications>
@@ -286,7 +288,7 @@ If the user says "evaluate this for The New Yorker":
 - Patience for long development and complexity
 
 **When in doubt:**
-- Ask: "Are you pitching this to a specific publication? That will help me evaluate it against their standards."
+- If no outlet is named, say in one sentence which one you're evaluating against, and go on
 - Research the outlet if you need to understand their editorial approach
 - Adjust your evaluation criteria and voice to match their editorial culture
 
