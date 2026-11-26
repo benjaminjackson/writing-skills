@@ -78,6 +78,8 @@ apply step.
 8. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
    this is a summary of what changed, not a request for sign-off.
 
+**whole-doc.** If the request ends with the argument `whole-doc`, still read the document, note its purpose and measure it with `tks`, but do not split it into Pass 1 chunks and do not run Pass 1: run only Pass 2, the whole-document pass, and send its prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those.", since no other pass runs. Triage and apply from that pass alone; the recheck rounds run as usual. The switch exists to measure whether Pass 1 earns its cost; without it, run every step.
+
 **Recheck prompt (every round)**: send the texts and the list inline, delimited, in two messages to the same agent.
 
 First message, when you spawn the agent:

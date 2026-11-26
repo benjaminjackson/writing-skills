@@ -36,7 +36,7 @@ def split_front_matter(path):
     return yaml.safe_load(fm) or {}, body.lstrip("\n")
 
 
-def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None):
+def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None, timeout=900):
     # The prompt goes FIRST. --allowedTools and --plugin-dir are variadic, so
     # anything positional after them gets swallowed and the run dies with
     # "Input must be provided either through stdin or as a prompt argument".
@@ -49,13 +49,18 @@ def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None
         cmd += ["--allowedTools", ",".join(allowed_tools)]
     if stream:
         cmd += ["--output-format", "stream-json", "--verbose"]
-    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=900)
+    try:
+        proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired as e:
+        # A run that hangs is graded on what it wrote so far instead of stopping the batch.
+        out = e.stdout or ""
+        return out.decode() if isinstance(out, bytes) else out
     return proc.stdout
 
 
 def parse_stream(raw):
-    """Return (last_assistant_text, [tool_call_json_strings])."""
-    last, tools = "", []
+    """Return (last_assistant_text, [tool_call_json_strings], cost), where cost holds total_cost_usd, duration_ms and num_turns from the final result event, or is empty."""
+    last, tools, cost = "", [], {}
     for line in raw.splitlines():
         line = line.strip()
         if not line.startswith("{"):
@@ -64,14 +69,16 @@ def parse_stream(raw):
             ev = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if ev.get("type") == "result" and ev.get("result"):
-            last = ev["result"]
+        if ev.get("type") == "result":
+            cost = {k: ev.get(k) for k in ("total_cost_usd", "duration_ms", "num_turns")}
+            if ev.get("result"):
+                last = ev["result"]
         for block in (ev.get("message") or {}).get("content", []) or []:
             if isinstance(block, dict) and block.get("type") == "tool_use":
                 tools.append(json.dumps(block))
             elif isinstance(block, dict) and block.get("type") == "text" and not last:
                 last = block["text"]
-    return last, tools
+    return last, tools, cost
 
 
 # Optional BOM and blank lines, then an optional "---" frontmatter block (group 1, kept),
@@ -193,15 +200,15 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
 
 
 def run_once(case_dir, prompt, meta, cfg):
-    """Run the agent once in a fresh temp dir and grade it. Returns (results, work, artifact)."""
+    """Run the agent once in a fresh temp dir and grade it. Returns (results, work, artifact, cost)."""
     work = tempfile.mkdtemp(prefix=f"eval-{case_dir.name}-")
     scaffold = (cfg.get("context") or {}).get("scaffold_script")
     if scaffold:
         subprocess.run(scaffold, shell=True, cwd=work, check=True,
                        env={**os.environ, "EVAL_FIXTURES": str(EVALS / "fixtures")})
 
-    raw = run_claude(prompt, work, meta.get("allowed_tools"), stream=True)
-    last, tools = parse_stream(raw)
+    raw = run_claude(prompt, work, meta.get("allowed_tools"), stream=True, timeout=1800)
+    last, tools, cost = parse_stream(raw)
     (Path(work) / "_transcript.jsonl").write_text(raw)
     (Path(work) / "_last_message.txt").write_text(last)
 
@@ -226,10 +233,10 @@ def run_once(case_dir, prompt, meta, cfg):
             target = focus or {"source": "file", "path": "post.md"}
             ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
         results.append((grader_file.stem, ok, note))
-    return results, work, artifact
+    return results, work, artifact, cost
 
 
-def score_case(case_dir, tags, runs):
+def score_case(case_dir, tags, runs, append=""):
     """Run a case `runs` times, each in a new temp dir. Returns (name, [run, ...]) or None."""
     meta, prompt = split_front_matter(case_dir / "prompt.md")
     if tags and not (set(tags) & set(meta.get("tags", []))):
@@ -237,6 +244,8 @@ def score_case(case_dir, tags, runs):
     cfg = {}
     if (case_dir / "case.yaml").exists():
         cfg = yaml.safe_load((case_dir / "case.yaml").read_text()) or {}
+    if append:
+        prompt = f"{prompt.rstrip()} {append}"
     return case_dir.name, [run_once(case_dir, prompt, meta, cfg) for _ in range(runs)]
 
 
@@ -254,28 +263,29 @@ SKILL_PATHS = ["--", "draft", ":!draft/evals"]
 MEASURED_PATHS = ["--", "draft", ":!draft/evals/results"]
 
 
-def save_results(name, runs):
-    """Write results/<case>.json, pinned to the last commit that touched the skill."""
+def save_results(name, runs, label=""):
+    """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill."""
     out = {
         "case": name,
         "skill_sha": git("log", "-1", "--format=%H", *SKILL_PATHS),
         "head_sha": git("rev-parse", "HEAD"),
         "date": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
         "judge_model": JUDGE_MODEL,
+        "label": label or None,
         "runs": len(runs),
         "pass_counts": {},
         "results": [],
     }
     passes = {}
-    for results, _work, artifact in runs:
+    for results, _work, artifact, cost in runs:
         graders = []
         for grader_name, ok, note in results:
             graders.append({"name": grader_name, "pass": ok, "note": note})
             passes[grader_name] = passes.get(grader_name, 0) + (1 if ok else 0)
-        out["results"].append({"graders": graders, "artifact": artifact})
+        out["results"].append({"graders": graders, "total_cost_usd": cost.get("total_cost_usd"), "duration_ms": cost.get("duration_ms"), "num_turns": cost.get("num_turns"), "artifact": artifact})
     for grader_name, count in passes.items():
         out["pass_counts"][grader_name] = f"{count}/{len(runs)}"
-    path = EVALS / "results" / f"{name}.json"
+    path = EVALS / "results" / (f"{name}.{label}.json" if label else f"{name}.json")
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(out, indent=2) + "\n")
     return path
@@ -361,7 +371,13 @@ def main():
     ap.add_argument("--runs", type=positive_int, default=None,
                     help="agent runs per case, each in a new temp dir, saved to "
                          "results/<case>.json (without it: one run, nothing saved)")
+    ap.add_argument("--whole-doc", action="store_true", help="end each prompt with the skill argument whole-doc, so critique and tighten skip Pass 1; saves to results/<case>.whole-doc.json")
+    ap.add_argument("--label", default="", help="save results to results/<case>.<label>.json instead of results/<case>.json")
     args = ap.parse_args()
+    label = args.label or ("whole-doc" if args.whole_doc else "")
+    if label and not re.fullmatch(r"[A-Za-z0-9_-]+", label):
+        ap.error("--label takes letters, digits, - and _ only")
+    append = "whole-doc" if args.whole_doc else ""
 
     if args.calibrate:
         sys.exit(calibrate())
@@ -381,17 +397,17 @@ def main():
             save = False
     failed = 0
     for case_dir in cases:
-        out = score_case(case_dir, args.tag, args.runs or 1)
+        out = score_case(case_dir, args.tag, args.runs or 1, append)
         if not out:
             continue
         name, runs = out
-        for run_number, (results, work, _artifact) in enumerate(runs, 1):
+        for run_number, (results, work, _artifact, cost) in enumerate(runs, 1):
             for grader_name, ok, note in results:
                 print(f"  {'ok  ' if ok else 'FAIL'} {name} [run {run_number}] / {grader_name}: {note}")
                 failed += 0 if ok else 1
-            print(f"       artifacts: {work}")
+            print(f"       artifacts: {work}  cost: {cost.get('total_cost_usd')} USD, {cost.get('duration_ms')} ms")
         if save:
-            print(f"       saved: {save_results(name, runs).relative_to(REPO)}")
+            print(f"       saved: {save_results(name, runs, label).relative_to(REPO)}")
     print(f"\n{failed} grader failure(s)")
     sys.exit(1 if failed else 0)
 

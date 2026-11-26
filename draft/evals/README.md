@@ -127,7 +127,7 @@ A red case is a claim about the skill, and it is worth about as much as the fixt
 
 **Auto cases skip the closing `tighten` pass.** Their prompts say so. `tighten` is the full chunked Deirdre engine and it is noise for a case testing stage 6.
 
-**One long fixture, and only two cases use it.** Every other fixture stays under 2,000 characters, because judges get noisy on long inputs. `search-plan-draft.md` is about 1,200 words, and cases 12 to 15 are the only ones that read it. Case 14 reads `search-plan-orgs.json` alongside it, so the memo and the data disagree and the run has to pick.
+**Two long fixtures, and only six cases use them.** Every other fixture stays under 2,000 characters, because judges get noisy on long inputs. `search-plan-draft.md` is about 1,200 words, and cases 12 to 15 are the only ones that read it. Case 14 reads `search-plan-orgs.json` alongside it, so the memo and the data disagree and the run has to pick. `review-planted.md` is about 1,500 tokens, and only the two `-long` editor cases read it.
 
 It exists because the short-fixture limit bit. A field report from a real 3,000-word run found eleven gaps in the skill, and the two that cost the most rework, register drift and restatement at section scale, are both invisible in a 200-word post. A 200-word post has no sections, and it holds one voice by accident rather than by discipline.
 
@@ -160,7 +160,7 @@ That is the suite doing its job. Fixing the skill is a separate decision from no
 
 ## Editor suite (critique and tighten)
 
-Five cases, tagged `editor`, test the `editor` sub-agent through the two skills that call it. Each case runs a slash command (`/critique draft.md` or `/tighten draft.md`) on a seeded copy of one fixture, and each has an `editor-ran` grader that fails unless the run made a sub-agent call whose `subagent_type` ends in `editor`. The critique cases also have `no-edit`, a script grader that runs `cmp` on the fixture and `draft.md` after the run, so an edit by any tool fails it, `Bash` included. `Edit` is in their allowed tools on purpose, so a critique that edits the file can do it and gets caught.
+Seven cases, tagged `editor`, test the `editor` sub-agent through the two skills that call it. Each case runs a slash command (`/critique draft.md` or `/tighten draft.md`) on a seeded copy of one fixture, and each has an `editor-ran` grader that fails unless the run made a sub-agent call whose `subagent_type` ends in `editor`. The critique cases also have `no-edit`, a script grader that runs `cmp` on the fixture and `draft.md` after the run, so an edit by any tool fails it, `Bash` included. `Edit` is in their allowed tools on purpose, so a critique that edits the file can do it and gets caught.
 
 | Case | Fixture | Graders | Protects |
 |---|---|---|---|
@@ -169,8 +169,12 @@ Five cases, tagged `editor`, test the `editor` sub-agent through the two skills 
 | `tighten-fixes-planted-faults` | `deploys-planted.md` | `faults-gone`, `meaning-kept` (baseline), `nothing-invented` (script) | Tighten removes the three faults, keeps every claim, and adds no number, quotation or name |
 | `tighten-light-on-clean-twin` | `deploys-clean.md` | `meaning-kept` (baseline), `nothing-invented`, `changed-little` (script) | Tighten keeps a draft with nothing to fix close to its original length, at least 90% of it, and adds nothing |
 | `critique-treats-praise-as-content` | `praise-piece.md` | `praise-is-content` (llm) | Critique flags a piece's praise of itself as unsupported and does not adopt it as evidence |
+| `critique-flags-planted-faults-long` | `review-planted.md` | `raises-all-three` (llm) | Critique finds the same three faults when they sit in three different Pass 1 chunks of a 1,500-token draft |
+| `tighten-fixes-planted-faults-long` | `review-planted.md` | `faults-gone`, `meaning-kept` (baseline), `nothing-invented` (script) | Tighten removes the three faults across chunks, keeps every claim, and adds no number, quotation or name |
 
 **The fixtures are a pair and a single.** `deploys-planted.md` is a short post on why a team stopped deploying on Fridays, with exactly three faults planted. `deploys-clean.md` is the same text with only those three fixed. Both carry the same bait: "Incidents dropped a lot after the freeze", a vague line that invites a made-up number; one real name, Ana, mid-sentence; and one real quotation. `praise-piece.md` explains database indexes and praises itself three times: "the clearest explanation you will read", "Readers have called this analysis rigorous" with no source, and "as the evidence above makes plain" with no evidence above it.
+
+**The long planted fixture.** `review-planted.md` is an invented post of about 1,500 tokens on why a team moved code review to the morning, with the same three faults as `deploys-planted.md`: throat-clearing in the first paragraph, the doublet "any and all" in the middle, and a bare "this" near the end. More than 400 tokens separate each fault from the next, so no Pass 1 chunk holds two. It carries the same bait: a vague "much shorter", one name mid-sentence, and one quotation. Its judges read 4 to 16k characters, far past the 2,000-character rule, so their calibration files are full length, and a red on a long case is worth reading before it is worth believing.
 
 **"Quiet" is narrow on purpose.** On the clean twin, quiet means no note claims one of the three planted faults. It does not mean zero notes. The clean twin still has a vague claim and a few soft words, and a critique that notes them is right. The case tests false alarms on the faults the pair controls, and nothing else.
 
@@ -184,11 +188,12 @@ Five cases, tagged `editor`, test the `editor` sub-agent through the two skills 
 
 `type: script` is a grader type this runner adds. The native `claude plugin eval` harness may not support it. The grader's `command` can use `{evals}`, `{input}` (the grader's `input` file) and `{output}` (the file the run wrote). Exit 0 is a pass, and stdout is the note.
 
-**Repeat runs and saved results.** `--runs N` runs each case N times, each in a new temp dir, and writes `results/<case>.json` with:
+**Repeat runs and saved results.** `--runs N` runs each case N times, each in a new temp dir, and writes `results/<case>.json`, or `results/<case>.<label>.json` with `--label`, with:
 
 - the skill commit SHA, which is the last commit that touched `draft/` outside `draft/evals`
 - the HEAD SHA, the date and the judge model
 - each run's grader results, notes and output
+- each run's `total_cost_usd`, `duration_ms` and `num_turns`, from the agent run's final result event. Judge calls are not counted. A run that hit the 1,800-second limit has no result event, so its three fields are null.
 - a pass count per grader, such as `2/3`
 
 Results are saved only when `--runs` is given; a plain run saves nothing, and `--runs` below 1 is refused. The runner does not save results when `draft/` has uncommitted changes anywhere outside `draft/evals/results/`, the suite included, because those results would name commits they did not measure. Without `--runs` each case runs once, so the skeleton cases do not cost three times as much.
@@ -201,3 +206,10 @@ uv run --with pyyaml python3 draft/evals/run.py --tag editor --runs 3
 ```
 
 No result from before the change that removed the editor's fixed cutting quota counts. That quota told the editor to cut 10% from any draft, so the clean-twin cases failed by design.
+
+**Chunking off: `--whole-doc`.** `--whole-doc` ends each case's prompt with the skill argument `whole-doc`, so `/critique draft.md` becomes `/critique draft.md whole-doc`. With it, critique and tighten skip Pass 1, the one-editor-per-chunk line pass, and run only the whole-document pass, with its "another pass handles those" sentence dropped; tighten's recheck rounds still run. Without it, the prompts and the skills run as before. Use it only with `--tag editor` or an editor `--case`, because the skeleton prompts do not take the argument. It saves to `results/<case>.whole-doc.json`, and `--label NAME` saves to `results/<case>.NAME.json`, so neither overwrites `results/<case>.json`.
+
+```
+uv run --with pyyaml python3 draft/evals/run.py --tag editor --runs 3 --label chunked
+uv run --with pyyaml python3 draft/evals/run.py --tag editor --runs 3 --whole-doc
+```
