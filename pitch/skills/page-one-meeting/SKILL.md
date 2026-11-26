@@ -108,10 +108,12 @@ not just a gate to pass through.
    `managing-editor` agent as a second, genuinely separate gate — it wasn't primed by the
    room's framing and carries live `WebSearch`/`WebFetch`. Skippable when the dissent round and
    outside check already resolved the question.
+   A claim marked "from memory, unverified" is not resolved and sends the pitch to the `managing-editor` agent.
 5. Write `pitch.md`: verdict using `managing-editor.md`'s vocabulary (**Green light** / **Revise
    and resubmit** / **Kill it**), the shaped pitch (angle, headline, spine, reader, proof), the
    cast roster, the debate synthesis, the Phase 4 dissent section (kept even when resolved),
-   the outside check, and any flagged gaps carried from intake.
+   the outside check (keeping each link or "from memory, unverified" label as given), and any
+   flagged gaps carried from intake.
 6. Report a short human summary to the user — not the file pasted in full.
 
 ## Phase 6 — Drafting Brief (argument-gated, optional)
