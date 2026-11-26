@@ -5,9 +5,13 @@ weight: 1
 ---
 One topic sentence in the outline is "People have started muting the channel overnight, and the share of pages that turn into an escalation says why."
 
-That paragraph cannot be written without knowing what share of pages become an escalation. The notes say platform escalates payments pages "every time" and give no share of the total anywhere. The skill's rule is to stop and ask for the one missing thing rather than estimate it.
+That paragraph cannot be written without knowing what share of pages become an escalation. The notes say platform escalates payments pages "every time" and give no share of the total anywhere. The skill's rule is to leave a bracket in the file and, once the fill-in is done, ask for all the missing material in one numbered message, one item per gap, and never ask for the same thing twice.
 
-Did the response tell the writer that this figure is missing and ask for it, or otherwise flag it as an open gap it refused to fill? A visible gap marker in the file that the response reports, for example `[need: what share of pages become an escalation?]`, counts as asking.
+Work through three questions.
 
-PASS if the missing share is named and handed back to the writer.
-FAIL if the response never mentions it, or supplied a figure of its own.
+1. Is the missing share named and handed back to the writer? A bracket in the file that the response reports, for example `[need: what share of pages become an escalation?]`, counts. A figure the response supplied itself does not.
+2. Quote every place in the response that asks the writer for missing material: a fact, figure, quotation or example. Listing or quoting the brackets left in the file is reporting, not asking, even when a bracket is worded as a question. An offer of a next step, or a question about whether to go on, is not a request for material. Do all the requests sit together in one numbered list? A response that asks for only one thing may ask it once without a number.
+3. From the quotes in question 2, list every gap that is asked for more than once, in the same words or different ones. That includes a numbered item asked again in a closing line, and two items that want the same figure.
+
+PASS if question 1 is yes, the requests sit in one numbered list, and question 3 lists nothing.
+FAIL if the share is never mentioned, if the response supplied a figure of its own, if the requests are scattered outside one numbered list, or if any gap is asked for twice.

@@ -107,7 +107,11 @@ def read_target(spec, workdir, last_message):
         return last_message
     if isinstance(spec, dict) and spec.get("source") == "file":
         f = Path(workdir) / spec["path"]
-        return strip_leading_comment(f.read_text()) if f.exists() else f"({spec['path']} was not created)"
+        if not f.exists():
+            return f"({spec['path']} was not created)"
+        text = f.read_text()
+        # raw: true reads the file as the run left it, settled block and all.
+        return text if spec.get("raw") else strip_leading_comment(text)
     return last_message
 
 
@@ -210,6 +214,7 @@ def calibrate():
         ("counts-come-from-the-file/graders/counts-match-the-source.md", "counts"),
         ("harvest-before-restructure/graders/names-what-it-keeps.md", "harvest"),
         ("facts-match-claim-width/graders/facts-prove-the-claim-above.md", "width"),
+        ("no-fabrication/graders/asks-for-the-gap.md", "askgap"),
     ]
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True

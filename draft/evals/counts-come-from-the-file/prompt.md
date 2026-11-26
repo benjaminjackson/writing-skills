@@ -17,3 +17,5 @@ Audience: a senior executive I coach, eight weeks into a search. Goal: she shoul
 Register: like explaining it to a CEO friend over coffee. Professional but not formal, contractions throughout.
 
 Every topic sentence needs a count under it, so state the counts in figures. Run stages 5 and 6, headings and then the fill-in.
+
+Then run Finish, but skip the closing tighten pass.

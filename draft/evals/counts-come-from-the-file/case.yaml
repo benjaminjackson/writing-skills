@@ -4,4 +4,15 @@ context:
   scaffold_script: |
     cp "$EVAL_FIXTURES/search-plan-orgs.json" .
     cp "$EVAL_FIXTURES/search-plan-draft.md" .
-    cp "$EVAL_FIXTURES/search-plan-counts-skeleton.md" post.md
+    cat > post.md <<'EOF'
+    <!-- skeleton: settled decisions
+    Who reads this: a senior executive I coach, eight weeks into a search.
+    What they should think or do: see how much work the list actually holds.
+    What it is: a memo, about 400 words.
+    How it should sound: like explaining it to a CEO friend over coffee. Professional but not formal, contractions throughout.
+    Core idea: Your list is shorter than it looks, and the number that survives the cut is the number that decides the next eight weeks.
+    Outline: approved at stage 3, the four topic sentences below.
+    -->
+
+    EOF
+    cat "$EVAL_FIXTURES/search-plan-counts-skeleton.md" >> post.md
