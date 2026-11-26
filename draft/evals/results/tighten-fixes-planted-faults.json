@@ -1,8 +1,8 @@
 {
   "case": "tighten-fixes-planted-faults",
-  "skill_sha": "f6a07b878ef39f954e01da79be1b59f2a4fa227c",
-  "head_sha": "7f670e39ace735ddf4aead0c5a6f23c294a9ecf6",
-  "date": "2026-11-26T15:56:48-05:00",
+  "skill_sha": "2d4ae9ef35cde6c736fe8d403f56a1e40bbc67cb",
+  "head_sha": "2d4ae9ef35cde6c736fe8d403f56a1e40bbc67cb",
+  "date": "2026-11-26T17:03:54-05:00",
   "judge_model": "claude-haiku-4-5-20251001",
   "runs": 3,
   "pass_counts": {
@@ -17,7 +17,7 @@
         {
           "name": "editor-ran",
           "pass": true,
-          "note": "2 matching call(s), wanted min=1 max=None"
+          "note": "3 matching call(s), wanted min=1 max=None"
         },
         {
           "name": "faults-gone",
@@ -36,64 +36,64 @@
         }
       ],
       "artifact": {
-        "last_message": "5 safe tightenings, 0 structural changes applied.\n\nThe draft was already lean at 257 tokens. The file has no frontmatter, so there was no `updated:` date to change.\n\n## The paragraphs that changed\n\n> For two years our team deployed whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\n> Friday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\n> So in March we froze deploys after noon on Friday. In the retro, Ana said: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nThe five edits:\n- \"It is important to note that\" is gone.\n- \"each and every\" is now \"every\".\n- \"shipped\" is now \"deployed\", so one word names the act outside Ana's quote.\n- \"This made rollbacks slower\" now names its subject. I chose \"The batching\"; the original \"This\" could also mean the engineer's confusion.\n- \"put it plainly\" is now \"said\".\n\n## Semantic-duplicate cuts\n\nNone applied. The editor flagged three sentences as restatements, and I kept all three (see below).\n\n## Skipped on purpose\n\n- **\"The freeze has a cost.\"** The editor called it an echo of its paragraph. It is the turn from benefit to cost, and the last sentence leans on the word \"cost\".\n- **\"Friday deploys fail for a dull reason.\"** The editor wanted \"dull\" cut. The word is your voice, and the sentence sets up the paragraph.\n- **\"The pattern was hard to miss once we read the incident log.\"** and **\"This made rollbacks slower.\"** One pass said to cut each. The other pass said each needs a fact from you, so both sentences stay.\n- **\"which we expected\"** stays. It tells the reader that you had already counted the longer Monday queue as a cost.\n- **\"Friday train\"** stays. The editor proposed \"release\", but \"train\" is your team's term.\n- **Ana's quote, \"Nobody argued.\", and the last sentence** stay as written. Both passes called them the strongest lines.\n\n## Facts needed from you\n\nThe editor's main point is that the argument rests on quantities with no numbers. I left each phrase as written.\n\n- **\"most of our worst outages\"**: how many outages, and how many started on a Friday.\n- **\"Incidents dropped a lot\"**: the incident counts before and after the March freeze, and over what period. The editor called this the one change that matters most.\n- **\"made rollbacks slower\"**: how much slower, if you measured it.\n- **\"the Monday queue got longer\"**: what the queue holds, and how much longer it got.\n- **\"annoys a customer\"**: what happened to a customer when a fix waited.\n\nOne thing to check: the example breaks \"at nine on Saturday\", and Ana's quote says \"Sunday\". This does no harm, but the editor noticed it.",
-        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team deployed whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana said: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
-      }
-    },
-    {
-      "graders": [
-        {
-          "name": "editor-ran",
-          "pass": true,
-          "note": "2 matching call(s), wanted min=1 max=None"
-        },
-        {
-          "name": "faults-gone",
-          "pass": true,
-          "note": "votes PASS/PASS"
-        },
-        {
-          "name": "meaning-kept",
-          "pass": true,
-          "note": "votes PASS/PASS"
-        },
-        {
-          "name": "nothing-invented",
-          "pass": true,
-          "note": "exit 0: no output"
-        }
-      ],
-      "artifact": {
-        "last_message": "4 safe tightenings, 0 structural changes applied to `draft.md`.\n\nThe draft was already lean (257 tokens), so the edits are small. The file has no frontmatter, so there is no `updated:` date to change.\n\n## The two paragraphs that changed\n\n> For two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was plain once we read the incident log.\n\n> Friday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nThe four edits:\n- I cut \"It is important to note that\".\n- \"hard to miss\" is now \"plain\".\n- \"each and every\" is now \"every\".\n- \"This made rollbacks slower\" now names its subject: \"The batching\".\n\n## Semantic-duplicate cuts\n\nNone. The editor flagged three sentences as repeats, but each one carries its own idea, so I kept them:\n- **\"The pattern was hard to miss once we read the incident log.\"** It is the only place that names the incident log as the source.\n- **\"Weekends got quieter,\"** It says where the drop happened, which \"Incidents dropped a lot\" does not.\n- **\"the Monday queue got longer, which we expected\"** The last paragraph is about one late fix, which is a different cost from a longer queue.\n\n## Skipped on purpose\n\n- **\"Friday deploys fail for a dull reason.\"** One pass wanted \"dull\" cut. The other pass called it the one honest bit of flavor. I kept it.\n- **\"The freeze has a cost.\"** The editor called it an announcement. It is the sentence that turns the piece from the result to the price, so it stays.\n- **\"In the retro, Ana put it plainly:\"** The editor suggested \"Ana said:\". I kept the original because it sets up the quote and the \"Nobody argued.\" beat.\n\n## Facts needed from you\n\nI left these phrases as written. Each one needs a fact only you have.\n\n1. **\"most of our worst outages\"** \u2014 how many outages, out of how many, in the two years.\n2. **\"Incidents dropped a lot after the freeze.\"** \u2014 the incident counts before and after, and the period. Both passes called this the change that matters most, because this sentence is the payoff of the post.\n3. **\"some weeks that delay annoys a customer\"** \u2014 one real case of a fix that waited and the customer it affected.\n4. **\"batched every deploy from the week into one Friday train\"** \u2014 was the batching only a Friday problem, and did you fix it? As written, a reader can ask why you froze Friday deploys instead of stopping the batching.",
-        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was plain once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
-      }
-    },
-    {
-      "graders": [
-        {
-          "name": "editor-ran",
-          "pass": true,
-          "note": "2 matching call(s), wanted min=1 max=None"
-        },
-        {
-          "name": "faults-gone",
-          "pass": true,
-          "note": "votes PASS/PASS"
-        },
-        {
-          "name": "meaning-kept",
-          "pass": true,
-          "note": "votes PASS/PASS"
-        },
-        {
-          "name": "nothing-invented",
-          "pass": true,
-          "note": "exit 0: no output"
-        }
-      ],
-      "artifact": {
-        "last_message": "3 safe tightenings, 0 structural changes applied to `draft.md`.\n\n## The rewritten paragraphs\n\nParagraph 1:\n\n> For two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nParagraph 2:\n\n> Friday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nThe three edits:\n- I cut \"It is important to note that\".\n- I changed \"each and every deploy\" to \"every deploy\".\n- I changed \"This made rollbacks slower\" to \"The batching made rollbacks slower\", so the sentence names its subject.\n\nParagraphs 3, 4 and 5 did not change. The file has no frontmatter, so there was no `updated:` date to set.\n\n## Semantic-duplicate cuts\n\nNone applied.\n\n## Edits I did not apply\n\n- **\"The pattern was hard to miss once we read the incident log.\"** The editor said it repeats the sentence before it. It does not: it is the only place that says you found the pattern in the incident log.\n- **\"This made rollbacks slower.\"** One pass said to cut it as a restatement. The other pass said it needs a fact. The fact-needed note wins, so the sentence stays.\n- **\"for a dull reason\"** and **\"put it plainly\"**. The editor called both flourishes. They are the voice of the piece, and the second one sets up Ana's quote.\n- **\"which we expected\"**. Both passes said to cut it. It tells the reader that the longer Monday queue was not a surprise, and no other sentence says that.\n- **\"batched \u2026 into one Friday train\"**. The editor wanted \"bundled \u2026 into one Friday release\". \"Train\" is the usual term for a batched release, so I left it.\n\n## Facts needed from you\n\n- **\"Incidents dropped a lot after the freeze.\"** This sentence is the proof that the freeze worked, and it is the least specific sentence in the post. It needs the incident counts before and after March, for periods of equal length.\n- **\"The batching made rollbacks slower.\"** It needs how much slower, or the reason, for example that a rollback had to undo the full week of changes.\n- **\"most of our worst outages\"**. It needs the count, or the share that started on a Friday.\n- **\"some weeks that delay annoys a customer\"** (optional). One real example of a fix that waited would make it stronger.\n- **The Friday train** (optional). The post does not say if the freeze removed the weekly batch or only moved it to a different day.",
+        "last_message": "3 safe tightenings, 0 structural changes applied to `draft.md`.\n\n**Rounds.** One round ran. The recheck marked all three edits closed, so nothing is open and nothing is settled with a fault. The recheck went to the same agent in two messages. The file has no frontmatter, so there is no `updated:` date to change.\n\n**The two rewritten paragraphs**\n\n> For two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\n> Friday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nThe three edits:\n- I cut \"It is important to note that\".\n- \"each and every\" is now \"every\".\n- \"This made rollbacks slower\" is now \"The batching made rollbacks slower\".\n\n**Semantic-duplicate cuts.** None.\n\n**Skipped on purpose**\n- **\"Ana put it plainly:\"** The editor wanted \"Ana said\". I kept it because it sets up the quote and \"Nobody argued.\"\n- **\"Nobody argued.\"** One editor pass called it a flourish. The other said the cadence earns it. I kept it.\n- **\"We decided that cost is smaller than\u2026\"** The editor wanted \"That cost is smaller than\u2026\". That changes a team decision into a flat claim, so the meaning moves.\n- **\"The freeze has a cost.\"** The editor wanted to cut it. The later words \"that cost\" depend on it.\n- **\"Friday deploys fail for a dull reason.\"** The editor wanted to merge it with the next sentence. I kept it as the writer's voice.\n- **Splitting the release tool sentence in two.** The \"and\" joins the batching to its effect on the on-call engineer. A split breaks that link.\n\n**Facts needed from you.** I left these phrases as written.\n- **\"Most of our worst outages\"**: how many outages, and how many started on a Friday.\n- **\"The pattern was hard to miss once we read the incident log.\"**: the same count. One editor pass wanted to cut this sentence as a repeat, and it stays because it needs the number.\n- **\"Incidents dropped a lot after the freeze\"**: the incident count before and after, and the period. Both editor passes called this the change that matters most.\n- **\"made rollbacks slower\"**: how much slower.\n- **\"the Monday queue got longer\"**: how much longer. \"Weekends got quieter\" in the same sentence repeats the sentence before it, and it stays for the same reason.\n- **\"some weeks that delay annoys a customer\"**: how often, or one real example.\n- **Why a freeze and not a change to the batching.** The second paragraph names the weekly batch as a cause, and the fix does not touch it. The editor expects a reader to ask why.",
         "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "3 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "faults-gone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "meaning-kept",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "nothing-invented",
+          "pass": true,
+          "note": "exit 0: no output"
+        }
+      ],
+      "artifact": {
+        "last_message": "3 safe tightenings, 0 structural changes applied to `draft.md`.\n\n## How the rounds ended\n\nOne round of edits ran. The recheck marked three edits closed and one edit worse. I put the worse edit back to its original text, so nothing is open and the rounds stopped. The recheck went to the same editor in two messages, as the skill requires.\n\nSettled edit, put back: \"Weekends got quieter, and the Monday queue got longer, which we expected.\" I cut \"which we expected\". The recheck said the clause tells the reader that the longer queue was a known price, and that it prepares the paragraph about the cost. No rewrite kept both the cut and that meaning. The fault it leaves is small: the first editors called the clause padding.\n\n## The rewritten paragraphs\n\n> For two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\n> Friday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production, so rollbacks were slower.\n\nThe three edits:\n- I cut \"It is important to note that\".\n- I changed \"each and every\" to \"every\".\n- I joined \"This made rollbacks slower.\" to the sentence before it with \"so\".\n\nThe other three paragraphs are unchanged.\n\n## Skipped on purpose\n\n- **\"Friday deploys fail for a dull reason.\"** The editors wanted to cut it. It links the pattern in paragraph one to the cause in paragraph two, so it stays.\n- **\"The freeze has a cost.\"** The editors called it an announcement. It is the turn from the result to the cost, and the last sentence (\"that cost\") depends on it.\n- **\"did not write it\"** repeats \"wrote the change\". The repeat is the contrast, so it stays.\n- **\"one Friday train\"** and **\"Ana put it plainly\"** are your wording and your voice. I left them.\n- **\"We decided that cost is smaller than a weekend spent reading someone else's code.\"** One editor called it a restatement. It is the conclusion of the post, so it stays.\n\n## Facts needed from you\n\nI left these phrases as written. Each one needs a fact that only you have.\n\n- **\"Incidents dropped a lot after the freeze.\"** Both editors called this the weakest line. It needs the incident counts before and after the freeze, and the period.\n- **\"most of our worst outages started on a Friday\"** and **\"The pattern was hard to miss once we read the incident log.\"** These need the count from the log: how many of the worst outages started on a Friday, out of how many.\n- **\"some weeks that delay annoys a customer.\"** This needs one real case of a delayed fix, if you have one.",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production, so rollbacks were slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "3 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "faults-gone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "meaning-kept",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "nothing-invented",
+          "pass": true,
+          "note": "exit 0: no output"
+        }
+      ],
+      "artifact": {
+        "last_message": "3 safe tightenings, 0 structural changes applied to `draft.md`.\n\n## How the rounds ended\n\nTwo rounds ran. The round one recheck marked three edits closed and one edit worse. Round two put that one edit back, and then nothing was open or worse, so the run stopped. The recheck went to the same agent in two messages.\n\nOne edit is settled with its fault:\n\n- \"In the retro, Ana put it plainly:\" was changed to \"In the retro, Ana said:\" and then put back. The recheck said the shorter version flattened the cadence into \"Nobody argued.\" The fault that stays: \"put it plainly\" tells the reader the quote is plain before the reader hears it. No rewrite fixed that and kept the cue.\n\n## The rewritten paragraphs\n\n> For two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\n> Friday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production, so rollbacks were slower.\n\nThe three edits: \"It is important to note that\" is gone, \"each and every\" is now \"every\", and \"This made rollbacks slower.\" is joined to the sentence before it.\n\n## Semantic-duplicate cuts\n\nNone applied.\n\n## Skipped\n\n- **\"The pattern was hard to miss once we read the incident log.\"** One editor called it a restatement. It stays because it is the only place that says the evidence came from the incident log.\n- **\"The freeze has a cost.\"** One editor called it an announcement. It stays because it turns the piece from the benefit to the cost, and the last sentence (\"that cost\") depends on it.\n- **\"We decided that cost is smaller than a weekend spent reading someone else's code.\"** One editor wanted it cut or reworked. It stays because it carries the decision.\n- **\"Friday deploys fail for a dull reason.\"** and **\", which we expected\"**. The two editors disagreed, so both stay.\n- **\"one Friday train\"**. One editor wanted \"batch\". It stays because \"release train\" is a term engineers already use.\n\n## Facts needed from you\n\n- **\"Incidents dropped a lot after the freeze.\"** Both editors named this as the change that matters most. It needs the incident counts before and after the March freeze, or the percentage drop and the period.\n- **\"so rollbacks were slower\"**. How much slower, in minutes or hours, if you have the number.\n- **\"some weeks that delay annoys a customer\"**. How many Friday fixes waited until Monday.\n\n## Not in scope, but the recheck saw it\n\nThe first sentence says the team shipped \"whenever a change was ready\". Paragraph two says the release tool batched the week's deploys into one Friday train. A reader can take those as a contradiction. I did not change either sentence, because the fix needs a fact from you.",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production, so rollbacks were slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
       }
     }
   ]
