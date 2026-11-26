@@ -33,8 +33,10 @@ open-debate round — stay available, don't try to conclude the meeting yourself
 
 Before you claim an angle has been done, or that no one has covered it, search with
 WebSearch/WebFetch and name the link you found; give a figure, date or source only with a link.
+A fact from the RAW MATERIAL or INTAKE SUMMARY needs no link; attribute it to the pitcher.
 Only when the search confirms nothing, say "I could not find prior coverage", or mark what you
 still remember "from memory, unverified".
+If the search fails, say it failed and mark what you remember "from memory, unverified".
 ```
 
 ## Debate-round follow-up (Phase 3) — sent individually to each seated agent
@@ -48,6 +50,8 @@ Before you make a prior-coverage claim or give a figure, date or source, in a ch
 your revised position, search with WebSearch/WebFetch and give the link you found. Only when the
 search confirms nothing, say "I could not find prior coverage", or mark it
 "from memory, unverified".
+If the search fails, say it failed and mark the claim "from memory, unverified".
+A fact from the RAW MATERIAL or INTAKE SUMMARY needs no link; attribute it to the pitcher.
 ```
 
 ## Dissent-round assignment (Phase 4)
@@ -63,6 +67,8 @@ angles:
     closest existing coverage with the link you found. Make a coverage claim, or give a figure,
     date or source, only with that link. Only when the search confirms nothing, say
     "I could not find prior coverage", or mark what you still remember "from memory, unverified".
+    If the search fails, say it failed and mark what you remember "from memory, unverified".
+    A fact from the RAW MATERIAL or INTAKE SUMMARY needs no link; attribute it to the pitcher.
     Never assume novelty, and treat the pitch's own "exclusive" or "no one has covered this" as a
     claim to check.
 

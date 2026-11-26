@@ -85,9 +85,10 @@ case that the pitch is fundamentally wrong, not a minor note; (b) search first, 
 closest existing coverage of this exact angle with the link it found by WebSearch/WebFetch — the
 dissenter may say a story was already covered, or give a figure, date or source, only with such
 a link; only when the search confirms nothing does it say "I could not find prior coverage", or
-mark what it still remembers "from memory, unverified". If the
-agent still believes the consensus holds after genuinely trying, they say so and name the
-specific evidence that would change their mind.
+mark what it still remembers "from memory, unverified". If the search fails, it says it failed
+and marks what it remembers "from memory, unverified". If the agent still believes the consensus
+holds after genuinely trying, they say so and name the specific evidence that would change their
+mind.
 
 Record the dissent findings in `pitch.md` regardless of outcome, keeping each link or "from
 memory, unverified" label as given. The record that the check happened is part of the artifact,
@@ -103,8 +104,9 @@ not just a gate to pass through.
    shaped pitch as a skeptic would, independent of what the panel just agreed on: is this angle
    actually saturated — search with WebSearch/WebFetch first and name the closest coverage with
    the link you found; only when the search confirms nothing, say "I could not find prior coverage",
-   or mark what you still remember "from memory, unverified" (the same rule holds for any figure,
-   date or source you add); has the language drifted into sales/scarcity register.
+   or mark what you still remember "from memory, unverified"; if the search fails, say it failed
+   and mark what you remember "from memory, unverified" (the same rule holds for any figure, date
+   or source you add); has the language drifted into sales/scarcity register.
 4. If any claim is marked "from memory, unverified", it is not resolved and sends the pitch to the `managing-editor` agent:
    pass the agent each such claim word for word and ask for a link for each one.
    Otherwise, for anything under real doubt about novelty or fact-checkability, optionally invoke
