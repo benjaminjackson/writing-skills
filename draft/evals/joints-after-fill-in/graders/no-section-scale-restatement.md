@@ -13,6 +13,8 @@ Work through the memo section by section, where a section is the run of paragrap
 
 **For each section, quote its opening claim and its closing sentence, and say whether the closing sentence states the same thing as the opening.**
 
+If a section has only one sentence, it has no separate closing sentence: say so and move on, because a sentence cannot restate itself.
+
 A closing sentence is fine if it takes the section's result somewhere new: names what follows from it, hands the reader an instruction, or raises the thing the next section takes up. It fails only if it says the opening claim again.
 
 Then give the verdict.
