@@ -102,9 +102,9 @@ mirror of naming the unused notes: same rule, opposite direction.
 
 ## The working file
 
-Stage 1 writes the target file once the writer has picked the core idea: the settled-decisions block at the top, then the core idea as the first line of the draft below it. Stage 3 writes the topic sentences into that same file, one per line with a blank line between. Every later stage edits it in place. The outline becomes the draft; there is no copy step and no scratch file. If the user did not name a file, propose a path and get agreement before writing.
+Stage 1 writes the target file once the writer has picked the core idea: the settled-decisions block first, then the core idea as the first line of the draft below it. Stage 3 writes the topic sentences into that same file, one per line with a blank line between. Every later stage edits it in place. The outline becomes the draft; there is no copy step and no scratch file. If the user did not name a file, propose a path and get agreement before writing.
 
-Keep the writer's settled decisions in one HTML comment block at the top of the target file: the four-field brief, the core idea chosen at stage 1, the approved outline, and the editor notes the writer refused. Each goes in when the writer settles it: the brief and the core idea at stage 1, the outline when the stage 3 gate passes, a note when the writer refuses it. A file that arrives without the block gets one before the first stage you run. Write it as plain lines, with no markdown headings and no `-->` inside it. What is in the block is decided, and nothing later argues it again, the editor included. Finish strips it.
+Keep the writer's settled decisions in one HTML comment block at the top of the target file: the four-field brief, the core idea chosen at stage 1, the approved outline, and the editor notes the writer refused. If the file has frontmatter, the block goes directly after it, never above it: a `<!--` above the opening `---` breaks the frontmatter for Jekyll, Hugo and Astro. Its first line is exactly `<!-- skeleton: settled decisions`, and its last line is `-->` on its own. Each item goes in when the writer settles it: the brief and the core idea at stage 1, the outline when the stage 3 gate passes, a note when the writer refuses it. The block is written only when the first decision is settled, and a core idea the writer seeded counts as settled. On a writer's existing draft, never write it before the stage 1 gate. Write it as plain lines, with no markdown headings and no `-->` inside it. What is in the block is decided, and nothing later argues it again, the editor included. Finish strips it.
 
 Edit it by exact, unique match. A file with a comment log or frontmatter above the draft can
 hold the same marker twice, and a script that matches the first `-->` when it meant the last
@@ -346,6 +346,7 @@ a draft to critique, and names what not to judge at that stage.
 > a draft to critique. For each: is it a claim a reader can disagree with, or a topic wearing a
 > claim's clothes? Which is sharpest for this audience, and what is it missing? Do not write a
 > replacement piece; judge these sentences.
+> Notes the writer already refused, which are settled and not to be raised again: <REFUSED NOTES>.
 
 **Stage 3** (send the topic sentences in order, nothing else):
 
@@ -355,6 +356,7 @@ a draft to critique, and names what not to judge at that stage.
 > out of order, the one that is a noun phrase pretending to be a claim, and the one that does
 > not support the core idea. Do not line-edit for word economy; the words change when the
 > paragraphs get written.
+> Notes the writer already refused, which are settled and not to be raised again: <REFUSED NOTES>.
 
 **Stage 6** (pass the file path):
 
@@ -377,10 +379,10 @@ and still leave the reader unable to draw the picture. Where one figure comes fr
 the step: a reader who cannot get from the year's cost to the amount being raised, because one
 number was subtracted and the next divided, starts auditing every other number on the page.
 
-Then run `draft:tighten` on the file, and tell it the comment block at the top is settled and not prose to edit. That is the full chunked Deirdre pass, the right tool once,
-on prose, and the wrong tool six times, on an outline.
+Then strip the settled-decisions comment block. Match on its first line, `<!-- skeleton: settled decisions`, and the first `-->` line after it, never on a bare `<!--`, so a comment log of the writer's own stays. Read the file back: it opens on the line that followed the block (the frontmatter, if there is any, stays above it), and nothing below the block went with it.
 
-Last, strip the settled-decisions comment block. Match its opening and closing lines exactly, then read the file back: the draft opens on its title, and nothing below the block went with it.
+Then run `draft:tighten` on the file. That is the full chunked Deirdre pass, the right tool once,
+on prose, and the wrong tool six times, on an outline.
 
 ## Reporting
 
