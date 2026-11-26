@@ -73,12 +73,21 @@ def parse_stream(raw):
     return last, tools
 
 
+def strip_leading_comment(text):
+    """Remove one HTML comment block at the very start of text, plus the blank lines after it.
+
+    The skeleton skill keeps the writer's settled decisions in that block, and graders should
+    judge the draft, not the brief. re.S lets "." match newlines; "*?" stops at the first "-->".
+    """
+    return re.sub(r"\A<!--.*?-->[ \t]*\n*", "", text, count=1, flags=re.S)
+
+
 def read_target(spec, workdir, last_message):
     if not spec or spec == "last_message":
         return last_message
     if isinstance(spec, dict) and spec.get("source") == "file":
         f = Path(workdir) / spec["path"]
-        return f.read_text() if f.exists() else f"({spec['path']} was not created)"
+        return strip_leading_comment(f.read_text()) if f.exists() else f"({spec['path']} was not created)"
     return last_message
 
 
