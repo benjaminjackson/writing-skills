@@ -102,10 +102,9 @@ mirror of naming the unused notes: same rule, opposite direction.
 
 ## The working file
 
-Stage 1 writes the core idea as the first line of the target file. Stage 3 writes the topic
-sentences into that same file, one per line with a blank line between. Every later stage edits
-it in place. The outline becomes the draft; there is no copy step and no scratch file. If the
-user did not name a file, propose a path and get agreement before writing.
+Stage 1 writes the target file once the writer has picked the core idea: the settled-decisions block first, then the core idea as the first line of the draft below it. Stage 3 writes the topic sentences into that same file, one per line with a blank line between. Every later stage edits it in place. The outline becomes the draft; there is no copy step and no scratch file. If the user did not name a file, propose a path and get agreement before writing.
+
+Keep the writer's settled decisions in one HTML comment block at the top of the target file: the four-field brief, the core idea chosen at stage 1, the approved outline, and the editor notes the writer refused. If the file has frontmatter, the block goes directly after it, never above it: a `<!--` above the opening `---` breaks the frontmatter for Jekyll, Hugo and Astro. Its first line is exactly `<!-- skeleton: settled decisions`, and its last line is `-->` on its own. Each item goes in when the writer settles it: the brief and the core idea at stage 1, the outline when the stage 3 gate passes, a note when the writer refuses it. The block is written only when the first decision is settled, and a core idea the writer seeded counts as settled. On a writer's existing draft, never write it before the stage 1 gate. Write it as plain lines, with no markdown headings and no `-->` inside it. What is in the block is decided, and nothing later argues it again, the editor included. Finish strips it.
 
 Edit it by exact, unique match. A file with a comment log or frontmatter above the draft can
 hold the same marker twice, and a script that matches the first `-->` when it meant the last
@@ -237,7 +236,7 @@ where the claim, elaborate, summarise three-beat gets born, and here is where it
 refuse it.
 
 **Never invent material.** No evidence, number, quotation, anecdote, or example that the writer
-did not supply. Where the material runs out, stop and ask for that one thing, then carry on. An
+did not supply. Where the material runs out, leave a bracket that says what is missing, and carry on. An
 invented example in someone else's voice is the hardest error for them to catch reading back,
 and a flagged invention that reads well tends to survive to publication.
 
@@ -246,6 +245,9 @@ number goes back to the file it came from before it is written down. A count tha
 stated with confidence is the same error as an invented quotation and much harder to see. Dates
 count too: an age or a duration is arithmetic on two dates from the file, done on the day the
 piece will be read.
+
+**Ask once.** When the fill-in is done, ask for all the missing material in one numbered message, one item per bracket, each with whose answer it needs.
+Leave the brackets in the file meanwhile, and never ask for the same thing twice: an answer the writer gave, or a gap they said to leave, is settled.
 
 If filling in proves a topic sentence wrong, go back to stage 3 and read the spine aloud again.
 That is the only backward path, and it is a normal thing to happen.
@@ -318,6 +320,8 @@ tells, so apply them without asking. Running it on a bare topic-sentence outline
 than running it on two thousand finished words, because a tell in a topic sentence gets
 elaborated into a whole paragraph of the same.
 
+Run sloplint again after applying the editor's notes, as the last step before each gate: her fixes add words it has not seen.
+
 ### The editor agent, at stages 1, 3 and 6
 
 Launch `draft:editor` (Deirdre McCloskey, critique only, she will not rewrite). She runs where a
@@ -326,6 +330,7 @@ and 5 are sorting and labelling, and there is nothing there for her.
 
 **Apply her notes yourself, in one round, and show the result at the stage gate.** Do not relay
 her critique note by note for approval. Say what changed and what you refused, in a line or two.
+A note the writer refuses goes into the settled-decisions block.
 
 **If she does not report, do not stall.** Run the critique yourself against the targets named in
 the prompt and say the method changed. If her notes arrive late, re-read the file before applying
@@ -341,6 +346,7 @@ a draft to critique, and names what not to judge at that stage.
 > a draft to critique. For each: is it a claim a reader can disagree with, or a topic wearing a
 > claim's clothes? Which is sharpest for this audience, and what is it missing? Do not write a
 > replacement piece; judge these sentences.
+> Notes the writer already refused, which are settled and not to be raised again: <REFUSED NOTES>.
 
 **Stage 3** (send the topic sentences in order, nothing else):
 
@@ -350,6 +356,7 @@ a draft to critique, and names what not to judge at that stage.
 > out of order, the one that is a noun phrase pretending to be a claim, and the one that does
 > not support the core idea. Do not line-edit for word economy; the words change when the
 > paragraphs get written.
+> Notes the writer already refused, which are settled and not to be raised again: <REFUSED NOTES>.
 
 **Stage 6** (pass the file path):
 
@@ -362,6 +369,7 @@ a draft to critique, and names what not to judge at that stage.
 > paragraphs, and a section's opening claim against its closing line. Judge the register too:
 > where does this sound like something other than <REGISTER>. This is not the economy pass;
 > another one handles that.
+> The HTML comment block at the top of the file holds the writer's settled decisions: the brief, the core idea, the approved outline, and the notes already refused. They are settled. Do not argue them again; judge the prose under them.
 
 ## Finish
 
@@ -370,6 +378,8 @@ how they relate. Thirteen people, fourteen organisations and ten recommendations
 and still leave the reader unable to draw the picture. Where one figure comes from another, show
 the step: a reader who cannot get from the year's cost to the amount being raised, because one
 number was subtracted and the next divided, starts auditing every other number on the page.
+
+Then strip the settled-decisions comment block. Match on its first line, `<!-- skeleton: settled decisions`, and the first `-->` line after it, never on a bare `<!--`, so a comment log of the writer's own stays. Read the file back: it opens on the line that followed the block (the frontmatter, if there is any, stays above it), and nothing below the block went with it.
 
 Then run `draft:tighten` on the file. That is the full chunked Deirdre pass, the right tool once,
 on prose, and the wrong tool six times, on an outline.
@@ -391,8 +401,8 @@ on prose, and the wrong tool six times, on an outline.
 
 ## Guardrails
 
-Never invents evidence, numbers, quotations, anecdotes, or examples; it asks for the one thing
-missing and waits. Never fills a slot the material cannot carry; it leaves the bracket and names
+Never invents evidence, numbers, quotations, anecdotes, or examples; it brackets what is
+missing and asks for all of it once. Never fills a slot the material cannot carry; it leaves the bracket and names
 whose answer it needs. Never chooses the core idea for the writer, and never fills in prose before
 the sentence outline has been read aloud and approved by them. Writes and edits the target file
 directly. Never sends, posts, or touches anything outside the local file it is given. No em
