@@ -36,7 +36,7 @@ def split_front_matter(path):
     return yaml.safe_load(fm) or {}, body.lstrip("\n")
 
 
-def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None):
+def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None, timeout=900):
     # The prompt goes FIRST. --allowedTools and --plugin-dir are variadic, so
     # anything positional after them gets swallowed and the run dies with
     # "Input must be provided either through stdin or as a prompt argument".
@@ -49,13 +49,13 @@ def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None
         cmd += ["--allowedTools", ",".join(allowed_tools)]
     if stream:
         cmd += ["--output-format", "stream-json", "--verbose"]
-    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=900)
+    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
     return proc.stdout
 
 
 def parse_stream(raw):
-    """Return (last_assistant_text, [tool_call_json_strings])."""
-    last, tools = "", []
+    """Return (last_assistant_text, [tool_call_json_strings], cost), where cost holds total_cost_usd from the final result event and duration_ms and num_turns summed over all result events, or is empty."""
+    last, tools, cost = "", [], {}
     for line in raw.splitlines():
         line = line.strip()
         if not line.startswith("{"):
@@ -64,14 +64,21 @@ def parse_stream(raw):
             ev = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if ev.get("type") == "result" and ev.get("result"):
-            last = ev["result"]
+        if ev.get("type") == "result":
+            # A run whose sub-agents finish in the background resumes and ends with one
+            # result event per segment. total_cost_usd already covers the whole session,
+            # but duration_ms and num_turns count only their own segment, so those add up.
+            cost = {"total_cost_usd": ev.get("total_cost_usd"),
+                    "duration_ms": (cost.get("duration_ms") or 0) + (ev.get("duration_ms") or 0),
+                    "num_turns": (cost.get("num_turns") or 0) + (ev.get("num_turns") or 0)}
+            if ev.get("result"):
+                last = ev["result"]
         for block in (ev.get("message") or {}).get("content", []) or []:
             if isinstance(block, dict) and block.get("type") == "tool_use":
                 tools.append(json.dumps(block))
             elif isinstance(block, dict) and block.get("type") == "text" and not last:
                 last = block["text"]
-    return last, tools
+    return last, tools, cost
 
 
 # Optional BOM and blank lines, then an optional "---" frontmatter block (group 1, kept),
@@ -193,15 +200,25 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
 
 
 def run_once(case_dir, prompt, meta, cfg):
-    """Run the agent once in a fresh temp dir and grade it. Returns (results, work, artifact)."""
+    """Run the agent once in a fresh temp dir and grade it. Returns (results, work, artifact, cost)."""
     work = tempfile.mkdtemp(prefix=f"eval-{case_dir.name}-")
     scaffold = (cfg.get("context") or {}).get("scaffold_script")
     if scaffold:
         subprocess.run(scaffold, shell=True, cwd=work, check=True,
                        env={**os.environ, "EVAL_FIXTURES": str(EVALS / "fixtures")})
 
-    raw = run_claude(prompt, work, meta.get("allowed_tools"), stream=True)
-    last, tools = parse_stream(raw)
+    timed_out = False
+    try:
+        raw = run_claude(prompt, work, meta.get("allowed_tools"), stream=True,
+                         timeout=meta.get("timeout_seconds", 900))
+    except subprocess.TimeoutExpired as error:
+        # A run that hangs is graded on what it wrote so far instead of stopping the batch.
+        # The partial output comes back as bytes or str depending on the Python version.
+        partial = error.stdout or ""
+        raw = partial.decode() if isinstance(partial, bytes) else partial
+        timed_out = True
+    last, tools, cost = parse_stream(raw)
+    cost["timed_out"] = timed_out
     (Path(work) / "_transcript.jsonl").write_text(raw)
     (Path(work) / "_last_message.txt").write_text(last)
 
@@ -226,10 +243,10 @@ def run_once(case_dir, prompt, meta, cfg):
             target = focus or {"source": "file", "path": "post.md"}
             ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
         results.append((grader_file.stem, ok, note))
-    return results, work, artifact
+    return results, work, artifact, cost
 
 
-def score_case(case_dir, tags, runs):
+def score_case(case_dir, tags, runs, append=""):
     """Run a case `runs` times, each in a new temp dir. Returns (name, [run, ...]) or None."""
     meta, prompt = split_front_matter(case_dir / "prompt.md")
     if tags and not (set(tags) & set(meta.get("tags", []))):
@@ -237,6 +254,8 @@ def score_case(case_dir, tags, runs):
     cfg = {}
     if (case_dir / "case.yaml").exists():
         cfg = yaml.safe_load((case_dir / "case.yaml").read_text()) or {}
+    if append:
+        prompt = f"{prompt.rstrip()} {append}"
     return case_dir.name, [run_once(case_dir, prompt, meta, cfg) for _ in range(runs)]
 
 
@@ -254,28 +273,29 @@ SKILL_PATHS = ["--", "draft", ":!draft/evals"]
 MEASURED_PATHS = ["--", "draft", ":!draft/evals/results"]
 
 
-def save_results(name, runs):
-    """Write results/<case>.json, pinned to the last commit that touched the skill."""
+def save_results(name, runs, label=""):
+    """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill."""
     out = {
         "case": name,
         "skill_sha": git("log", "-1", "--format=%H", *SKILL_PATHS),
         "head_sha": git("rev-parse", "HEAD"),
         "date": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
         "judge_model": JUDGE_MODEL,
+        "label": label or None,
         "runs": len(runs),
         "pass_counts": {},
         "results": [],
     }
     passes = {}
-    for results, _work, artifact in runs:
+    for results, _work, artifact, cost in runs:
         graders = []
         for grader_name, ok, note in results:
             graders.append({"name": grader_name, "pass": ok, "note": note})
             passes[grader_name] = passes.get(grader_name, 0) + (1 if ok else 0)
-        out["results"].append({"graders": graders, "artifact": artifact})
+        out["results"].append({"graders": graders, "total_cost_usd": cost.get("total_cost_usd"), "duration_ms": cost.get("duration_ms"), "num_turns": cost.get("num_turns"), "timed_out": cost.get("timed_out"), "artifact": artifact})
     for grader_name, count in passes.items():
         out["pass_counts"][grader_name] = f"{count}/{len(runs)}"
-    path = EVALS / "results" / f"{name}.json"
+    path = EVALS / "results" / (f"{name}.{label}.json" if label else f"{name}.json")
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(out, indent=2) + "\n")
     return path
@@ -304,6 +324,9 @@ def calibrate():
         ("tighten-fixes-planted-faults/graders/meaning-kept.md", "meaning"),
         ("tighten-light-on-clean-twin/graders/meaning-kept.md", "meaningclean"),
         ("critique-treats-praise-as-content/graders/praise-is-content.md", "praise"),
+        ("critique-flags-planted-faults-long/graders/raises-all-three.md", "raisedlong"),
+        ("tighten-fixes-planted-faults-long/graders/faults-gone.md", "faultsgonelong", ("bad-throat", "bad-doublet", "bad-this", "good")),
+        ("tighten-fixes-planted-faults-long/graders/meaning-kept.md", "meaninglong"),
     ]
     # Script graders, run on their own known-bad and known-good output files.
     # invented.py gets one known-bad file per thing it detects.
@@ -312,6 +335,7 @@ def calibrate():
          ("bad", "bad-number", "bad-quote", "bad-requote", "bad-name", "good")),
         ("tighten-light-on-clean-twin/graders/nothing-invented.md", "inventedclean", ("bad", "good")),
         ("tighten-light-on-clean-twin/graders/changed-little.md", "changed", ("bad", "good")),
+        ("tighten-fixes-planted-faults-long/graders/nothing-invented.md", "inventedlong", ("bad", "good")),
     ]
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True
@@ -357,7 +381,24 @@ def main():
     ap.add_argument("--runs", type=positive_int, default=None,
                     help="agent runs per case, each in a new temp dir, saved to "
                          "results/<case>.json (without it: one run, nothing saved)")
+    ap.add_argument("--whole-doc", action="store_true", help="end each prompt with the skill argument whole-doc, so critique and tighten run only Pass 2 at any size; saves to results/<case>.whole-doc.json")
+    ap.add_argument("--chunked", action="store_true", help="end each prompt with the skill argument chunked, so critique and tighten run Pass 1 at any size; saves to results/<case>.chunked.json")
+    ap.add_argument("--label", default="", help="save results to results/<case>.<label>.json instead of results/<case>.json")
     args = ap.parse_args()
+    if args.whole_doc and args.chunked:
+        ap.error("--whole-doc and --chunked cannot be used together")
+    mode = ""
+    if args.whole_doc:
+        mode = "whole-doc"
+    elif args.chunked:
+        mode = "chunked"
+    if mode and args.label and args.label != mode:
+        ap.error(f"--{mode} saves to results/<case>.{mode}.json; leave out --label or pass --label {mode}")
+    label = args.label or mode
+    if label and not re.fullmatch(r"[A-Za-z0-9_-]+", label):
+        ap.error("--label takes letters, digits, - and _ only")
+    # The mode is also the skill argument the prompt ends with.
+    append = mode
 
     if args.calibrate:
         sys.exit(calibrate())
@@ -365,6 +406,17 @@ def main():
     cases = sorted(d for d in EVALS.iterdir()
                    if (d / "prompt.md").exists()
                    and (not args.case or d.name == args.case))
+    if mode:
+        # Only critique and tighten take the argument, so every case that will run must be an editor case.
+        not_editor = []
+        for case_dir in cases:
+            case_tags = split_front_matter(case_dir / "prompt.md")[0].get("tags", [])
+            if args.tag and not (set(args.tag) & set(case_tags)):
+                continue
+            if "editor" not in case_tags:
+                not_editor.append(case_dir.name)
+        if not_editor:
+            ap.error(f"--{mode} works only on editor cases; not editor: {', '.join(not_editor)}")
     # Results are saved only when --runs is given. A saved result is only worth
     # keeping if it says what it measured, so uncommitted changes to the skill
     # or the suite mean the run is not saved.
@@ -377,17 +429,17 @@ def main():
             save = False
     failed = 0
     for case_dir in cases:
-        out = score_case(case_dir, args.tag, args.runs or 1)
+        out = score_case(case_dir, args.tag, args.runs or 1, append)
         if not out:
             continue
         name, runs = out
-        for run_number, (results, work, _artifact) in enumerate(runs, 1):
+        for run_number, (results, work, _artifact, cost) in enumerate(runs, 1):
             for grader_name, ok, note in results:
                 print(f"  {'ok  ' if ok else 'FAIL'} {name} [run {run_number}] / {grader_name}: {note}")
                 failed += 0 if ok else 1
-            print(f"       artifacts: {work}")
+            print(f"       artifacts: {work}  cost: {cost.get('total_cost_usd')} USD, {cost.get('duration_ms')} ms, timed out: {cost.get('timed_out')}")
         if save:
-            print(f"       saved: {save_results(name, runs).relative_to(REPO)}")
+            print(f"       saved: {save_results(name, runs, label).relative_to(REPO)}")
     print(f"\n{failed} grader failure(s)")
     sys.exit(1 if failed else 0)
 

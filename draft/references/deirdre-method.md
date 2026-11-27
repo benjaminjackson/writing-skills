@@ -4,9 +4,7 @@ Shared by `tighten` and `critique`. The engine is the **`editor`** sub-agent
 (`subagent_type: editor`), Deirdre McCloskey. She has only the `Read` tool and a hard rule
 against rewriting — hand her prose to judge, expect a critique back, nothing more.
 
-The one thing that makes or breaks results: **don't overload her.** A fresh agent reading a
-paragraph or two gives far sharper line edits than one agent drowning in a whole document. So
-chunk, and use a **separate agent per chunk** so each reads with fresh, uncluttered context.
+Past about 1,500 tokens, what makes or breaks results is not overloading her. A fresh agent reading a paragraph or two gives far sharper line edits than one agent drowning in a whole document. So chunk, and use a **separate agent per chunk** so each reads with fresh, uncluttered context.
 
 ## Chunking: how much to hand Deirdre at once
 
@@ -26,6 +24,7 @@ legal sections were left untouched. If the *user explicitly asks* for the legal 
 edited, treat every change to it as substantive and flag rather than apply.
 
 **Pass 1 — line-by-line (section-sized chunks, one fresh agent each):**
+- A document of 1,500 tokens or fewer skips Pass 1: run Pass 2 alone and send its prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those." On the editor eval suite, Pass 2 alone passed as many graders as Pass 1 and Pass 2 together. On the draft of about 1,500 tokens it cost about a third less, and on the drafts of about 250 tokens it cost about the same (see draft/evals/README.md).
 - Each chunk is a run of **adjacent blocks packed up to 400 tokens** (aim for 150-400) — keep
   folding in the next block as long as the chunk stays under the ceiling. There's no fixed
   block-count limit: a section with many short blocks (a bulleted list, a run of short
@@ -36,12 +35,7 @@ edited, treat every change to it as substantive and flag rather than apply.
   block, so it doesn't critique a fragment as if it were the whole thought.
 - Tag each chunk with where it sits (e.g. "from the 'Showing up' section") so Deirdre's quotes
   stay locatable in the full file.
-- **Sanity-check the chunk count before launching agents:** it should land near
-  `document_tokens ÷ 250`. A 2,000-token document should come out to roughly 8 chunks, not 30
-  — if your chunking ran fragment-sized instead of section-sized, re-pack it before spinning
-  up agents. Over-fragmenting a short document wastes agent calls without sharpening the
-  critique; the point of small chunks is to protect a fresh agent from drowning in a *long*
-  document, not to atomize a short one.
+- **Sanity-check the chunk count before launching agents:** it should land near `document_tokens ÷ 250`. A 3,000-token document should come out to roughly 12 chunks, not 40 — if your chunking ran fragment-sized instead of section-sized, re-pack it before spinning up agents. Over-fragmenting a document wastes agent calls without sharpening the critique; the point of small chunks is to protect a fresh agent from drowning in a *long* document, not to atomize it.
 
 **Pass 2 — whole-doc (the holistic pass):**
 - **Document ≤ 4,000 tokens:** one agent over the **entire document** (pass the file path;

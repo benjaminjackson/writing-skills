@@ -1,0 +1,94 @@
+{
+  "case": "critique-quiet-on-clean-twin",
+  "skill_sha": "a2847eea96f76cc4c6fb6567691a29edcb40cc01",
+  "head_sha": "bb9de5aff9281fd829ded6593f90371ae41f6d03",
+  "date": "2026-11-26T18:31:30-05:00",
+  "judge_model": "claude-haiku-4-5-20251001",
+  "label": "chunked",
+  "runs": 3,
+  "pass_counts": {
+    "editor-ran": "3/3",
+    "no-edit": "3/3",
+    "no-false-alarms": "3/3"
+  },
+  "results": [
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "2 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "no-false-alarms",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 1.0620101,
+      "duration_ms": 54327,
+      "num_turns": 5,
+      "artifact": {
+        "last_message": "**10 line notes, 3 structural. Biggest: the two claims that carry the post (\"Most of our worst outages\" and \"Incidents dropped a lot\") have no numbers.**\n\nThe draft is short and mostly sound. It has no sentence that only restates its heading and no closing line that only restates its section. I did not change `draft.md`.\n\n## Structural notes\n\n1. **The evidence is missing.** \"Most of our worst outages started on a Friday\" and \"Incidents dropped a lot after the freeze\" are the argument, and a skeptical reader cannot check either one. Questions for you:\n   - How many outages are in the incident log, and how many started on a Friday?\n   - How many incidents occurred before and after the March freeze, and over what period?\n\n2. **The last paragraph compares two costs but measures neither.** \"We decided that cost is smaller than a weekend spent reading someone else's code\" is a good closing line, and \"we decided\" is honest. It is stronger with one fact on each side. Questions for you:\n   - How frequently does a delayed fix annoy a customer (\"some weeks\"), or can you give one real case?\n   - How much weekend on-call work stopped?\n\n3. **\"The batching made rollbacks slower.\"** The sentence before it shows that the engineer could not tell which change broke production. That makes a rollback harder to aim, and the draft never shows it is slower. This is a safe cut. Alternatively, change the sentence to agree with what you showed.\n\n## Line notes\n\n- **\"The pattern was hard to miss once we read the incident log.\"** This is mild padding, but it is the only mention of the log. Do not cut it. Put the log into the claim: \"Our incident log shows that most of our worst outages started on a Friday.\"\n- **\"Friday deploys fail for a dull reason.\"** It announces the reason before it gives it. Join it to the next sentence with \"because.\"\n- **\"The freeze has a cost.\"** It also announces. But it carries the turn from the result to the cost, so rewrite it so the link stays. For example, start the next sentence with \"But.\"\n- **\"Our release tool also batched\u2026 and the on-call engineer could not tell\u2026\"** \"Also\" hides that this is a second cause. Change \"and\" to \"so\" to show the cause. \"Train\" is a term that some readers do not know.\n- **\"Ana put it plainly:\"** The quote is plain without the label. \"Ana said\" is sufficient.\n- **\"retro\"** Write \"retrospective\" if people outside the team will read this.\n- **\"Weekends got quieter\"** This repeats \"Incidents dropped\" in softer words. It is a safe cut when the number is in.\n- **\"which we expected\"** The two passes disagree. One calls it padding. The other says it prepares the cost paragraph. It carries a separate idea (you saw the trade-off before it came), so a cut here depends on what the post is for.\n- **\"Nobody argued.\"** Keep it if it is literally true. It tells the reader the decision was easy.\n- **\"some weeks\"** This is a hedge. See the question in note 2.\n\nKeep these lines as they are: Ana's quote, \"When something breaks at nine on Saturday,\" and \"A fix that is ready at two on Friday waits until Monday morning.\"\n\nI removed one note. The line pass said to change \"did not write it\" to \"do not write it,\" but the past tense is correct there.\n\n**The one change that matters most:** replace \"most\" and \"a lot\" with the real counts from the incident log.",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "2 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "no-false-alarms",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 1.0438721,
+      "duration_ms": 48296,
+      "num_turns": 5,
+      "artifact": {
+        "last_message": "**7 line notes, 3 structural. Biggest: \"Incidents dropped a lot after the freeze\" is the result the whole post depends on, and it has no number.**\n\nThe draft is in good shape. Both passes found no heading that the first sentence repeats and no closing line that only restates. I did not change the file.\n\n## Structural notes\n\n1. **The result has no number.** \"Incidents dropped a lot after the freeze\" is the vaguest sentence in the post, and it is the one that says the freeze worked. The post argues from the incident log but shows nothing from it. \"Most of our worst outages\" has the same problem.\n   - Fact needed from the writer: how many incidents were there before and after the March freeze?\n   - Fact needed from the writer: how many of the worst outages started on a Friday?\n\n2. **The batching is a second cause, and the post does not finish it.** Paragraph 2 gives one cause (the authors go home), then adds the Friday train. The post never says what happened to the train after the freeze.\n   - Fact needed from the writer: did the freeze change the batching, or does the same batch now ship on Monday?\n\n3. **The Monday queue appears twice.** \"The Monday queue got longer, which we expected\" states the cost, and then the last paragraph states it again. Move the queue into the cost paragraph, or cut \"which we expected\". This is a safe cut, because the idea stays in the last paragraph.\n\n**The single change that matters most:** put the before and after incident counts in place of \"a lot\".\n\n## Line notes\n\n- **\"The batching made rollbacks slower.\"** It repeats the sentence before it, but it also carries the consequence. Do not cut it outright. Fold it into the sentence before it, for example \"...so a rollback meant guessing which change to undo.\"\n- **\"The pattern was hard to miss once we read the incident log.\"** The sentence before it already makes the claim. Keep the incident log, because it is the evidence, and say what the log showed.\n- **\"Friday deploys fail for a dull reason.\"** \"Dull\" promises a reveal. This sentence opens the paragraph, so rewrite it and keep the link: \"Friday deploys fail because the people who wrote the change go home.\"\n- **\"Weekends got quieter\"** repeats the incidents sentence. Cut the clause or merge it into that sentence.\n- **\"Ana put it plainly:\"** announces the quote. \"Ana said:\" is enough.\n- **\"one Friday train\"** and **\"retro\"** are jargon.\n  - Fact needed from the writer: do your readers know \"release train\" and \"retro\"?\n- **\"Nobody argued.\"** The two passes disagree. One says it is short and true. The other says the quote already does the work. This cut depends on whether you want the beat, so it is your decision.\n\n## Keep these\n\n- \"When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back.\" This is the best sentence in the draft.\n- Ana's quote, untouched.\n- \"A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer.\"\n- The last sentence. It repeats part of paragraph 2, but it is the only place where the post takes a position on the cost.\n\nMost of the line notes are safe tightening, and `tighten` can apply them. The three structural notes need facts that only you have.",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "2 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "no-false-alarms",
+          "pass": true,
+          "note": "votes PASS/FAIL/PASS"
+        }
+      ],
+      "total_cost_usd": 1.0381878,
+      "duration_ms": 46854,
+      "num_turns": 5,
+      "artifact": {
+        "last_message": "**8 line notes, 3 structural. Biggest: \"Incidents dropped a lot\" is the only proof in the post, and it has no number.**\n\nBoth passes said the draft is mostly sound: plain, concrete, and it makes its argument once. The file is unchanged.\n\n## Structural\n\n1. **\"Incidents dropped a lot after the freeze.\"** Everything before this sentence is argument, and this sentence is the result. \"A lot\" asks the reader to trust you. Fact needed from the writer: how many incidents before the freeze and how many after, and what period does each count cover?\n\n2. **\"Friday deploys fail for a dull reason.\"** The paragraph promises one reason and then gives two: the authors are gone, and the release tool batches the week's deploys. \"Also\" hides the second reason. Either say that there are two reasons, or remove \"also\" and do not promise one.\n\n3. **\"The batching made rollbacks slower.\"** This is a safe cut. The sentence before it already says the on-call engineer could not tell which change broke production. The sentence also changes the claim, because the problem was not speed but not knowing what to roll back.\n\n## Word and sentence level\n\n- **\"The pattern was hard to miss once we read the incident log.\"** It repeats the sentence before it. Replace it with what the log showed. Fact needed from the writer: how many of the worst outages started on a Friday?\n- **\"dull\"** is a wink at your own explanation, and the reason is the centre of the post. Remove the adjective.\n- **\"one Friday train\"** is jargon. \"One Friday release\" costs the reader nothing.\n- **\"Ana put it plainly:\"** announces the quality of the quote. \"Ana said:\" lets the quote do the work.\n- **\"Weekends got quieter\"** repeats \"incidents dropped\" in other words. Merge it into the number when you have one.\n- **\"which we expected\"** adds nothing. Cut it, or move the longer Monday queue to the cost paragraph, where it belongs. That move is conditional: it depends on whether you want the fourth paragraph to show both sides of the result.\n- **\"The freeze has a cost.\"** One pass wanted to cut this as an announcement. Do not cut it, because it carries the turn from the result to the cost. Rewrite it so the turn survives, for example by joining it to the example that follows.\n- **\"some weeks that delay annoys a customer.\"** \"Some weeks\" is loose. Fact needed from the writer: how often has a customer been affected, if you know?\n\n## Leave alone\n\nAna's quote, \"So in March we froze deploys after noon on Friday,\" the nine-on-Saturday sentence, the two-on-Friday example, \"Nobody argued,\" and the last sentence. The last sentence repeats the idea of reading someone else's code from the second paragraph, and that repeat closes the piece well.\n\n**The one change that matters most:** put the real before-and-after incident numbers in the fourth paragraph.",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    }
+  ]
+}
