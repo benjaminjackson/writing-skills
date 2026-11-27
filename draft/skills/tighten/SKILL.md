@@ -48,11 +48,8 @@ apply step.
    wins: the sentence stays and is listed in the report.
 5. **Apply everything.** Make every surgical and substantive edit via exact find-and-replace.
    Semantic-duplicate cuts — heading-echoes, restatements, closing flourishes that only
-   restate — are surgical and apply by default. Concreteness-for-brevity cuts and any length
-   target are calibrated by the purpose read (see "read the document's purpose" in the shared
-   method file), made while reading in step 1. If the purpose is genuinely ambiguous *and*
-   the document is over 4,000 tokens, ask one line; otherwise default to preserve and note
-   the call in the report. The other exception: an edit that flattens emotional meaning or
+   restate — are surgical and apply by default when every note on that sentence calls it a duplicate. A cut is conditional when a note offers it on a condition ("consider cutting", "if you keep it"), when the notes on that sentence disagree about whether it is a duplicate, or when it is a concreteness-for-brevity cut or a length target (see "read the document's purpose" in the shared method file). Apply a conditional cut only when the document's stated purpose asks for it: the user's request or the document itself says what the document is for, and that purpose asks for it to be short (a length target, a one-pager, "make it punchy"). A purpose you guess from the kind of document does not count. If the purpose is genuinely ambiguous *and*
+   the document is over 4,000 tokens, ask one line; otherwise keep the sentence and list the conditional cut under "Call out anything skipped" in the report. The other exception: an edit that flattens emotional meaning or
    kills a deliberate cadence (see "protect the emotional and rhythmic lines") — skip it and
    note it in the report instead of applying it. A cut that removes the link between two
    sentences is not applied either: rewrite that sentence so the link survives (see the
@@ -116,7 +113,7 @@ Second message, after its first read:
 - **Spotlight the substantive.** These already happened, but they're the ones worth a second
   look — number each, show before→after, and say why it was safe to apply.
 - **Call out anything skipped.** If an edit was held back for flattening emotion or killing a
-  cadence, name it and say why, so the user knows it wasn't missed, it was a judgment call.
+  cadence, or as a conditional cut the stated purpose did not ask for, name it and say why, so the user knows it wasn't missed, it was a judgment call.
 - **List the facts needed.** A phrase whose note contains "Fact needed from the writer:" was
   left as written. Quote each one and say what fact it needs, so the writer can supply it.
 
