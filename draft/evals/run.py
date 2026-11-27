@@ -381,8 +381,8 @@ def main():
     ap.add_argument("--runs", type=positive_int, default=None,
                     help="agent runs per case, each in a new temp dir, saved to "
                          "results/<case>.json (without it: one run, nothing saved)")
-    ap.add_argument("--whole-doc", action="store_true", help="end each prompt with the skill argument whole-doc, so critique and tighten run only Pass 2 at any size; saves to results/<case>.whole-doc.json")
-    ap.add_argument("--chunked", action="store_true", help="end each prompt with the skill argument chunked, so critique and tighten run Pass 1 at any size; saves to results/<case>.chunked.json")
+    ap.add_argument("--whole-doc", action="store_true", help="end each prompt with the skill argument whole-doc, so critique and tighten run only Pass 2; saves to results/<case>.whole-doc.json")
+    ap.add_argument("--chunked", action="store_true", help="end each prompt with the skill argument chunked, so critique and tighten run Pass 1, which they also do with no argument; saves to results/<case>.chunked.json")
     ap.add_argument("--label", default="", help="save results to results/<case>.<label>.json instead of results/<case>.json")
     args = ap.parse_args()
     if args.whole_doc and args.chunked:

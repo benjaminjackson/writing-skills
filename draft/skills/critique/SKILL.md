@@ -25,13 +25,13 @@ surgical/substantive distinction.
 
 ## The workflow
 
-1. **Read & chunk.** Read each document, measure tokens with `tks`, and split it into Pass 1 chunks per the chunking rules in the shared method file. A document at or under the Pass 1 limit in the shared method file skips Pass 1 and goes straight to Pass 2, unless the request ends with `chunked`.
-2. **Pass 1 — line by line.** Unless the document skips Pass 1, launch one `editor` agent per chunk (parallel batches) with the granular prompt. Collect the line-by-line notes.
+1. **Read & chunk.** Read each document, measure tokens with `tks`, and split it into Pass 1 chunks per the chunking rules in the shared method file.
+2. **Pass 1 — line by line.** Unless the request ends with `whole-doc`, launch one `editor` agent per chunk (parallel batches) with the granular prompt. Collect the line-by-line notes.
 3. **Pass 2 — whole doc.** Launch the holistic pass with the whole-doc prompt.
 4. **Merge & report.** Combine Pass 1 + Pass 2 findings, dedupe overlaps, and report per below.
    Make no edits, propose none, ask nothing.
 
-**Switches: `chunked` and `whole-doc`.** They exist to measure whether Pass 1 earns its cost, and each overrides the size limit in the shared method file. If the request ends with the argument `chunked`, run Pass 1 at any size, then Pass 2 with its prompt as written. If it ends with `whole-doc`, run only Pass 2 at any size: still read the document and measure it with `tks`, but do not split it into chunks or run Pass 1, and send the Pass 2 prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those.", since no other pass runs. Merge and report from that pass alone. With neither argument, the size limit decides.
+**Switches: `chunked` and `whole-doc`.** They exist to measure whether Pass 1 earns its cost. `chunked` runs Pass 1 and then Pass 2 with its prompt as written, which is the same as running with no argument; it stays so eval runs can name the setting. If the request ends with `whole-doc`, run only Pass 2: still read the document and measure it with `tks`, but do not split it into chunks or run Pass 1, and send the Pass 2 prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those.", since no other pass runs. Merge and report from that pass alone.
 
 ## Reporting
 

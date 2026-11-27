@@ -3,7 +3,7 @@ type: llm
 focus: last_message
 weight: 2
 ---
-The artifact is a critique of a short post on why a team moved code review to the morning. Three faults were planted in the post on purpose, far apart:
+The artifact is a critique of a short post on why a team moved code review to the morning. Three faults were planted in the post on purpose, each in a different section:
 
 1. **Throat-clearing:** "It is worth pointing out that most of the time a change spent waiting was spent in review, not in CI." The opening phrase says nothing; the sentence should start at "Most".
 2. **A doublet:** "any and all review requests". Two words for one idea; "every review request" or "all review requests" says it.
