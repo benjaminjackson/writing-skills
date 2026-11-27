@@ -108,7 +108,7 @@ This is the line that keeps meaning intact.
   examples plus summary → keep one) is the canonical purpose-gated call (see "read the
   document's purpose").
 - Reduce a phrase repeated for emphasis across sections.
-- Cut or add a word that is part of the claim, as set in `draft/agents/editor.md` under "Hedges and intensifiers".
+- Cut, add or swap a word that states part of a claim. Tighten keeps such words; the rule is in step 5 of `draft/skills/tighten/SKILL.md`.
 - Any restructure.
 
 ## Reading rules
