@@ -228,9 +228,8 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
     return passed, note
 
 
-def run_once(case_dir, prompt, meta, cfg):
-    """Run the agent once in a fresh temp dir and grade it. Returns (results, work, artifact, cost)."""
-    work = tempfile.mkdtemp(prefix=f"eval-{case_dir.name}-")
+def run_once(case_dir, prompt, meta, cfg, work):
+    """Run the agent once in the fresh temp dir work and grade it. Returns (results, work, artifact, cost)."""
     scaffold = (cfg.get("context") or {}).get("scaffold_script")
     if scaffold:
         subprocess.run(scaffold, shell=True, cwd=work, check=True,
@@ -271,7 +270,11 @@ def run_once(case_dir, prompt, meta, cfg):
             ok, note = run_script(grader, EVALS / grader["input"], Path(work) / focus["path"], work)
         else:
             target = focus or {"source": "file", "path": "post.md"}
-            ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
+            try:
+                ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
+            except subprocess.TimeoutExpired as error:
+                # A judge call that hangs fails this one grader, not the whole run.
+                ok, note = False, f"judge timed out after {error.timeout} s"
             # None means the judge gave no verdict; the run records a failure, and the note says why.
             if ok is None:
                 ok = False
@@ -291,13 +294,21 @@ def score_case(case_dir, tags, runs, append=""):
         prompt = f"{prompt.rstrip()} {append}"
     finished = []
     for _ in range(runs):
+        # The temp dir is made here, so a run that raises still says where its transcript is.
+        work = tempfile.mkdtemp(prefix=f"eval-{case_dir.name}-")
         try:
-            finished.append(run_once(case_dir, prompt, meta, cfg))
-        except Exception as error:
-            # One run that raises must not throw away the runs that already finished.
-            # The failed run is kept as a single failing grader named run-error.
+            finished.append(run_once(case_dir, prompt, meta, cfg, work))
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError, OSError) as error:
+            # A single run can fail this way, so keep it as a failed run and go on.
+            # cost["run_error"] marks it, so save_results leaves it out of the pass counts.
             note = f"run raised {type(error).__name__}: {error}"
-            finished.append(([("run-error", False, note)], None, {}, {}))
+            finished.append(([("run-error", False, note)], work, {}, {"run_error": note}))
+        except Exception as error:
+            # Anything else is most likely a bug in the runner or a grader file, and it
+            # would fail every later run too. Stop, but hand the finished runs to main(),
+            # which saves them before it lets the error through.
+            error.finished_runs = finished
+            raise
     return case_dir.name, finished
 
 
@@ -315,8 +326,12 @@ SKILL_PATHS = ["--", "draft", ":!draft/evals"]
 MEASURED_PATHS = ["--", "draft", ":!draft/evals/results"]
 
 
-def save_results(name, runs, label=""):
-    """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill."""
+def save_results(name, runs, label="", incomplete=False):
+    """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill.
+
+    Pass counts cover only the runs that finished; runs that raised are counted in run_errors.
+    incomplete is True when the case stopped early on an unexpected error.
+    """
     out = {
         "case": name,
         "skill_sha": git("log", "-1", "--format=%H", *SKILL_PATHS),
@@ -325,18 +340,24 @@ def save_results(name, runs, label=""):
         "judge_model": JUDGE_MODEL,
         "label": label or None,
         "runs": len(runs),
+        "run_errors": 0,
+        "incomplete": incomplete,
         "pass_counts": {},
         "results": [],
     }
     passes = {}
-    for results, _work, artifact, cost in runs:
+    for results, work, artifact, cost in runs:
+        if cost.get("run_error"):
+            out["run_errors"] += 1
+            out["results"].append({"run_error": cost["run_error"], "work": work})
+            continue
         graders = []
         for grader_name, ok, note in results:
             graders.append({"name": grader_name, "pass": ok, "note": note})
             passes[grader_name] = passes.get(grader_name, 0) + (1 if ok else 0)
         out["results"].append({"graders": graders, "total_cost_usd": cost.get("total_cost_usd"), "duration_ms": cost.get("duration_ms"), "num_turns": cost.get("num_turns"), "timed_out": cost.get("timed_out"), "artifact": artifact})
     for grader_name, count in passes.items():
-        out["pass_counts"][grader_name] = f"{count}/{len(runs)}"
+        out["pass_counts"][grader_name] = f"{count}/{len(runs) - out['run_errors']}"
     path = EVALS / "results" / (f"{name}.{label}.json" if label else f"{name}.json")
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(out, indent=2) + "\n")
@@ -476,7 +497,15 @@ def main():
             save = False
     failed = 0
     for case_dir in cases:
-        out = score_case(case_dir, args.tag, args.runs or 1, append)
+        try:
+            out = score_case(case_dir, args.tag, args.runs or 1, append)
+        except Exception as error:
+            # score_case attaches the runs that finished before the error; getattr gives None if it did not.
+            finished = getattr(error, "finished_runs", None)
+            if save and finished:
+                saved = save_results(case_dir.name, finished, label, incomplete=True)
+                print(f"       saved incomplete: {saved.relative_to(REPO)}")
+            raise
         if not out:
             continue
         name, runs = out
