@@ -1,0 +1,1 @@
+../../graders/room-debated.md

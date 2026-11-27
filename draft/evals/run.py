@@ -11,15 +11,16 @@ Usage:
     python3 draft/evals/run.py --tag trigger      # one tag
     python3 draft/evals/run.py                    # everything
     python3 draft/evals/run.py --case X --runs 3  # repeat runs, saved to results/X.json
+    python3 draft/evals/run.py --evals pitch/evals --skill sharpen --runs 3  # another plugin's suite
 """
 import argparse, datetime, json, re, shlex, shutil, subprocess, sys, tempfile, os
 from pathlib import Path
 
 import yaml
 
-EVALS = Path(__file__).resolve().parent
-PLUGIN = EVALS.parent
-REPO = PLUGIN.parent
+REPO = Path(__file__).resolve().parent.parent.parent
+# This file, relative to the repo, for git pathspecs.
+RUNNER = str(Path(__file__).resolve().relative_to(REPO))
 JUDGE_MODEL = "claude-haiku-4-5-20251001"
 # A grader gives up when this many judge replies have had no PASS or FAIL line,
 # so it asks the judge again at most NO_VERDICT_LIMIT - 1 times.
@@ -117,9 +118,28 @@ def strip_leading_comment(text):
     return frontmatter + text[match.end():]
 
 
+def run_files(spec, workdir):
+    """Return {relative path: text} for every file in workdir that matches the glob in a `source: run` focus."""
+    pattern = spec.get("glob")
+    if not pattern:
+        return {}
+    files = {}
+    for f in sorted(Path(workdir).glob(pattern)):
+        if f.is_file():
+            files[str(f.relative_to(workdir))] = f.read_text()
+    return files
+
+
 def read_target(spec, workdir, last_message):
     if not spec or spec == "last_message":
         return last_message
+    if isinstance(spec, dict) and spec.get("source") == "run":
+        # The whole run: its last message, then each file matching `glob`. One grader can
+        # then judge a skill that answers in chat and a skill that writes a file.
+        parts = [f"# LAST MESSAGE\n\n{last_message}"]
+        for name, text in run_files(spec, workdir).items():
+            parts.append(f"# FILE {name}\n\n{text}")
+        return "\n\n".join(parts)
     if isinstance(spec, dict) and spec.get("source") == "file":
         f = Path(workdir) / spec["path"]
         if not f.exists():
@@ -195,7 +215,7 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
     judge gave no verdict, so callers can tell a broken judge from a FAIL.
     """
     if g["type"] == "baseline":
-        base = (REPO / "draft" / "evals" / g["baseline_file"]).read_text()
+        base = (EVALS / g["baseline_file"]).read_text()
         artifact = f"# BASELINE (before)\n\n{base}\n\n# PRODUCED (after)\n\n{artifact}"
     prompt = (f"{rubric}\n\n--- ARTIFACT UNDER JUDGEMENT ---\n\n{artifact}\n\n"
               "--- END ---\n\nWork through the rubric's questions, then end your reply "
@@ -204,7 +224,10 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
     # scoring FAIL then PASS. The real harness votes 2 of 3, so this does too.
     # A reply with no PASS or FAIL line is not a vote and is never guessed as PASS
     # or FAIL. The grader gives up on the NO_VERDICT_LIMIT-th such reply.
-    votes = []
+    votes, counts = [], []
+    # A rubric that asks for a "COUNT: n" line passes only at 0, so a vote that
+    # counts more than 0 is a FAIL whatever its last line says.
+    asks_count = "COUNT:" in rubric
     no_verdict = 0
     replies = 0
     while len(votes) < 3:
@@ -218,18 +241,32 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
             if no_verdict >= NO_VERDICT_LIMIT:
                 return None, f"judge gave no verdict in {no_verdict} replies; votes {'/'.join(votes) or 'none'}"
             continue
+        if asks_count:
+            # The last COUNT line of each vote goes into the note, so the number lands
+            # in the saved results. A vote with no COUNT line shows as "?", so the
+            # counts line up with the votes.
+            # \W* skips markdown marks such as ** around the label and the number.
+            found = re.findall(r"^\W*COUNT:\W*(\d+)", out, re.M | re.I)
+            if found and int(found[-1]) > 0:
+                verdict = "FAIL"
+            counts.append(found[-1] if found else "?")
         votes.append(verdict)
         if votes.count("PASS") == 2 or votes.count("FAIL") == 2:
             break
     passed = votes.count("PASS") > votes.count("FAIL")
     note = f"votes {'/'.join(votes)}"
+    if counts:
+        note += f", counts {'/'.join(counts)}"
     if no_verdict:
         note += f", replies with no verdict asked again: {no_verdict}"
     return passed, note
 
 
-def run_once(case_dir, prompt, meta, cfg, work):
-    """Run the agent once in the fresh temp dir work and grade it. Returns (results, work, artifact, cost)."""
+def run_once(case_dir, prompt, meta, cfg, work, skill=""):
+    """Run the agent once in the fresh temp dir work and grade it. Returns (results, work, artifact, cost).
+
+    A grader with `only_with: NAME` runs only when --skill is NAME.
+    """
     scaffold = (cfg.get("context") or {}).get("scaffold_script")
     if scaffold:
         subprocess.run(scaffold, shell=True, cwd=work, check=True,
@@ -255,10 +292,14 @@ def run_once(case_dir, prompt, meta, cfg, work):
     artifact = {"last_message": last}
     for grader_file in sorted((case_dir / "graders").glob("*.md")):
         grader, rubric = split_front_matter(grader_file)
+        if grader.get("only_with") and grader["only_with"] != skill:
+            continue
         focus = grader.get("focus")
         focus_is_file = isinstance(focus, dict) and focus.get("source") == "file"
         if focus_is_file:
             artifact[focus["path"]] = read_target(focus, work, last)
+        if isinstance(focus, dict) and focus.get("source") == "run":
+            artifact.update(run_files(focus, work))
         if grader["type"] == "tool_used":
             ok, note = grade_tool_used(grader, tools)
         elif grader["type"] == "regex":
@@ -282,14 +323,21 @@ def run_once(case_dir, prompt, meta, cfg, work):
     return results, work, artifact, cost
 
 
-def score_case(case_dir, tags, runs, append=""):
-    """Run a case `runs` times, each in a new temp dir. Returns (name, [run, ...]) or None."""
+def score_case(case_dir, tags, runs, append="", skill=""):
+    """Run a case `runs` times, each in a new temp dir. Returns (name, [run, ...]) or None.
+
+    The prompt's {skill} is replaced with `skill`; a prompt that has one needs --skill.
+    """
     meta, prompt = split_front_matter(case_dir / "prompt.md")
     if tags and not (set(tags) & set(meta.get("tags", []))):
         return None
     cfg = {}
     if (case_dir / "case.yaml").exists():
         cfg = yaml.safe_load((case_dir / "case.yaml").read_text()) or {}
+    if "{skill}" in prompt:
+        if not skill:
+            sys.exit(f"{case_dir.name}: its prompt names {{skill}}, so pass --skill")
+        prompt = prompt.replace("{skill}", skill)
     if append:
         prompt = f"{prompt.rstrip()} {append}"
     finished = []
@@ -297,7 +345,7 @@ def score_case(case_dir, tags, runs, append=""):
         # The temp dir is made here, so a run that raises still says where its transcript is.
         work = tempfile.mkdtemp(prefix=f"eval-{case_dir.name}-")
         try:
-            finished.append(run_once(case_dir, prompt, meta, cfg, work))
+            finished.append(run_once(case_dir, prompt, meta, cfg, work, skill))
         except (subprocess.TimeoutExpired, subprocess.CalledProcessError, OSError) as error:
             # A single run can fail this way, so keep it as a failed run and go on.
             # cost["run_error"] marks it, so save_results leaves it out of the pass counts.
@@ -318,15 +366,27 @@ def git(*args):
                           text=True, check=True).stdout.strip()
 
 
-# Everything under draft/ except the suite itself: the skills, the agent and
-# the references the runs exercise. Results are pinned to its last commit.
-SKILL_PATHS = ["--", "draft", ":!draft/evals"]
-# What must be committed before a result is saved: the skill and the suite,
-# so head_sha describes both. Only the saved results themselves may differ.
-MEASURED_PATHS = ["--", "draft", ":!draft/evals/results"]
+def use_suite(evals_dir):
+    """Point the runner at an eval suite. The plugin under test is the suite's parent directory."""
+    # `global` makes these assignments change the module-level names the other functions read.
+    global EVALS, PLUGIN, SKILL_PATHS, MEASURED_PATHS
+    EVALS = Path(evals_dir).resolve()
+    PLUGIN = EVALS.parent
+    plugin = str(PLUGIN.relative_to(REPO))
+    evals = str(EVALS.relative_to(REPO))
+    # Everything in the plugin except the suite itself: the skills, the agents and
+    # the references the runs exercise. Results are pinned to its last commit.
+    SKILL_PATHS = ["--", plugin, f":!{evals}"]
+    # What must be committed before a result is saved: the skill and the suite,
+    # so head_sha describes both. Only the saved results themselves may differ.
+    # The runner itself is measured too: it lives in draft/evals, outside another suite's plugin.
+    MEASURED_PATHS = ["--", plugin, f":!{evals}/results", RUNNER]
 
 
-def save_results(name, runs, label="", incomplete=False):
+use_suite(Path(__file__).resolve().parent)
+
+
+def save_results(name, runs, label="", incomplete=False, skill=""):
     """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill.
 
     Pass counts cover only the runs that finished; runs that raised are counted in run_errors.
@@ -339,6 +399,7 @@ def save_results(name, runs, label="", incomplete=False):
         "date": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
         "judge_model": JUDGE_MODEL,
         "label": label or None,
+        "skill": skill or None,
         "runs": len(runs),
         "run_errors": 0,
         "incomplete": incomplete,
@@ -366,46 +427,15 @@ def save_results(name, runs, label="", incomplete=False):
 
 def calibrate():
     """Judges only, against hand-written known-bad and known-good artifacts."""
-    pairs = [
-        ("no-fabrication/graders/no-invented-material.md", "fabrication"),
-        ("sentence-outline-not-labels/graders/every-line-is-a-claim.md", "outline"),
-        ("short-form-restraint/graders/no-three-beat.md", "threebeat"),
-        ("names-orphan-notes/graders/orphan-named.md", "orphan"),
-        ("register-survives-fill-in/graders/holds-the-register.md", "register"),
-        ("joints-after-fill-in/graders/last-sentence-sets-up-next.md", "joints"),
-        ("joints-after-fill-in/graders/no-section-scale-restatement.md", "section"),
-        ("topic-is-not-a-claim/graders/brief-asks-for-register.md", "askregister"),
-        ("counts-come-from-the-file/graders/counts-match-the-source.md", "counts"),
-        ("harvest-before-restructure/graders/names-what-it-keeps.md", "harvest"),
-        ("facts-match-claim-width/graders/facts-prove-the-claim-above.md", "width"),
-        ("no-fabrication/graders/asks-for-the-gap.md", "askgap"),
-        ("critique-flags-planted-faults/graders/raises-all-three.md", "raised"),
-        ("critique-quiet-on-clean-twin/graders/no-false-alarms.md", "falsealarm"),
-        # One known-bad file per planted fault, so each fault is shown to fail.
-        ("tighten-fixes-planted-faults/graders/faults-gone.md", "faultsgone",
-         ("bad-throat", "bad-doublet", "bad-this", "good")),
-        ("tighten-fixes-planted-faults/graders/meaning-kept.md", "meaning"),
-        ("tighten-light-on-clean-twin/graders/meaning-kept.md", "meaningclean"),
-        ("critique-treats-praise-as-content/graders/praise-is-content.md", "praise"),
-        ("critique-flags-planted-faults-long/graders/raises-all-three.md", "raisedlong"),
-        ("tighten-fixes-planted-faults-long/graders/faults-gone.md", "faultsgonelong", ("bad-throat", "bad-doublet", "bad-this", "good")),
-        ("tighten-fixes-planted-faults-long/graders/meaning-kept.md", "meaninglong"),
-    ]
-    # Script graders, run on their own known-bad and known-good output files.
-    # invented.py gets one known-bad file per thing it detects.
-    script_pairs = [
-        ("tighten-fixes-planted-faults/graders/nothing-invented.md", "invented",
-         ("bad", "bad-number", "bad-quote", "bad-requote", "bad-name", "good")),
-        ("tighten-light-on-clean-twin/graders/nothing-invented.md", "inventedclean", ("bad", "good")),
-        ("tighten-light-on-clean-twin/graders/changed-little.md", "changed", ("bad", "good")),
-        ("tighten-fixes-planted-faults-long/graders/nothing-invented.md", "inventedlong", ("bad", "good")),
-    ]
+    # calibration/pairs.yaml lists each judge (`judges`) and script grader (`scripts`)
+    # with the stem of its calibration files and, optionally, the suffixes to try.
+    listing = yaml.safe_load((EVALS / "calibration" / "pairs.yaml").read_text())
     work = tempfile.mkdtemp(prefix="eval-calib-")
     allok = True
-    for grader_path, stem, *suffix_list in pairs:
-        grader, rubric = split_front_matter(EVALS / grader_path)
-        suffixes = suffix_list[0] if suffix_list else ("bad", "good")
-        for suffix in suffixes:
+    for entry in listing.get("judges") or []:
+        grader, rubric = split_front_matter(EVALS / entry["grader"])
+        stem = entry["stem"]
+        for suffix in entry.get("suffixes", ["bad", "good"]):
             want_pass = suffix.startswith("good")
             artifact_text = (EVALS / "calibration" / f"{stem}-{suffix}.md").read_text()
             got, note = grade_llm(grader, rubric, artifact_text, work)
@@ -419,9 +449,10 @@ def calibrate():
             allok &= ok
             print(f"  {'ok  ' if ok else 'BAD '} {stem}-{suffix}: judge said {verdict}, "
                   f"wanted {'PASS' if want_pass else 'FAIL'}")
-    for grader_path, stem, suffixes in script_pairs:
-        grader, _rubric = split_front_matter(EVALS / grader_path)
-        for suffix in suffixes:
+    for entry in listing.get("scripts") or []:
+        grader, _rubric = split_front_matter(EVALS / entry["grader"])
+        stem = entry["stem"]
+        for suffix in entry.get("suffixes", ["bad", "good"]):
             want_pass = suffix.startswith("good")
             artifact_path = EVALS / "calibration" / f"{stem}-{suffix}.md"
             got, note = run_script(grader, EVALS / grader["input"], artifact_path, work)
@@ -443,6 +474,8 @@ def positive_int(text):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--evals", default=None, help="the eval suite to run (default: draft/evals); the plugin under test is its parent directory")
+    ap.add_argument("--skill", default="", help="fill {skill} in each prompt with this name; results save to results/<case>.<skill>.json")
     ap.add_argument("--calibrate", action="store_true")
     ap.add_argument("--tag", action="append", default=[])
     ap.add_argument("--case", default=None)
@@ -460,9 +493,15 @@ def main():
         mode = "whole-doc"
     elif args.chunked:
         mode = "chunked"
+    # With --skill the results are named after the skill, so another label could
+    # overwrite or be mistaken for another skill's results.
+    if args.skill and (args.label or mode):
+        ap.error("--skill saves to results/<case>.<skill>.json; it cannot be used with --label, --chunked or --whole-doc")
     if mode and args.label and args.label != mode:
         ap.error(f"--{mode} saves to results/<case>.{mode}.json; leave out --label or pass --label {mode}")
-    label = args.label or mode
+    if args.evals:
+        use_suite(args.evals)
+    label = args.label or mode or args.skill
     if label and not re.fullmatch(r"[A-Za-z0-9_-]+", label):
         ap.error("--label takes letters, digits, - and _ only")
     # The mode is also the skill argument the prompt ends with.
@@ -492,18 +531,18 @@ def main():
     if save:
         dirty = git("status", "--porcelain", *MEASURED_PATHS)
         if dirty:
-            print("NOT SAVING results: uncommitted changes under draft/ "
-                  "outside draft/evals/results:\n" + dirty)
+            print(f"NOT SAVING results: uncommitted changes to {RUNNER} or under {PLUGIN.relative_to(REPO)}/ "
+                  f"outside {EVALS.relative_to(REPO)}/results:\n" + dirty)
             save = False
     failed = 0
     for case_dir in cases:
         try:
-            out = score_case(case_dir, args.tag, args.runs or 1, append)
+            out = score_case(case_dir, args.tag, args.runs or 1, append, args.skill)
         except Exception as error:
             # score_case attaches the runs that finished before the error; getattr gives None if it did not.
             finished = getattr(error, "finished_runs", None)
             if save and finished:
-                saved = save_results(case_dir.name, finished, label, incomplete=True)
+                saved = save_results(case_dir.name, finished, label, incomplete=True, skill=args.skill)
                 print(f"       saved incomplete: {saved.relative_to(REPO)}")
             raise
         if not out:
@@ -515,7 +554,7 @@ def main():
                 failed += 0 if ok else 1
             print(f"       artifacts: {work}  cost: {cost.get('total_cost_usd')} USD, {cost.get('duration_ms')} ms, timed out: {cost.get('timed_out')}")
         if save:
-            print(f"       saved: {save_results(name, runs, label).relative_to(REPO)}")
+            print(f"       saved: {save_results(name, runs, label, skill=args.skill).relative_to(REPO)}")
     print(f"\n{failed} grader failure(s)")
     sys.exit(1 if failed else 0)
 

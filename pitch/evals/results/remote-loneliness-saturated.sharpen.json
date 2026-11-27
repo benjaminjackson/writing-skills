@@ -1,0 +1,78 @@
+{
+  "case": "remote-loneliness-saturated",
+  "skill_sha": "2967434cf6d7ca7a3535827e22ed077cf5e67803",
+  "head_sha": "755f0302705465f4184df0e752efc35a3bdf673a",
+  "date": "2026-11-27T01:03:00-05:00",
+  "judge_model": "claude-haiku-4-5-20251001",
+  "label": "sharpen",
+  "runs": 3,
+  "pass_counts": {
+    "editor-ran": "3/3",
+    "kills": "1/3"
+  },
+  "results": [
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "kills",
+          "pass": false,
+          "note": "votes FAIL/PASS/FAIL"
+        }
+      ],
+      "total_cost_usd": 0.9199826,
+      "duration_ms": 44112,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, word for word.\n\n**Verdict: revise and resubmit.** I'm assuming a general-interest magazine like The Atlantic or Vox, since you didn't name an outlet. The topic is real, but this is a topic and not yet a story. It's also the most common version of a remote-work story, so as written I wouldn't run it.\n\n**The one question that would most change my call:** What do you know, or what could you find out, that contradicts \"remote work is making us lonely\"? The evidence is more contested than your pitch suggests.\n\n- Gallup found fully remote workers report more loneliness (25%) than on-site workers (16%), with hybrid in between at 21%. See [Gallup](https://www.gallup.com/workplace/645566/remote-workers-lonelier.aspx).\n- A Boston University team (Hadley and colleagues) found only a slight gap, with other factors mattering more. The lead author calls \"remote work causes loneliness\" too simplistic. That finding comes from a search summary and I haven't read the study myself. Check it before you rely on it.\n- The MIT Sloan Management Review piece \"[The Loneliness of the Hybrid Worker](https://sloanreview.mit.edu/article/the-loneliness-of-the-hybrid-worker)\" suggests colleague support matters more than location.\n- Axios has already run \"[Why workers feel lonely no matter where they work](https://www.axios.com/2024/10/21/loneliness-work-from-home-remote)\". Office workers are lonely too.\n\nYour pitch is built to prove its headline. Where's the open question? If the real finding is that the office doesn't fix loneliness either, that is a better and more surprising story than the one you've pitched.\n\n**Newsworthiness**\n- Why now? The 2020 shift is almost six years old, and the Surgeon General's \"epidemic\" advisory came out in [May 2023](https://www.hhs.gov/sites/default/files/surgeon-general-social-connection-advisory.pdf). I see no peg. What happened recently, such as return-to-office mandates, new data, or a company reversing course, that makes this a story this month?\n- That advisory describes loneliness as predating the pandemic. Nearly half of US adults reported it, and young-adult rates rose every year from 1976 to 2019. How does that fit your claim that remote work created the problem?\n- What would a reader know after your piece that they don't already know from the dozen articles Google will show them?\n\n**Story**\n- Can you state the story in one sentence that isn't the topic? \"Remote workers are lonely\" is a topic.\n- Who is your protagonist? \"Three or four remote workers\" who say they feel isolated will all sound alike. Whose situation has stakes, a before and after, or a decision? Think of someone who went back to the office and found it didn't help, or someone who built a community around remote work.\n- The ending is tips for staying connected. That's service journalism stapled to a feature, and it says you have no arc. What does the piece discover by the end?\n- Where's the tension? Right now everyone agrees with everyone.\n\n**Resonance**\n- \"Readers will recognise themselves\" is an assumption. Is the reader a remote worker, a manager deciding on return-to-office policy, or someone who hates their commute? Each wants something different.\n- Why this magazine? Which of its recent pieces does yours add to?\n- Who gets left out? Your pitch treats \"knowledge workers\" as one group. Are younger workers who never had an office lonelier than mid-career ones who remember it? Are caregivers, people in rural areas, or disabled workers who gained flexibility affected differently?\n\n**Standards**\n- You say surveys \"keep showing\" this. Which ones? Have you read the studies, or only the coverage? Loneliness (a feeling) and isolation (time spent alone) are different things, and the surveys measure them differently.\n- Your sourcing is the people who feel lonely, a psychologist, and the survey numbers. Where is the skeptic, such as a researcher who thinks location isn't the cause? Where is the employer or manager? Self-reports of isolation are also not evidence of cause, so how will you handle that?\n- The psychologist is there to confirm that loneliness is bad. Everyone already knows that. Who could tell us something we don't know?\n\n**What to bring back:** a one-sentence angle that isn't the topic, a protagonist, a current peg, the specific studies you've read, and at least one source who disagrees with your premise. If the contradicting evidence holds up, I'd pitch yourself the stronger story: why loneliness at work is hard to blame on the location."
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "kills",
+          "pass": false,
+          "note": "votes FAIL/FAIL"
+        }
+      ],
+      "total_cost_usd": 0.8978105000000001,
+      "duration_ms": 43931,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, relayed as written.\n\n**Verdict: revise and resubmit.** I'm assuming a general-interest magazine along the lines of The Atlantic or Vox, since the writer named no outlet.\n\n**Why it isn't there yet**\n\nThe pitch is a topic with a conclusion already attached. \"Remote work is making us lonely\" is the answer, and nothing in the reporting plan could change it. That is a problem of fairness and of open questions. The pitch reads as advocacy, not inquiry.\n\nIt is also an old story. Remote-work loneliness has been covered for years. Gallup's 2024 global report found fully remote workers more lonely (25%) than on-site workers (16%), with hybrid workers at 21%: [Gallup](https://www.gallup.com/workplace/645566/remote-workers-lonelier-office-peers.aspx). MIT Sloan Management Review has run [The Loneliness of the Hybrid Worker](https://sloanreview.mit.edu/article/the-loneliness-of-the-hybrid-worker). The writer's plan (a few interviews, a psychologist, survey numbers, tips) is what a reader would get from a search. By the news values framework, the pitch has some impact and proximity, but no timeliness and no novelty. Why does this run now, in late 2026, and not in 2021?\n\n**The evidence is messier than the pitch assumes, and that is where the story is**\n\n- The gap between remote and on-site workers is small in some studies. MIT Sloan found 22% of people felt often or always isolated when working from home, against 19% in the office: [MIT Sloan](https://sloanreview.mit.edu/article/the-loneliness-of-the-hybrid-worker). The same piece found the biggest factor was lack of support from colleagues, not location.\n- A Boston University study of more than 1,000 remote workers in 55 countries reported that remote work can be less lonely than office work: [The Next Web](https://thenextweb.com/news/study-just-how-many-remote-workers-are-actually-lonely).\n- A 2026 working paper argues that comparing remote and on-site workers directly suffers from self-selection bias, and tests the causal question with a quasi-natural experiment: [Uni-Trier paper](https://www.uni-trier.de/fileadmin/fb4/prof/VWL/EWF/Research_Papers/2026-04.pdf). I only saw a search summary of it, so I can't vouch for its findings.\n\n\"Epidemic\" is also a stretch of the Surgeon General's advisory. The 2023 advisory, \"Our Epidemic of Loneliness and Isolation,\" said about half of U.S. adults reported measurable loneliness even before the pandemic: [HHS advisory](https://www.hhs.gov/sites/default/files/surgeon-general-social-connection-advisory.pdf), [NPR](https://www.npr.org/2023/05/02/1173418268/loneliness-connection-mental-health-dementia-surgeon-generalamerica.html). It did not single out remote work. Citing it as support for \"remote work created an epidemic\" borrows authority it doesn't give.\n\n**Questions for the writer, most important first**\n\n1. What is the open question? If the real answer is \"it depends,\" who gets lonely working from home, and who doesn't? Some of the research points to colleague support, not location, as the driver. What would you find out that you don't already believe?\n2. Why now? What has changed lately: return-to-office mandates, new data, a company that tried to fix this? What is the peg?\n3. Who is your protagonist? Three or four interviewees \"about how isolated they feel\" are quotes, not a story. Can you follow one person or one workplace through a scene, a decision or a change?\n4. Where is the other side? Who is thriving remotely, and why? Have you read the studies that find little or no gap, and the selection-bias critique? Right now the pitch is one-sided.\n5. What does the psychologist add? Is there a named expert, a named study, and a reason this person's view is worth the space?\n6. Why does the ending have to be tips? Tips make this a service piece. What would a reporter find out if the story had to end somewhere less predictable?\n7. Why this magazine? What have we run, and what gap does this fill?\n\n**A path forward**\n\nIf you come back with a narrower question, I'd read it again. Examples: \"Why do some remote workers get lonely and others don't?\" or \"What are the few employers who've solved it actually doing?\" Put a named person or workplace at the center, and treat the contested research as part of the story, not something to skip. That is a green-light candidate. The current version is not."
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "kills",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 0.8993457999999999,
+      "duration_ms": 45720,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, word for word.\n\n---\n\n**Verdict: revise and resubmit.** I'm assuming a general-interest magazine along the lines of The Atlantic or the Times Magazine, since you named none. As pitched, this is a topic with a conclusion already attached. It isn't a story yet.\n\nThe one question that would change my answer: what do you know that readers don't already know? Remote work and loneliness is one of the most worn-over subjects of the last six years. The Surgeon General's \"epidemic of loneliness\" advisory came out in May 2023 (https://www.npr.org/2023/05/02/1173418268/loneliness-connection-mental-health-dementia-surgeon-generalamerica.html). Gallup has tracked loneliness by work location for years and publishes it as a headline finding (https://www.gallup.com/workplace/645566/remote-workers-lonelier.aspx). Your pitch has no new reporting, no new data and no news hook beyond \"since 2020.\" Today is late November 2026, so I need to know why this runs now and not in 2022. If you have an answer, put it first. A new study, a wave of return-to-office mandates, or something you've seen in the data would all work. If you don't have one, the piece has no peg. A story that could run any month usually shouldn't run in any of them.\n\nThen the claim itself needs to hold up, because I'm not sure it does. The causal line in your title, remote work is making us lonely, is stronger than the evidence you cite. Gallup's own numbers are modest and have shifted. Its 2024 global figures put fully remote workers at 25% lonely, hybrid at 21% and on-site at 16% (see the Gallup page above). Its earlier 2020 to 2021 data showed remote and on-site workers nearly level, with hybrid workers the least lonely. Three questions to work through:\n\n- Are remote workers lonely because they work remotely, or are lonely people more likely to end up in remote jobs? Which studies separate those two?\n- The Surgeon General's advisory covers the whole country, and about half of US adults reported loneliness before the pandemic. How does your story hold up against loneliness that was already there? Where does the advisory say anything about remote work in particular?\n- Have you read the studies, or only the coverage of them? I'd want you to cite the actual research, not \"surveys keep showing.\"\n\nOn the story itself, I see three problems.\n\n- There's no tension. Everyone in your reporting plan agrees with the headline: three or four remote workers who say they feel isolated, plus a psychologist who says loneliness is bad for you. Nobody in it disagrees, and nothing is in doubt. Who in your reporting would say the premise is wrong? People who left offices happily, caregivers and disabled workers for whom remote work was a lifeline, and researchers who find the effect small would all be fair voices.\n- You have no protagonist and no scene. Three or four interviews makes a trend piece. Who is the one person, or the one workplace, whose experience carries 2,000 words? What happens to them?\n- Ending on tips makes it a service piece, and that doesn't fit a feature. It also quietly confirms there's no argument underneath. If the tips are the point, say so and pitch a service piece.\n\nTwo smaller things. I can't tell why this outlet or this reader, beyond \"people who work from home will recognise themselves.\" That tells me the audience is a mirror, not that there's something to learn. And \"knowledge workers\" in the pitch needs defining, because you slide between all remote workers and white-collar ones.\n\nWhat I'd want in a resubmission:\n\n- A one-sentence thesis that someone could disagree with.\n- The news peg.\n- The specific studies, with what each does and doesn't show.\n- One person or place at the center, with access you can describe.\n- At least one source who complicates your premise.\n\nA sharper version might be: the evidence that remote work causes loneliness is thinner than the headlines suggest, so what actually drives it, and who is it hurting? Or follow one company that brought everyone back to the office and see whether the loneliness went away. Either has an open question. What you have now doesn't.\n\n---\n\nThe Gallup figures and the advisory date are the editor's, from its own web search; I did not check them separately."
+      }
+    }
+  ]
+}

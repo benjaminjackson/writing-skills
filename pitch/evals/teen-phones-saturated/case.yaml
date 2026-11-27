@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: teen-phones-saturated
+context:
+  scaffold_script: |
+    cp "$EVAL_FIXTURES/teen-phones-saturated.md" pitch-input.md
