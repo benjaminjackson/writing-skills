@@ -4,7 +4,7 @@ Shared by `tighten` and `critique`. The engine is the **`editor`** sub-agent
 (`subagent_type: editor`), Deirdre McCloskey. She has only the `Read` tool and a hard rule
 against rewriting — hand her prose to judge, expect a critique back, nothing more.
 
-The one thing that makes or breaks results: **don't overload her.** A fresh agent reading a
+Past about 2,000 tokens, what makes or breaks results is not overloading her. A fresh agent reading a
 paragraph or two gives far sharper line edits than one agent drowning in a whole document. So
 chunk, and use a **separate agent per chunk** so each reads with fresh, uncluttered context.
 
@@ -26,6 +26,7 @@ legal sections were left untouched. If the *user explicitly asks* for the legal 
 edited, treat every change to it as substantive and flag rather than apply.
 
 **Pass 1 — line-by-line (section-sized chunks, one fresh agent each):**
+- A document of 2,000 tokens or fewer skips Pass 1: run Pass 2 alone and send its prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those." On the editor eval suite's drafts, from 220 to about 1,500 tokens, Pass 2 alone passed as many graders at lower cost (see draft/evals/README.md).
 - Each chunk is a run of **adjacent blocks packed up to 400 tokens** (aim for 150-400) — keep
   folding in the next block as long as the chunk stays under the ceiling. There's no fixed
   block-count limit: a section with many short blocks (a bulleted list, a run of short

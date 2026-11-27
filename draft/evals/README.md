@@ -213,3 +213,19 @@ No result from before the change that removed the editor's fixed cutting quota c
 uv run --with pyyaml python3 draft/evals/run.py --tag editor --runs 3 --label chunked
 uv run --with pyyaml python3 draft/evals/run.py --tag editor --runs 3 --whole-doc
 ```
+
+**Chunked against whole-doc alone.** Three runs per case per setting, all at skill commit `a2847ee`, in `results/<case>.chunked.json` and `results/<case>.whole-doc.json`. Passes are summed over a case's graders, with any grader below 3/3 named. Cost and duration are the mean per agent run; judge calls are not counted.
+
+| Case | Fixture tokens | Chunked passes | Whole-doc passes | Chunked mean cost | Whole-doc mean cost | Chunked mean duration | Whole-doc mean duration |
+|---|---|---|---|---|---|---|---|
+| `critique-flags-planted-faults` | 257 | 9/9 | 9/9 | $1.09 | $0.97 | 55 s | 50 s |
+| `critique-quiet-on-clean-twin` | 250 | 9/9 | 8/9 (`no-false-alarms` 2/3) | $1.05 | $0.94 | 50 s | 43 s |
+| `critique-treats-praise-as-content` | 220 | 9/9 | 9/9 | $1.04 | $0.93 | 45 s | 42 s |
+| `tighten-fixes-planted-faults` | 257 | 10/12 (`faults-gone` 1/3) | 12/12 | $1.42 | $1.92 | 87 s | 138 s |
+| `tighten-light-on-clean-twin` | 250 | 11/12 (`meaning-kept` 2/3) | 10/12 (`meaning-kept` 1/3) | $1.52 | $1.22 | 96 s | 71 s |
+| Short fixtures, all five | | 48/54 | 48/54 | $1.22 | $1.20 | 67 s | 69 s |
+| `critique-flags-planted-faults-long` | 1,464 | 9/9 | 9/9 | $2.02 | $1.18 | 139 s | 87 s |
+| `tighten-fixes-planted-faults-long` | 1,464 | 10/12 (`meaning-kept` 1/3) | 10/12 (`meaning-kept` 1/3) | $3.34 | $2.48 | 275 s | 224 s |
+| Long fixture, both cases | | 19/21 | 19/21 | $2.68 | $1.83 | 207 s | 156 s |
+
+The short fixtures do not test chunking. At 257 tokens or fewer, Pass 1 is one chunk that covers the whole document, so these rows ask only whether a second, line-by-line read of the same text adds anything, and on these drafts it did not: whole-doc alone passed the same 48 of 54 at about the same mean cost, about 10% cheaper on each critique case and more expensive on `tighten-fixes-planted-faults`. Most per-grader differences are one run, which is noise; the one larger gap, `faults-gone` at 1/3 chunked against 3/3 whole-doc, goes against Pass 1. The long fixture is the only real test of chunking. Chunked critique ran six Pass 1 editors and one Pass 2 editor; whole-doc ran one. Whole-doc alone still found all three faults, which sit more than 400 tokens apart, in every run, passed the same 19 of 21, and cost about a third less. `meaning-kept` failed two of three runs in both settings, mostly because the edit dropped "much" from "much shorter" or cut a clause the judge counted as a claim, so that is a tighten problem that chunking does not fix. This is three runs per setting on one long fixture of about 1,500 tokens; nothing here says what happens on a longer document.
