@@ -68,9 +68,10 @@ apply step.
    - When the rounds stop, put every edit still marked worse back to its before text. That edit is then settled, and the report lists it with the fault it leaves.
    - Until then, the open and worse items, worse first, are the next round's work. Fix a worse edit by rewriting it so the fault it fixed stays fixed and the meaning, cadence or link returns. Put the before text back only when no rewrite does both; that edit is then settled: no later round rechecks it, and the report lists it with the fault it leaves. Then fix the open ones, under the same rules as step 5. That round's recheck covers those edits.
    - On a document over 4,000 tokens, split the recheck the way Pass 2 splits (see the shared method file): each agent gets the whole after text, the before text of its part, and only the edits in its part. In a batch, run the rounds per document.
-7. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
+7. **Claim check.** After the recheck rounds stop and the edited text is written, and before the report, launch one fresh `general-purpose` agent with the claim check prompt below. It gets only the original text, the edited text, and the step-5 rule: the paragraph that starts "Keep every word that states part of a claim", quoted word for word from this file at launch time. It lists each place where the edit cut or swapped words that state part of a claim and the claim is not stated elsewhere in the edited text. Put each listed passage back to its original words, and do not apply anything else it says. This step runs with `whole-doc`, `chunked` or neither, and on a batch it runs once per document. The report lists what it restored.
+8. **Bump `updated:`.** For any edited file that has note frontmatter, set `updated:` to today
    (`MM-DD-YYYY`). Skip files without frontmatter.
-8. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
+9. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
    this is a summary of what changed, not a request for sign-off.
 
 **Switches: `chunked` and `whole-doc`.** They exist to measure whether Pass 1 earns its cost. `chunked` runs Pass 1 and then Pass 2 with its prompt as written, which is the same as running with no argument; it stays so eval runs can name the setting. If the request ends with `whole-doc`, run only Pass 2: still read the document, note its purpose and measure it with `tks`, but do not split it into chunks or run Pass 1, and send the Pass 2 prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those.", since no other pass runs. Triage and apply from that pass alone. The recheck rounds run as usual with either argument or with none.
@@ -101,11 +102,34 @@ Second message, after its first read:
 >
 > Mark each edit closed (the fault is gone and nothing was lost), open (the fault is still there), or worse (the meaning moved, a cadence flattened, or a link between sentences broke), and quote the text for each. Raise new problems only in sentences these edits rewrote; the rest was judged already. Supply no new fact, number, name or example.
 
+**Claim check prompt (step 7)**: send the texts and the rule inline, delimited, in one message.
+
+> Here is a rule about which words state part of a claim:
+>
+> ```
+> <STEP-5 RULE>
+> ```
+>
+> Here is a text before an edit:
+>
+> ```
+> <ORIGINAL>
+> ```
+>
+> and after it:
+>
+> ```
+> <EDITED>
+> ```
+>
+> List each place where the edit cut or swapped words that the rule says state part of a claim, and the claim is not stated elsewhere in the edited text. For each one, quote the original words and the edited words. If there are none, say "None". Suggest no other edit: only list words to put back.
+
 ## Reporting
 
 - **Open with one line.** "N safe tightenings, M structural changes applied." That's the whole
   run at a glance.
 - **Say how the rounds ended.** Name how many rounds ran and which stop rule ended them, quote every edit still open, with what is wrong, and quote every settled edit with the fault it leaves. If the recheck could not go to the same agent in two messages, say so.
+- **Say what the claim check restored.** Quote each passage step 7 put back, or say it restored nothing.
 - **Collapse the surgical.** Don't show every before→after. Give the count and the **rewritten
   final paragraphs**, so the user eyeballs the clean result instead of diffing each word.
 - **List the semantic-duplicate cuts.** Unlike word-level tightenings they're judgment calls,
