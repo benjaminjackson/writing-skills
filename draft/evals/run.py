@@ -21,6 +21,9 @@ EVALS = Path(__file__).resolve().parent
 PLUGIN = EVALS.parent
 REPO = PLUGIN.parent
 JUDGE_MODEL = "claude-haiku-4-5-20251001"
+# A grader gives up when this many judge replies have had no PASS or FAIL line,
+# so it asks the judge again at most NO_VERDICT_LIMIT - 1 times.
+NO_VERDICT_LIMIT = 3
 
 # The caveman and ponytail SessionStart hooks fire in headless runs too, and
 # caveman mode compresses prose, which fails a judge for the wrong reason.
@@ -73,7 +76,11 @@ def parse_stream(raw):
                     "num_turns": (cost.get("num_turns") or 0) + (ev.get("num_turns") or 0)}
             if ev.get("result"):
                 last = ev["result"]
-        for block in (ev.get("message") or {}).get("content", []) or []:
+        message = ev.get("message")
+        # Some events carry "message" as a plain string; only a dict holds content blocks.
+        if not isinstance(message, dict):
+            message = {}
+        for block in message.get("content", []) or []:
             if isinstance(block, dict) and block.get("type") == "tool_use":
                 tools.append(json.dumps(block))
             elif isinstance(block, dict) and block.get("type") == "text" and not last:
@@ -154,12 +161,15 @@ def read_verdict(out):
     Judges write `**PASS**` about as often as `PASS`, and an exact-string match
     scored every one of those as a FAIL. A run that stopped correctly at the
     stage 1 gate was marked red three times before this turned up.
+
+    Returns None when no line is a bare verdict, for example a reply that ends
+    with NONE. grade_llm asks again instead of counting that reply as a FAIL.
     """
     for line in reversed(out.strip().splitlines()):
         bare = line.strip().strip("*_`#. ").upper()
         if bare in ("PASS", "FAIL"):
             return bare
-    return "FAIL"
+    return None
 
 
 def run_script(grader, input_path, output_path, cwd):
@@ -178,6 +188,12 @@ def run_script(grader, input_path, output_path, cwd):
 
 
 def grade_llm(g, rubric, artifact, workdir, log_name=None):
+    """Ask the judge until 2 of 3 votes agree, stopping early once 2 do. Returns (passed, note).
+
+    A reply with no PASS or FAIL line is not a vote; the judge is asked again.
+    After NO_VERDICT_LIMIT such replies, passed is None and the note says the
+    judge gave no verdict, so callers can tell a broken judge from a FAIL.
+    """
     if g["type"] == "baseline":
         base = (REPO / "draft" / "evals" / g["baseline_file"]).read_text()
         artifact = f"# BASELINE (before)\n\n{base}\n\n# PRODUCED (after)\n\n{artifact}"
@@ -186,22 +202,34 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
               "with a final line that is exactly PASS or exactly FAIL.")
     # A single judge sample is unstable: calibration caught the same artifact
     # scoring FAIL then PASS. The real harness votes 2 of 3, so this does too.
+    # A reply with no PASS or FAIL line is not a vote and is never guessed as PASS
+    # or FAIL. The grader gives up on the NO_VERDICT_LIMIT-th such reply.
     votes = []
-    for _ in range(3):
+    no_verdict = 0
+    replies = 0
+    while len(votes) < 3:
         out = run_claude(prompt, workdir, None, plugin=False, model=JUDGE_MODEL)
-        verdict = read_verdict(out)
-        votes.append(verdict)
+        replies += 1
         if log_name:
-            (Path(workdir) / f"_judge-{log_name}-{len(votes)}.txt").write_text(out)
+            (Path(workdir) / f"_judge-{log_name}-{replies}.txt").write_text(out)
+        verdict = read_verdict(out)
+        if verdict is None:
+            no_verdict += 1
+            if no_verdict >= NO_VERDICT_LIMIT:
+                return None, f"judge gave no verdict in {no_verdict} replies; votes {'/'.join(votes) or 'none'}"
+            continue
+        votes.append(verdict)
         if votes.count("PASS") == 2 or votes.count("FAIL") == 2:
             break
     passed = votes.count("PASS") > votes.count("FAIL")
-    return passed, f"votes {'/'.join(votes)}"
+    note = f"votes {'/'.join(votes)}"
+    if no_verdict:
+        note += f", replies with no verdict asked again: {no_verdict}"
+    return passed, note
 
 
-def run_once(case_dir, prompt, meta, cfg):
-    """Run the agent once in a fresh temp dir and grade it. Returns (results, work, artifact, cost)."""
-    work = tempfile.mkdtemp(prefix=f"eval-{case_dir.name}-")
+def run_once(case_dir, prompt, meta, cfg, work):
+    """Run the agent once in the fresh temp dir work and grade it. Returns (results, work, artifact, cost)."""
     scaffold = (cfg.get("context") or {}).get("scaffold_script")
     if scaffold:
         subprocess.run(scaffold, shell=True, cwd=work, check=True,
@@ -217,9 +245,10 @@ def run_once(case_dir, prompt, meta, cfg):
         partial = error.stdout or ""
         raw = partial.decode() if isinstance(partial, bytes) else partial
         timed_out = True
+    # Save the raw stream first, so it survives if parsing fails.
+    (Path(work) / "_transcript.jsonl").write_text(raw)
     last, tools, cost = parse_stream(raw)
     cost["timed_out"] = timed_out
-    (Path(work) / "_transcript.jsonl").write_text(raw)
     (Path(work) / "_last_message.txt").write_text(last)
 
     results = []
@@ -241,7 +270,14 @@ def run_once(case_dir, prompt, meta, cfg):
             ok, note = run_script(grader, EVALS / grader["input"], Path(work) / focus["path"], work)
         else:
             target = focus or {"source": "file", "path": "post.md"}
-            ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
+            try:
+                ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
+            except subprocess.TimeoutExpired as error:
+                # A judge call that hangs fails this one grader, not the whole run.
+                ok, note = False, f"judge timed out after {error.timeout} s"
+            # None means the judge gave no verdict; the run records a failure, and the note says why.
+            if ok is None:
+                ok = False
         results.append((grader_file.stem, ok, note))
     return results, work, artifact, cost
 
@@ -256,7 +292,24 @@ def score_case(case_dir, tags, runs, append=""):
         cfg = yaml.safe_load((case_dir / "case.yaml").read_text()) or {}
     if append:
         prompt = f"{prompt.rstrip()} {append}"
-    return case_dir.name, [run_once(case_dir, prompt, meta, cfg) for _ in range(runs)]
+    finished = []
+    for _ in range(runs):
+        # The temp dir is made here, so a run that raises still says where its transcript is.
+        work = tempfile.mkdtemp(prefix=f"eval-{case_dir.name}-")
+        try:
+            finished.append(run_once(case_dir, prompt, meta, cfg, work))
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError, OSError) as error:
+            # A single run can fail this way, so keep it as a failed run and go on.
+            # cost["run_error"] marks it, so save_results leaves it out of the pass counts.
+            note = f"run raised {type(error).__name__}: {error}"
+            finished.append(([("run-error", False, note)], work, {}, {"run_error": note}))
+        except Exception as error:
+            # Anything else is most likely a bug in the runner or a grader file, and it
+            # would fail every later run too. Stop, but hand the finished runs to main(),
+            # which saves them before it lets the error through.
+            error.finished_runs = finished
+            raise
+    return case_dir.name, finished
 
 
 def git(*args):
@@ -273,8 +326,12 @@ SKILL_PATHS = ["--", "draft", ":!draft/evals"]
 MEASURED_PATHS = ["--", "draft", ":!draft/evals/results"]
 
 
-def save_results(name, runs, label=""):
-    """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill."""
+def save_results(name, runs, label="", incomplete=False):
+    """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill.
+
+    Pass counts cover only the runs that finished; runs that raised are counted in run_errors.
+    incomplete is True when the case stopped early on an unexpected error.
+    """
     out = {
         "case": name,
         "skill_sha": git("log", "-1", "--format=%H", *SKILL_PATHS),
@@ -283,18 +340,24 @@ def save_results(name, runs, label=""):
         "judge_model": JUDGE_MODEL,
         "label": label or None,
         "runs": len(runs),
+        "run_errors": 0,
+        "incomplete": incomplete,
         "pass_counts": {},
         "results": [],
     }
     passes = {}
-    for results, _work, artifact, cost in runs:
+    for results, work, artifact, cost in runs:
+        if cost.get("run_error"):
+            out["run_errors"] += 1
+            out["results"].append({"run_error": cost["run_error"], "work": work})
+            continue
         graders = []
         for grader_name, ok, note in results:
             graders.append({"name": grader_name, "pass": ok, "note": note})
             passes[grader_name] = passes.get(grader_name, 0) + (1 if ok else 0)
         out["results"].append({"graders": graders, "total_cost_usd": cost.get("total_cost_usd"), "duration_ms": cost.get("duration_ms"), "num_turns": cost.get("num_turns"), "timed_out": cost.get("timed_out"), "artifact": artifact})
     for grader_name, count in passes.items():
-        out["pass_counts"][grader_name] = f"{count}/{len(runs)}"
+        out["pass_counts"][grader_name] = f"{count}/{len(runs) - out['run_errors']}"
     path = EVALS / "results" / (f"{name}.{label}.json" if label else f"{name}.json")
     path.parent.mkdir(exist_ok=True)
     path.write_text(json.dumps(out, indent=2) + "\n")
@@ -346,9 +409,14 @@ def calibrate():
             want_pass = suffix.startswith("good")
             artifact_text = (EVALS / "calibration" / f"{stem}-{suffix}.md").read_text()
             got, note = grade_llm(grader, rubric, artifact_text, work)
-            ok = got == want_pass
+            if got is None:
+                # A judge that gives no verdict is broken for good and bad pairs alike.
+                ok = False
+                verdict = f"no verdict ({note})"
+            else:
+                ok = got == want_pass
+                verdict = "PASS" if got else "FAIL"
             allok &= ok
-            verdict = "PASS" if got else "FAIL"
             print(f"  {'ok  ' if ok else 'BAD '} {stem}-{suffix}: judge said {verdict}, "
                   f"wanted {'PASS' if want_pass else 'FAIL'}")
     for grader_path, stem, suffixes in script_pairs:
@@ -429,7 +497,15 @@ def main():
             save = False
     failed = 0
     for case_dir in cases:
-        out = score_case(case_dir, args.tag, args.runs or 1, append)
+        try:
+            out = score_case(case_dir, args.tag, args.runs or 1, append)
+        except Exception as error:
+            # score_case attaches the runs that finished before the error; getattr gives None if it did not.
+            finished = getattr(error, "finished_runs", None)
+            if save and finished:
+                saved = save_results(case_dir.name, finished, label, incomplete=True)
+                print(f"       saved incomplete: {saved.relative_to(REPO)}")
+            raise
         if not out:
             continue
         name, runs = out
