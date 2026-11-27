@@ -21,6 +21,8 @@ EVALS = Path(__file__).resolve().parent
 PLUGIN = EVALS.parent
 REPO = PLUGIN.parent
 JUDGE_MODEL = "claude-haiku-4-5-20251001"
+# How many judge replies with no PASS or FAIL line one grader asks again before it gives up.
+NO_VERDICT_LIMIT = 3
 
 # The caveman and ponytail SessionStart hooks fire in headless runs too, and
 # caveman mode compresses prose, which fails a judge for the wrong reason.
@@ -158,12 +160,15 @@ def read_verdict(out):
     Judges write `**PASS**` about as often as `PASS`, and an exact-string match
     scored every one of those as a FAIL. A run that stopped correctly at the
     stage 1 gate was marked red three times before this turned up.
+
+    Returns None when no line is a bare verdict, for example a reply that ends
+    with NONE. grade_llm asks again instead of counting that reply as a FAIL.
     """
     for line in reversed(out.strip().splitlines()):
         bare = line.strip().strip("*_`#. ").upper()
         if bare in ("PASS", "FAIL"):
             return bare
-    return "FAIL"
+    return None
 
 
 def run_script(grader, input_path, output_path, cwd):
@@ -190,17 +195,30 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
               "with a final line that is exactly PASS or exactly FAIL.")
     # A single judge sample is unstable: calibration caught the same artifact
     # scoring FAIL then PASS. The real harness votes 2 of 3, so this does too.
+    # A reply with no PASS or FAIL line is not a vote. It is asked again, up to
+    # NO_VERDICT_LIMIT times per grader, and never guessed as PASS or FAIL.
     votes = []
-    for _ in range(3):
+    no_verdict = 0
+    replies = 0
+    while len(votes) < 3:
         out = run_claude(prompt, workdir, None, plugin=False, model=JUDGE_MODEL)
-        verdict = read_verdict(out)
-        votes.append(verdict)
+        replies += 1
         if log_name:
-            (Path(workdir) / f"_judge-{log_name}-{len(votes)}.txt").write_text(out)
+            (Path(workdir) / f"_judge-{log_name}-{replies}.txt").write_text(out)
+        verdict = read_verdict(out)
+        if verdict is None:
+            no_verdict += 1
+            if no_verdict >= NO_VERDICT_LIMIT:
+                return False, f"judge gave no verdict in {no_verdict} replies; votes {'/'.join(votes) or 'none'}"
+            continue
+        votes.append(verdict)
         if votes.count("PASS") == 2 or votes.count("FAIL") == 2:
             break
     passed = votes.count("PASS") > votes.count("FAIL")
-    return passed, f"votes {'/'.join(votes)}"
+    note = f"votes {'/'.join(votes)}"
+    if no_verdict:
+        note += f", replies with no verdict asked again: {no_verdict}"
+    return passed, note
 
 
 def run_once(case_dir, prompt, meta, cfg):
