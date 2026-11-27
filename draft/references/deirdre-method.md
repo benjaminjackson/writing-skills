@@ -87,7 +87,7 @@ This is the line that keeps meaning intact.
 **Surgical (preserves all meaning):**
 - Cut throat-clearing and "this is / there is" padding.
 - Weak verb → strong; Latinate → Saxon (utilize→use, prior to→before).
-- Kill intensifiers and hedges (very, really, genuinely, completely, quite).
+- Kill intensifiers and hedges (very, really, genuinely, completely, quite). What counts as one is set in `draft/agents/editor.md` under "Hedges and intensifiers".
 - Passive → active when the actor is known.
 - Collapse a doublet or elegant variation to one word.
 - Trim a sentence or clause whose idea already lives elsewhere in the piece — a **verbatim or
@@ -108,6 +108,7 @@ This is the line that keeps meaning intact.
   examples plus summary → keep one) is the canonical purpose-gated call (see "read the
   document's purpose").
 - Reduce a phrase repeated for emphasis across sections.
+- Cut or add a word that sets how much, how often or how far a claim reaches.
 - Any restructure.
 
 ## Reading rules
