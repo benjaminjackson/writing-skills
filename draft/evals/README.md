@@ -42,7 +42,7 @@ Four things keep the judges honest: they see the source of truth alongside the a
 
 `calibration/` holds a hand-written **known-bad** and **known-good** artifact for each judge. The bad fabrication post has an invented statistic and an invented quotation planted in it deliberately.
 
-`--calibrate` runs the judges against those files and spawns **no agent runs at all**. If a judge passes the known-bad artifact, the judge is broken and you find out before spending anything.
+`calibration/pairs.yaml` lists which grader is judged on which files. `--calibrate` runs the judges against those files and spawns **no agent runs at all**. If a judge passes the known-bad artifact, the judge is broken and you find out before spending anything.
 
 This caught a real problem on its first run: the fabrication judge scored the same good artifact FAIL, then PASS. It was not broken, it was noisy, and `run.py` was taking a single sample where the native harness votes 2 of 3. The runner now votes too. Without calibration that instability would have shown up later as a flaky suite nobody trusted.
 
@@ -189,6 +189,8 @@ Eleven cases, tagged `editor`, test the `editor` sub-agent through the two skill
 - a number word or phrase outside its list (zero to twenty, hundred, thousand, million, percent, half, dozen, twice), such as "thirty", "a third" or "doubled". No list covers them all.
 
 `type: script` is a grader type this runner adds. The native `claude plugin eval` harness may not support it. The grader's `command` can use `{evals}`, `{input}` (the grader's `input` file) and `{output}` (the file the run wrote). Exit 0 is a pass, and stdout is the note.
+
+**Other suites.** `--evals DIR` runs another plugin's suite, such as `pitch/evals`; the plugin under test is the suite's parent directory, and every path this README gives under `draft/` then means that plugin and that suite. `--skill NAME` fills `{skill}` in each prompt, so one case can run against two skills, and saves to `results/<case>.<NAME>.json`; a prompt that has `{skill}` is refused without it. Three more things this runner adds, which the native harness may not support: `focus: {source: run, glob: PATTERN}` gives a judge the last message followed by every file matching the pattern, for a skill that may or may not write one; `only_with: NAME` on a grader runs it only under `--skill NAME`; and a judge reply with a `COUNT: n` line puts each vote's count in the grader's note.
 
 **Repeat runs and saved results.** `--runs N` runs each case N times, each in a new temp dir, and writes `results/<case>.json`, or `results/<case>.<label>.json` with `--label`, with:
 

@@ -1,0 +1,5 @@
+# Read by run.py --evals pitch/evals --calibrate; the format is described in draft/evals/calibration/pairs.yaml.
+judges:
+  - {grader: graders/kills.md, stem: kills, suffixes: [bad, bad-noprior, good]}
+  - {grader: graders/leaves-alone.md, stem: leaves}
+  - {grader: graders/invented-flaws.md, stem: flaws, suffixes: [bad, good, good-steelman]}

@@ -1,0 +1,30 @@
+# Read by run.py --calibrate. Each grader is judged on calibration/<stem>-<suffix>.md for each suffix; suffixes default to [bad, good], and a suffix starting with "good" must pass.
+judges:
+  - {grader: no-fabrication/graders/no-invented-material.md, stem: fabrication}
+  - {grader: sentence-outline-not-labels/graders/every-line-is-a-claim.md, stem: outline}
+  - {grader: short-form-restraint/graders/no-three-beat.md, stem: threebeat}
+  - {grader: names-orphan-notes/graders/orphan-named.md, stem: orphan}
+  - {grader: register-survives-fill-in/graders/holds-the-register.md, stem: register}
+  - {grader: joints-after-fill-in/graders/last-sentence-sets-up-next.md, stem: joints}
+  - {grader: joints-after-fill-in/graders/no-section-scale-restatement.md, stem: section}
+  - {grader: topic-is-not-a-claim/graders/brief-asks-for-register.md, stem: askregister}
+  - {grader: counts-come-from-the-file/graders/counts-match-the-source.md, stem: counts}
+  - {grader: harvest-before-restructure/graders/names-what-it-keeps.md, stem: harvest}
+  - {grader: facts-match-claim-width/graders/facts-prove-the-claim-above.md, stem: width}
+  - {grader: no-fabrication/graders/asks-for-the-gap.md, stem: askgap}
+  - {grader: critique-flags-planted-faults/graders/raises-all-three.md, stem: raised}
+  - {grader: critique-quiet-on-clean-twin/graders/no-false-alarms.md, stem: falsealarm}
+  # One known-bad file per planted fault, so each fault is shown to fail.
+  - {grader: tighten-fixes-planted-faults/graders/faults-gone.md, stem: faultsgone, suffixes: [bad-throat, bad-doublet, bad-this, good]}
+  - {grader: tighten-fixes-planted-faults/graders/meaning-kept.md, stem: meaning}
+  - {grader: tighten-light-on-clean-twin/graders/meaning-kept.md, stem: meaningclean}
+  - {grader: critique-treats-praise-as-content/graders/praise-is-content.md, stem: praise}
+  - {grader: critique-flags-planted-faults-long/graders/raises-all-three.md, stem: raisedlong}
+  - {grader: tighten-fixes-planted-faults-long/graders/faults-gone.md, stem: faultsgonelong, suffixes: [bad-throat, bad-doublet, bad-this, good]}
+  - {grader: tighten-fixes-planted-faults-long/graders/meaning-kept.md, stem: meaninglong}
+# Script graders, run on their own known-bad and known-good output files. invented.py gets one known-bad file per thing it detects.
+scripts:
+  - {grader: tighten-fixes-planted-faults/graders/nothing-invented.md, stem: invented, suffixes: [bad, bad-number, bad-quote, bad-requote, bad-name, good]}
+  - {grader: tighten-light-on-clean-twin/graders/nothing-invented.md, stem: inventedclean}
+  - {grader: tighten-light-on-clean-twin/graders/changed-little.md, stem: changed}
+  - {grader: tighten-fixes-planted-faults-long/graders/nothing-invented.md, stem: inventedlong}
