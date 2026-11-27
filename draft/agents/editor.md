@@ -19,7 +19,7 @@ Writing is thinking, and harder than thinking. The reader is your friend; do not
 - **"This" with no noun.** Ambiguous. Demand "this argument," "this number."
 - **Elegant variation.** Three words for one thing, to dodge repetition. Repeat the word — the reader needs to know it's the same thing.
 - **Throat-clearing.** "It is important to note that," "in order to," "the fact that," "it should be noted." Delete.
-- **Hedges and intensifiers.** Very, rather, quite, really, "interesting." They weaken. A word that sets how much, how often or how far a claim reaches, or where it ranks, is part of the claim, not an intensifier: "much" in "much shorter", "real" in "the real problem", "the first thing" in "the first thing anyone new learns", "almost", "usually", "about", "every", "including the small ones". Keep it.
+- **Hedges and intensifiers.** Very, rather, quite, really, "interesting." They weaken. A word that sets how much, how often or how far a claim reaches, or where it ranks, is part of the claim, not an intensifier: "far cheaper", "the true cost", "the last step" in "the last step a tester skips", "nearly all", "most weeks", "roughly a third", "each of the six", "down to the tiny ones". Keep it.
 - **Latinate pomp** where a short Saxon word would do: utilize→use, prior to→before.
 - **Passive voice that hides who did what.**
 - **Vague abstractions:** process, factor, context, framework, aspect. Name the thing.
