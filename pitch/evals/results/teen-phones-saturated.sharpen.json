@@ -1,0 +1,78 @@
+{
+  "case": "teen-phones-saturated",
+  "skill_sha": "2967434cf6d7ca7a3535827e22ed077cf5e67803",
+  "head_sha": "755f0302705465f4184df0e752efc35a3bdf673a",
+  "date": "2026-11-27T01:10:30-05:00",
+  "judge_model": "claude-haiku-4-5-20251001",
+  "label": "sharpen",
+  "runs": 3,
+  "pass_counts": {
+    "editor-ran": "3/3",
+    "kills": "1/3"
+  },
+  "results": [
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "kills",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 0.868377,
+      "duration_ms": 47004,
+      "num_turns": 2,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, relayed as written.\n\nAssumption: no outlet is named beyond \"a general-interest magazine,\" so I judged it against a serious general-interest magazine with Atlantic or Vox-level standards.\n\n**Verdict: kill as pitched. Revise and resubmit if you pick a real story.**\n\nThe topic is big, but this pitch isn't a story yet. It states a conclusion and plans to collect people who agree with it. I'd stop at the first question below, because your answer to it decides whether the rest is worth doing.\n\n**The question that matters most: what is the open question here?**\nYour first sentence says phones \"are causing\" a mental health crisis, and the plan never tests that claim. The evidence you offer is that the timing lines up (2012, smartphones). That is correlation, and the cause is exactly what researchers dispute. Candice Odgers, a psychologist, argues that the trend charts don't establish causation. She says teens who already struggle may use these platforms more, and she cites an analysis across more than 70 countries that found no consistent link with well-being ([Fortune](https://fortune.com/well/article/anxious-generation-researcher-social-media-youth-mental-health-crisis-criticism), [Odgers in Nature](https://internet.psych.wisc.edu/wp-content/uploads/532-Master/532-UnitPages/Unit-11/Odgers_Nature_2024.pdf)). Jean Twenge says there is a \"reasonably robust\" consensus that the two are at least partly linked ([search summary of Chronicle and others](https://www.chronicle.com/article/jonathan-haidt-started-a-social-media-war-did-he-win?sra=true)). Your pitch mentions none of this. Right now it reads as advocacy dressed as reporting. That fails our fairness standard, and it fails the \"what's new\" test.\n\n**Is it newsworthy? No, not as written.**\n- **Timeliness:** I see no peg. Why this piece in late November 2026 and not a year ago? Haidt's book *The Anxious Generation* and the argument around it have been covered at length. I didn't verify the book's publication date, but the Odgers rebuttal and the CJR and Chronicle pieces in my search show a debate that is already well covered ([CJR](https://www.cjr.org/the_media_today/social_media_harm_teens_jonathan_haidt.php)).\n- **Novelty:** \"Phones bad, schools banning, parents pledging\" is the version every reader has already seen. Why would they click yours?\n- **Impact:** This is high, but you never say which readers or which decision it affects.\n\n**Does it work as a story? No.**\n- It is a topic, not a narrative. There is no protagonist, no scene and no tension. \"Two or three parents, a teacher, a psychologist, and a research summary\" is a roundup.\n- The ending is \"advice for parents.\" That is service journalism that pre-answers the question. It also asks readers to act on a causal claim you haven't established.\n- \"Experts say\u2026 rewiring adolescent brains\" is a vague attribution. Which experts? \"Rewiring\" is a metaphor, not a finding.\n- Your sources all lean the same way. Parents who took the phones away will say it helped. That tells us nothing about whether it works.\n\n**Does it meet our standards? Not yet.**\n- Sourcing: nothing is named or cited. Have you read the studies, or only the coverage of them?\n- Missing voices: the researchers who disagree, and the teens themselves. They are the people being written about and they have no voice here.\n- Disclosure: do you have a personal stake, such as being a parent of a teen or a past piece on this topic? And what are your clips?\n\n**Stories I would take a pitch on:**\n1. **Do school phone bans work?** This is the strongest one and it has a real peg, because bans are spreading fast. The search I ran found little on the ban evidence itself, so I haven't confirmed what is out there. Find the evaluations, visit two schools with different results, and report what changed in grades, in mood and in how kids behave. This has a testable question and a possible surprise.\n2. **The fight over the evidence.** Take the Haidt versus Odgers dispute and ask what each side would need to see to change its mind. That is conflict and novelty, if you can get both on the record.\n3. **One teenager's year without a phone, or one school's.** Tell it as a narrative and let the research serve the scene.\n\n**Questions to answer before you resubmit:**\n1. What question could your reporting answer either way? If the answer is \"I already know,\" it isn't a story.\n2. Why now? Name a specific peg (a study, a law, a district's first-year results).\n3. Who is your best skeptic, and will they talk to you?\n4. Which studies will you cite, and have you read the originals?\n5. Who is the protagonist whose experience anchors the piece, and what do you have access to?\n6. Where do the teens speak for themselves?\n7. Why this magazine? What have we run on this, and what gap does yours fill?"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "kills",
+          "pass": false,
+          "note": "votes FAIL/PASS/FAIL"
+        }
+      ],
+      "total_cost_usd": 0.8809054000000001,
+      "duration_ms": 43496,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, relayed as it came back.\n\n**VERDICT: Revise and resubmit, and as written it is close to a kill.** (Assumption: no outlet was named, so I read this against a general-interest magazine at about 2,000 words.)\n\nThe one question that would most change my call: what do you know that Jonathan Haidt's book and the dozens of pieces written about it don't? The pitch gives me nothing new. It restates the thesis of *The Anxious Generation* (2024), and it states that thesis as settled fact when the science is openly contested.\n\n**Reasons**\n\n1. Novelty and timeliness fail. There is no peg, so I can't tell why this runs now rather than any other week of the last three years. I searched, and the coverage is heavy. Examples are NBC News on the [Haidt book debate](https://www.nbcnews.com/tech/social-media/smartphones-youth-mental-health-jonathan-haidt-book-debate-rcna145928), [CJR](https://www.cjr.org/the_media_today/social_media_harm_teens_jonathan_haidt.php), [The New Republic](https://newrepublic.com/article/190384/cell-phones-really-destroying-kids-mental-health), [The Chronicle](https://www.chronicle.com/article/jonathan-haidt-started-a-social-media-war-did-he-win?sra=true) and [Fortune](https://fortune.com/well/article/anxious-generation-researcher-social-media-youth-mental-health-crisis-criticism). School phone bans and parent pledges, which you mention as a trend, are no longer new either. \"Timeless\" here means the piece is not urgent.\n\n2. The central claim is not established, and the pitch treats it as proven. \"Causing\" rests on two things: the 2012 timing, and \"experts say.\" Critics such as Candice Odgers say those charts show only parallel trends. Others dispute whether experiments that cut social media use show real benefits. Jean Twenge calls the consensus \"reasonably robust,\" while Dylan Selterman says the studies are mixed and vary in quality. (These characterizations come from a search summary I did not check against the original studies. Verify each one before relying on it.) The pitch is closer to advocacy than to a question, and the plan, interviewing parents who already took the phones away, only confirms the conclusion. Which experts, which studies? \"Rewiring brains\" is a strong claim that the pitch doesn't support. Have you read the underlying studies or only the coverage?\n\n3. The story has no narrative. It is a topic with a lifestyle-advice ending. I see no protagonist, no scene, and no unresolved tension. The one real tension is whether the phone is actually the cause, and the pitch doesn't see it. Three parents who confiscated phones are anecdotes with a built-in outcome. A summary of research plus advice for parents is the standard explainer the reader has already seen.\n\n4. The reporting plan is thin and one-sided. Missing voices are the skeptics (Odgers, Przybylski) and the teenagers themselves. Teens are the subjects of the piece and none are interviewed. The pitch also does not say who the teacher or psychologist is, or how you would reach them.\n\n**Questions you must answer**\n\n1. What is the one-sentence story only you can tell? Not the topic: the narrative, and who is in it.\n2. Why now? What is the peg: a new study, a policy result, a ban's first measured outcomes, a court case? Name it.\n3. Where is the open question? Will you report the causation fight honestly, including the evidence that cuts against your thesis, and what would change your mind?\n4. Who are the skeptic researchers you'll interview, and which specific studies will you cite? Name them.\n5. Which teenagers will you talk to, and will any be kids who got their phones back or never lost them? Do you have any access to schools where bans have run long enough to show results?\n6. Do you have any personal stake (are you a parent who has made this choice)? If so, disclose it.\n\n**Paths forward:** the strongest salvageable version is narrow and reported. Examples are one school or district that banned phones and what the data and the kids actually show a year or two on, or the dispute itself, told as a story about how a confident public consensus got ahead of the evidence. Pick one, answer the questions above, and resubmit."
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "kills",
+          "pass": false,
+          "note": "votes FAIL/FAIL"
+        }
+      ],
+      "total_cost_usd": 0.8561495,
+      "duration_ms": 38774,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, as delivered.\n\n**Verdict: revise and resubmit.** I'm judging this against a general-interest magazine at about 2,000 words, since you didn't name an outlet.\n\nThe one question that would change my call: what do you know that the last two years of coverage doesn't? This argument has been made at book length. Jonathan Haidt's *The Anxious Generation* is the best-known version. It has also been contested in public by researchers such as Candice Odgers, who says the evidence is \"a mix of no, small and mixed associations\" and that Haidt's claims are \"not supported by science\" ([NBC News](https://www.nbcnews.com/tech/social-media/smartphones-youth-mental-health-jonathan-haidt-book-debate-rcna145928), and the [New Republic piece](https://newrepublic.com/article/190384/cell-phones-really-destroying-kids-mental-health)). As pitched, you'd be summarizing a debate you haven't joined. Your pitch has no new reporting and no news peg, and it takes a side in a fight that is still open.\n\nHere is what's wrong, and what I'd ask you to work through.\n\n1. **The causal claim is the weakest part of the pitch.** \"Started rising around 2012, exactly when smartphones became common\" is a correlation, and your headline (\"rewiring our kids\") states it as cause. Who disputes it, and what do they say is driving the rise instead? Twenge's challenge to critics is that they must say what else explains it (same NBC link). If you can't state the best counterargument fairly, you're writing advocacy, not reporting. Your source list has no skeptic on it.\n\n2. **\"Experts say\" is carrying the whole piece.** Which experts, and which studies? Have you read the papers themselves, or only the coverage of them? \"Rewiring adolescent brains\" is a strong neurological claim. What is the actual evidence for it?\n\n3. **Where is the story?** You have a topic and a plan to summarize the research. What is the narrative, and who is the protagonist? A pair of parents who took phones away is an anecdote. What happened to those kids afterward, and what did the families give up to do it? Why those two or three parents, and how will you find them?\n\n4. **Why now?** Schools banning phones and parents signing pledges are your best material, and you only mention them in passing. Do those bans work? Is anyone measuring? That is a live question with real stakes, and it's new in a way the general case isn't. Try pitching \"do school phone bans work, and how would we know?\" and see whether that is the piece you want to write.\n\n5. **Why would a reader finish this?** Parents of teenagers already know the case against phones. Ending with \"advice for parents\" is the safest and most forgettable close. What would a reader know after your piece that they didn't know before?\n\n6. **Scope.** A child psychologist, a teacher and a few parents will fill 2,000 words with a familiar chorus. A researcher who is skeptical of the causal story, and a teenager speaking for themselves, would change that. Teenagers are absent from a piece about teenagers.\n\nCome back with three things: one narrow story, a named skeptic you'll interview, and one sentence on what your reporting adds that Haidt's book and its critics didn't.\n\nI could not confirm whether any outlet is currently running this exact angle. The debate coverage I found is linked above."
+      }
+    }
+  ]
+}

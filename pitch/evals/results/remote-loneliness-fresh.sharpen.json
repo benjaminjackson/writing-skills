@@ -1,0 +1,94 @@
+{
+  "case": "remote-loneliness-fresh",
+  "skill_sha": "2967434cf6d7ca7a3535827e22ed077cf5e67803",
+  "head_sha": "755f0302705465f4184df0e752efc35a3bdf673a",
+  "date": "2026-11-27T01:05:24-05:00",
+  "judge_model": "claude-haiku-4-5-20251001",
+  "label": "sharpen",
+  "runs": 3,
+  "pass_counts": {
+    "editor-ran": "3/3",
+    "invented-flaws": "3/3",
+    "leaves-alone": "3/3"
+  },
+  "results": [
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "invented-flaws",
+          "pass": true,
+          "note": "votes PASS/PASS, counts 0/0"
+        },
+        {
+          "name": "leaves-alone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 0.8560637,
+      "duration_ms": 39196,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, as delivered.\n\n---\n\n**Verdict: revise and resubmit.** I'm assuming a general-interest magazine with a news-features bent. The idea is strong, but three things have to be fixed before I'd commission it. I did not search for prior coverage, so I'm making no claim either way about it.\n\n**The peg expires before your draft arrives.** Today is 27 November. The hearing is 14 December, and a draft in three weeks lands around 18 December, after it. As written, you'd be filing a story about a hearing that has already happened. Can you file before the hearing, or reframe so the story survives whatever the hearing decides? The 5 January return date is a second peg, and it's the one that matters to readers. Which one are you writing toward?\n\n**Your central inference is the weakest link, and the pitch doesn't see it.** You treat falling counselling use as evidence that remote staff aren't struggling. I can think of other readings:\n- Remote workers may find it harder to use a county-run line, or may fear being identified.\n- Headcount may have changed, so raw session counts could mislead.\n- The departments that went remote may differ from the ones that stayed on site in other ways.\n\nAre your counts per employee, and does each department have a stable headcount over eight years? Have you asked an occupational-health or EAP researcher whether session volume says anything about loneliness? Without that, the claim \"its own records do not support it\" is stronger than the data. The 6 of 212 exit-interview figure is weaker still. People who left are not the people who stayed and felt isolated, and exit interviews are a notoriously poor place to admit loneliness. What would you say to a board member who makes that argument?\n\n**Fairness and sourcing need more on the page.** You have two of five board members, and only one on the record. Did the board cite any evidence for \"isolation and declining wellbeing\", such as a staff survey? If it did, you have to engage it. If it didn't, that is your sharper story. Also tell me:\n- How you picked the 31 employees, and whether the union introduced you to them.\n- Whether you have any tie to the union.\n- Whether department-level EAP counts raise small-number privacy problems that the county or your lawyer would flag.\n- Whether you have the records in hand and have had the data checked by someone independent.\n\nOne check before I'd assign this: confirm the county's size. Harlan County is a name I associate with a small, rural place, and 4,000 office employees seems high. That's from memory and unverified, but make sure the facts are airtight and say which Harlan County you mean.\n\nFinally, I like the line about the commute costing people sleep. It cuts against both sides' assumptions, and I'd build around it. Who is the one person whose story carries the piece: a remote worker, an on-site worker, or the board member?\n\nCome back with the timing fixed, a plan for testing the counselling data, and the board's own evidence addressed, and I expect to approve it.\n\n---\n\nOne correction to the editor's last check: your pitch says 4,000 employees in total, not 4,000 office employees, so the question to answer is only which Harlan County this is."
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "invented-flaws",
+          "pass": true,
+          "note": "votes PASS/PASS, counts 0/0"
+        },
+        {
+          "name": "leaves-alone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 0.8595877000000001,
+      "duration_ms": 45268,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, as delivered.\n\n**Verdict: revise and resubmit.** I'm assuming a general-interest magazine at about 3,000 words, since no outlet was named. This is close to a green light. The records, the peg and the reader are strong. But the central claim, \"its own records do not support it\", is stronger than the data can carry as pitched.\n\n**The one question that would most change the call:** what does a fall in counselling sessions actually measure? The pitch treats lower use as better wellbeing. It could equally mean the opposite, and the pitch doesn't rule that out.\n- Remote staff may be using private telehealth instead of the county line.\n- The EAP vendor, its hours or its promotion may have changed.\n- Remote workers may feel less able to make a call that colleagues could overhear, or more able.\n- The people who struggled most may have left.\n- Headcount may have changed. Are these raw session counts or rates per employee?\n- Remote and on-site departments are not comparable groups. Which departments went remote, and are they different in age, pay or job type?\n\nIf a county analyst or an outside expert can't tell the writer what this series means, there is a striking chart with no conclusion. Who has the writer shown the data to who isn't on their side?\n\n**Other questions, in order of how much they'd move the call:**\n\n1. **The exit interviews don't answer the board's claim.** Only 6 of 212 leavers cited isolation, but leavers are not the staff who stayed. Who exited, and were remote and on-site leavers asked the same question? Did the board cite any survey or other evidence of its own? \"The evidence the board did not use\" needs proof that they didn't have or use it. What does the board member on the record say when shown the numbers?\n\n2. **Is the story \"the records disprove the board\" or \"the board's case is untested\"?** The second is defensible. The first isn't, because a loneliness claim about remote staff can't be refuted by one counselling line's usage. The best material may be the commute detail from remote workers. It suggests the policy debate is about the wrong loss. Who are the two or three people we meet, and what is the scene? Right now there is no protagonist, just 31 interviewees.\n\n3. **Does the peg hold?** The hearing is 14 December, the draft is due in three weeks (about 18 December), and the return date is 5 January. A magazine will struggle to publish in that gap. When does the piece run, and does it still work if the arbitrator rules before then? What outcome is the grievance actually asking for?\n\n4. **Independence and ethics.**\n   - Did the union help with the records request or the introductions? Say so in the piece.\n   - Are any department-month cells small enough to identify people? Has the data been cleared with the county or an expert?\n   - Are the 12 on-site employees and the other three board members getting an equal hearing?\n\n5. **Basics to confirm before I commit.** Which Harlan County is this? From memory, unverified, the best-known one (Kentucky) is much smaller than a 4,000-employee government would suggest. I did not search for it. I also did not check for prior coverage of the county or of this dispute. Please send the board vote record, the grievance filing and the request response so I can check them.\n\n**What I'd need to green-light:**\n- A one-sentence claim the data can support.\n- Named outside experts, one skeptical of the writer's reading.\n- The county's response to the numbers.\n- One central character.\n\nWith those, I expect to approve."
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "invented-flaws",
+          "pass": true,
+          "note": "votes PASS/PASS, counts 0/0"
+        },
+        {
+          "name": "leaves-alone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 0.939719,
+      "duration_ms": 52244,
+      "num_turns": 3,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "Here is the managing editor's read, unedited.\n\n**Verdict: revise and resubmit. The idea is strong, but the pitch doesn't yet show that the data says what you say it says.**\n\nI'm judging this against a general-interest magazine at about 3,000 words, since you named no outlet.\n\n**The one question that would most change my call.** Why did counselling use in the remote departments fall below its 2018-2019 level from 2023? You read that fall as proof that remote work doesn't cause loneliness. A drop in counselling sessions can mean people are doing better. It can also mean they stopped calling, the county changed how the line works or how it's advertised, or the people who struggled most have left. Before I commit space, I need to know what you've done to rule those out. Specifically:\n- Is the data counts of sessions or counts of distinct employees? Session counts can be skewed by a few heavy users.\n- Are the counts rates per head? Remote departments may have shrunk or grown.\n- Did the programme provider, the access rules or the promotion change at any point between 2018 and 2026?\n- Why were some departments remote and others on site? If the on-site departments are mostly frontline jobs, they aren't a fair comparison group.\n\nYour story's whole claim rests on this comparison. \"Its own records do not support it\" is only fair if the records could have supported it, and counselling use is a rough stand-in for wellbeing. Which expert will tell you whether it's a valid one? A workplace psychologist or an EAP researcher would do. So would a statistician who will look at the raw tables.\n\n**What works.**\n- *Timeliness.* There's a real peg: the 14 December hearing and the 5 January 2027 start date. The hearing is also close, so tell me whether you can get to it and whether it's open.\n- *Novelty and conflict.* A government makes a stated claim about its own staff, and its own records can test that claim. Most return-to-office coverage is opinion against opinion. This is a documented test of a claim.\n- *Reporting.* The records request, 31 interviews and an on-the-record board member are real work. The detail that people lost sleep over the commute and not over colleagues is the best line in the pitch.\n\n**What's missing.**\n1. *Verification.* I searched for the Harlan County vote, the grievance and the hearing and found nothing. The only coverage I found was of similar disputes elsewhere, for example [Vermont](https://vtdigger.org/2026/04/01/vermont-labor-board-says-state-must-end-return-to-office-requirement-for-employees/) and [Multnomah County](https://www.opb.org/article/2026/10/29/multnomah-county-public-union-declares-no-confidence-in-top-officials/). I could not find any prior coverage of your story, which is good for novelty, but it also means I can't confirm the basic facts. Please send me the board resolution, the grievance filing and the hearing notice. Also, a 4,000-employee government in a county named Harlan is hard to place in my head, so tell me which state this is in.\n2. *The exit-interview figure.* 6 of 212 leavers (about 3 percent) cited isolation in 2025. People who leave are not the people who stay and struggle, and the people who left may have been the lonely ones. This number is weaker evidence than you present it as. Do the summaries break leavers out by remote and on site? Does 212 cover all leavers, or only those who did an exit interview?\n3. *Fairness.* You have two of five board members and one is on the record. The board's side of the story is thin. What did the board see that made it say \"isolation and declining wellbeing\"? Is there a survey, or are there manager reports? Ask for them. Does the county give you a chance to respond to the data before publication? It has to.\n4. *Your interview sample.* 19 remote and 12 on site is a good start. How did you find them? If the union gave you introductions, that's a selection bias and a conflict you must disclose. Are any of them speaking on the record? Anonymous employees quoted against their employer is a risk for them, so what is your plan to protect them?\n5. *Privacy.* Counselling data is sensitive. Small departments could make individuals identifiable even from monthly counts. How did the county redact it, and have you checked that nothing you publish could point to a person?\n6. *Protagonist and scene.* I have a dataset and a policy, but no person. Who is the character the reader follows? One remote worker whose commute story anchors the piece would carry 3,000 words better than the spreadsheet will.\n7. *Publication fit.* \"Readers are managers and workers whose employer is making the same argument\" is the right audience. What's the reason a general-interest magazine would run this over a news outlet? My guess is the broader question of what loneliness arguments in workplace policy rest on, but I'd want you to tell me.\n\n**Timeline.** The draft is due in three weeks, which is about 18 December. The hearing is 14 December, so you'd be drafting without knowing the outcome. Do you want the hearing to be the ending, or is the piece better if it doesn't depend on it? I'd decide that now.\n\n**To get a green light, send me:**\n- Your answers on the counselling data, in particular the checks in the first section and a named outside expert who has reviewed the numbers.\n- The primary documents for the vote, grievance and hearing.\n- The board's evidence for its claim and your plan to put the findings to the county before publication.\n- One protagonist.\n\nIf the data holds up after those checks, I'll approve this quickly. If the fall in counselling use turns out to be an artefact, the story becomes something different and also worth telling: what a government actually knew when it ordered 4,000 people back."
+      }
+    }
+  ]
+}
