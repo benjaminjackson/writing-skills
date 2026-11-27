@@ -42,19 +42,23 @@ uv run --with pyyaml python3 draft/evals/run.py --evals pitch/evals --tag pitch 
 
 Results save to `results/<case>.<skill>.json`. Without `--runs`, each case runs once and nothing is saved, which is the smoke run.
 
-Cost, estimated and not yet measured: 4 cases, 2 skills and 3 runs make 24 skill runs, plus 2 smoke runs, about $130 in all. Most of it is page-one-meeting. The judges add about $1 per calibration.
+Cost, measured on 2026-11-27: 4 cases, 2 skills and 3 runs made 24 skill runs, plus 2 smoke runs, $74.08 in reported cost in all. A page-one-meeting run costs about $4.80 and a sharpen run about $0.90. The judges add about $1 per calibration.
 
 ## Results
 
-Not yet run: no paid run starts before Benjamin approves a spending cap.
+Run on 2026-11-27, 3 runs per case and skill, results in `results/<case>.<skill>.json`. No run timed out. In every page-one-meeting run the room made 4 to 6 Agent calls and 24 to 34 SendMessage calls, and sharpen launched the managing-editor agent every time.
 
 | Case | Skill | Kills (n/3) | Leaves alone (n/3) | Invented fatal flaws per run | Mean cost per run |
 |---|---|---|---|---|---|
-| `remote-loneliness-saturated` | page-one-meeting | | — | — | |
-| `remote-loneliness-saturated` | sharpen | | — | — | |
-| `remote-loneliness-fresh` | page-one-meeting | — | | | |
-| `remote-loneliness-fresh` | sharpen | — | | | |
-| `teen-phones-saturated` | page-one-meeting | | — | — | |
-| `teen-phones-saturated` | sharpen | | — | — | |
-| `teen-phones-fresh` | page-one-meeting | — | | | |
-| `teen-phones-fresh` | sharpen | — | | | |
+| `remote-loneliness-saturated` | page-one-meeting | 3/3 | — | — | $4.83 |
+| `remote-loneliness-saturated` | sharpen | 1/3 | — | — | $0.91 |
+| `remote-loneliness-fresh` | page-one-meeting | — | 3/3 | 0, 0, 0 | $4.70 |
+| `remote-loneliness-fresh` | sharpen | — | 3/3 | 0, 0, 0 | $0.89 |
+| `teen-phones-saturated` | page-one-meeting | 3/3 | — | — | $4.98 |
+| `teen-phones-saturated` | sharpen | 1/3 | — | — | $0.87 |
+| `teen-phones-fresh` | page-one-meeting | — | 3/3 | 0, 0, 0 | $4.79 |
+| `teen-phones-fresh` | sharpen | — | 3/3 | 0, 0, 0 | $0.92 |
+
+Over both pairs, page-one-meeting kills 6 of 6 saturated runs and sharpen kills 2 of 6. Both leave the fresh twin alone 6 of 6, and neither invents a fatal flaw. By the decision rule, the debate beats sharpen.
+
+Sharpen's four misses are all Revise and resubmit verdicts that name prior pieces with links. In the two `remote-loneliness-saturated` misses, the main reason is something else (a topic with its conclusion attached, evidence more contested than the pitch says), and the editor calls it an old story only as an "also". The two `teen-phones-saturated` misses are close calls. In run 2 the first reason given is "Novelty and timeliness fail", and the judges voted FAIL 2 to 1 because the reason joins saturation to the lack of a peg. In run 3 the editor opens with "what do you know that the last two years of coverage doesn't?", and the judges voted FAIL 2 to 0 because the six problems listed after it are about reporting and structure. If both close calls counted as kills, sharpen would kill 4 of 6, and the result would not change.
