@@ -21,7 +21,7 @@ Each case runs one skill, chosen with `--skill`. The prompt asks the skill to st
 
 Each grader file holds its own definition; they are not repeated here. The graders live once in `graders/`, and each case's `graders/` links to the ones it uses.
 
-- `kills` (saturated cases): the verdict on the pitch as submitted stops it. The definition comes from the Decision comment on write-034.
+- `kills` (saturated cases): the verdict on the pitch as submitted stops it. The definition comes from the Decision comment on write-034. The judge does not check that a linked piece is real. At merge, every link in the 8 kill runs was requested: 41 of 56 returned 200, 15 returned 403 from sites that block scripts (cdc.gov, JAMA, Axios and similar), none returned 404, and every kill run cites 2 to 11 links that loaded.
 - `leaves-alone` (fresh cases): the verdict does not stop the sound pitch.
 - `invented-flaws` (fresh cases): how many fatal flaws the verdict stands behind that the pitch does not have. It passes at 0, and the count is saved in the grader's note.
 - `room-convened`, `room-debated` (page-one-meeting only) and `editor-ran` (sharpen only): the skill did what it claims, so a score is not a score of a skill that never ran.

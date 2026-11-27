@@ -7,7 +7,7 @@ The artifact is an editorial verdict on a pitch: the reply the editor gave and, 
 Decide whether the verdict **kills** the pitch as submitted. It kills the pitch only if one of these holds:
 
 1. The verdict on the pitch as submitted is **Kill it**.
-2. The verdict on the pitch as submitted is **Revise and resubmit**, AND saturation (the idea has already been done, or is everywhere) is the main reason given, AND the artifact names at least one real prior piece on the idea with a link (a URL).
+2. The verdict on the pitch as submitted is **Revise and resubmit**, AND saturation (the idea has already been done, or is everywhere) is the main reason given, AND the artifact names a prior piece with a URL.
 
 A **Green light** never kills it. A Revise and resubmit whose main reason is something else (weak sourcing, no structure, wrong length) does not kill it. A Revise and resubmit that says the idea is saturated but names no prior piece with a link does not kill it. A new, reshaped angle that the room proposes does not change the verdict on the pitch as submitted: judge the verdict, not the new angle.
 

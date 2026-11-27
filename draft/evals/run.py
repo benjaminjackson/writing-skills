@@ -19,6 +19,8 @@ from pathlib import Path
 import yaml
 
 REPO = Path(__file__).resolve().parent.parent.parent
+# This file, relative to the repo, for git pathspecs.
+RUNNER = str(Path(__file__).resolve().relative_to(REPO))
 JUDGE_MODEL = "claude-haiku-4-5-20251001"
 # A grader gives up when this many judge replies have had no PASS or FAIL line,
 # so it asks the judge again at most NO_VERDICT_LIMIT - 1 times.
@@ -121,8 +123,11 @@ def run_files(spec, workdir):
     pattern = spec.get("glob")
     if not pattern:
         return {}
-    return {str(f.relative_to(workdir)): f.read_text()
-            for f in sorted(Path(workdir).glob(pattern)) if f.is_file()}
+    files = {}
+    for f in sorted(Path(workdir).glob(pattern)):
+        if f.is_file():
+            files[str(f.relative_to(workdir))] = f.read_text()
+    return files
 
 
 def read_target(spec, workdir, last_message):
@@ -220,6 +225,9 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
     # A reply with no PASS or FAIL line is not a vote and is never guessed as PASS
     # or FAIL. The grader gives up on the NO_VERDICT_LIMIT-th such reply.
     votes, counts = [], []
+    # A rubric that asks for a "COUNT: n" line passes only at 0, so a vote that
+    # counts more than 0 is a FAIL whatever its last line says.
+    asks_count = "COUNT:" in rubric
     no_verdict = 0
     replies = 0
     while len(votes) < 3:
@@ -233,13 +241,16 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
             if no_verdict >= NO_VERDICT_LIMIT:
                 return None, f"judge gave no verdict in {no_verdict} replies; votes {'/'.join(votes) or 'none'}"
             continue
+        if asks_count:
+            # The last COUNT line of each vote goes into the note, so the number lands
+            # in the saved results. A vote with no COUNT line shows as "?", so the
+            # counts line up with the votes.
+            # \W* skips markdown marks such as ** around the label and the number.
+            found = re.findall(r"^\W*COUNT:\W*(\d+)", out, re.M | re.I)
+            if found and int(found[-1]) > 0:
+                verdict = "FAIL"
+            counts.append(found[-1] if found else "?")
         votes.append(verdict)
-        # A rubric that asks for a "COUNT: n" line gets the last such line of each vote
-        # into the note, so the number lands in the saved results.
-        # \W* skips markdown marks such as ** around the label and the number.
-        found = re.findall(r"^\W*COUNT:\W*(\d+)", out, re.M | re.I)
-        if found:
-            counts.append(found[-1])
         if votes.count("PASS") == 2 or votes.count("FAIL") == 2:
             break
     passed = votes.count("PASS") > votes.count("FAIL")
@@ -368,13 +379,14 @@ def use_suite(evals_dir):
     SKILL_PATHS = ["--", plugin, f":!{evals}"]
     # What must be committed before a result is saved: the skill and the suite,
     # so head_sha describes both. Only the saved results themselves may differ.
-    MEASURED_PATHS = ["--", plugin, f":!{evals}/results"]
+    # The runner itself is measured too: it lives in draft/evals, outside another suite's plugin.
+    MEASURED_PATHS = ["--", plugin, f":!{evals}/results", RUNNER]
 
 
 use_suite(Path(__file__).resolve().parent)
 
 
-def save_results(name, runs, label="", incomplete=False):
+def save_results(name, runs, label="", incomplete=False, skill=""):
     """Write results/<case>.json, or results/<case>.<label>.json with a label, pinned to the last commit that touched the skill.
 
     Pass counts cover only the runs that finished; runs that raised are counted in run_errors.
@@ -387,6 +399,7 @@ def save_results(name, runs, label="", incomplete=False):
         "date": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
         "judge_model": JUDGE_MODEL,
         "label": label or None,
+        "skill": skill or None,
         "runs": len(runs),
         "run_errors": 0,
         "incomplete": incomplete,
@@ -480,6 +493,10 @@ def main():
         mode = "whole-doc"
     elif args.chunked:
         mode = "chunked"
+    # With --skill the results are named after the skill, so another label could
+    # overwrite or be mistaken for another skill's results.
+    if args.skill and (args.label or mode):
+        ap.error("--skill saves to results/<case>.<skill>.json; it cannot be used with --label, --chunked or --whole-doc")
     if mode and args.label and args.label != mode:
         ap.error(f"--{mode} saves to results/<case>.{mode}.json; leave out --label or pass --label {mode}")
     if args.evals:
@@ -514,7 +531,7 @@ def main():
     if save:
         dirty = git("status", "--porcelain", *MEASURED_PATHS)
         if dirty:
-            print(f"NOT SAVING results: uncommitted changes under {PLUGIN.relative_to(REPO)}/ "
+            print(f"NOT SAVING results: uncommitted changes to {RUNNER} or under {PLUGIN.relative_to(REPO)}/ "
                   f"outside {EVALS.relative_to(REPO)}/results:\n" + dirty)
             save = False
     failed = 0
@@ -525,7 +542,7 @@ def main():
             # score_case attaches the runs that finished before the error; getattr gives None if it did not.
             finished = getattr(error, "finished_runs", None)
             if save and finished:
-                saved = save_results(case_dir.name, finished, label, incomplete=True)
+                saved = save_results(case_dir.name, finished, label, incomplete=True, skill=args.skill)
                 print(f"       saved incomplete: {saved.relative_to(REPO)}")
             raise
         if not out:
@@ -537,7 +554,7 @@ def main():
                 failed += 0 if ok else 1
             print(f"       artifacts: {work}  cost: {cost.get('total_cost_usd')} USD, {cost.get('duration_ms')} ms, timed out: {cost.get('timed_out')}")
         if save:
-            print(f"       saved: {save_results(name, runs, label).relative_to(REPO)}")
+            print(f"       saved: {save_results(name, runs, label, skill=args.skill).relative_to(REPO)}")
     print(f"\n{failed} grader failure(s)")
     sys.exit(1 if failed else 0)
 
