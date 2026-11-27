@@ -25,7 +25,7 @@ surgical/substantive distinction.
 
 ## The workflow
 
-1. **Read & chunk.** Read each document, measure tokens with `tks`, and split it into Pass 1 chunks per the chunking rules in the shared method file.
+1. **Read & chunk.** Read each document, measure tokens with `tks`, and split it into Pass 1 chunks per the chunking rules in the shared method file, unless the request ends with `whole-doc`.
 2. **Pass 1 — line by line.** Unless the request ends with `whole-doc`, launch one `editor` agent per chunk (parallel batches) with the granular prompt. Collect the line-by-line notes.
 3. **Pass 2 — whole doc.** Launch the holistic pass with the whole-doc prompt.
 4. **Merge & report.** Combine Pass 1 + Pass 2 findings, dedupe overlaps, and report per below.
