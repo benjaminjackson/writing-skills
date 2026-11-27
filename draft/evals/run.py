@@ -73,7 +73,11 @@ def parse_stream(raw):
                     "num_turns": (cost.get("num_turns") or 0) + (ev.get("num_turns") or 0)}
             if ev.get("result"):
                 last = ev["result"]
-        for block in (ev.get("message") or {}).get("content", []) or []:
+        message = ev.get("message")
+        # Some events carry "message" as a plain string; only a dict holds content blocks.
+        if not isinstance(message, dict):
+            message = {}
+        for block in message.get("content", []) or []:
             if isinstance(block, dict) and block.get("type") == "tool_use":
                 tools.append(json.dumps(block))
             elif isinstance(block, dict) and block.get("type") == "text" and not last:
@@ -217,9 +221,10 @@ def run_once(case_dir, prompt, meta, cfg):
         partial = error.stdout or ""
         raw = partial.decode() if isinstance(partial, bytes) else partial
         timed_out = True
+    # Save the raw stream first, so it survives if parsing fails.
+    (Path(work) / "_transcript.jsonl").write_text(raw)
     last, tools, cost = parse_stream(raw)
     cost["timed_out"] = timed_out
-    (Path(work) / "_transcript.jsonl").write_text(raw)
     (Path(work) / "_last_message.txt").write_text(last)
 
     results = []
@@ -256,7 +261,16 @@ def score_case(case_dir, tags, runs, append=""):
         cfg = yaml.safe_load((case_dir / "case.yaml").read_text()) or {}
     if append:
         prompt = f"{prompt.rstrip()} {append}"
-    return case_dir.name, [run_once(case_dir, prompt, meta, cfg) for _ in range(runs)]
+    finished = []
+    for _ in range(runs):
+        try:
+            finished.append(run_once(case_dir, prompt, meta, cfg))
+        except Exception as error:
+            # One run that raises must not throw away the runs that already finished.
+            # The failed run is kept as a single failing grader named run-error.
+            note = f"run raised {type(error).__name__}: {error}"
+            finished.append(([("run-error", False, note)], None, {}, {}))
+    return case_dir.name, finished
 
 
 def git(*args):
