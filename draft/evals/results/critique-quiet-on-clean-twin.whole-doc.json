@@ -1,0 +1,94 @@
+{
+  "case": "critique-quiet-on-clean-twin",
+  "skill_sha": "a2847eea96f76cc4c6fb6567691a29edcb40cc01",
+  "head_sha": "bb9de5aff9281fd829ded6593f90371ae41f6d03",
+  "date": "2026-11-26T18:26:46-05:00",
+  "judge_model": "claude-haiku-4-5-20251001",
+  "label": "whole-doc",
+  "runs": 3,
+  "pass_counts": {
+    "editor-ran": "3/3",
+    "no-edit": "3/3",
+    "no-false-alarms": "2/3"
+  },
+  "results": [
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "no-false-alarms",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 0.9384648000000001,
+      "duration_ms": 39348,
+      "num_turns": 5,
+      "artifact": {
+        "last_message": "5 line notes, 3 structural. Biggest: \"Incidents dropped a lot\" is the payoff of the whole piece and it has no number.\n\nDeirdre's overall read is that the draft is mostly clean and she would leave most of it alone. It is 250 tokens, so this was one whole-document pass, and nothing in the file was changed.\n\n## Structural\n\n- **The two claims the argument rests on have no figures.** \"Most of our worst outages started on a Friday\" and \"Incidents dropped a lot after the freeze\" both ask the reader to take your word. Fact needed from the writer: how many incidents before and after the freeze, over what period?\n- **Paragraph 2 gives two causes, and the freeze only obviously fixes one.** The first cause is that the authors go home and the on-call engineer did not write the change. The second is that the release tool batched the week's deploys into one Friday train, which is a tooling problem. Fact needed from the writer: was the batching also fixed, and how?\n- **The same point lands three times.** \"Read an unfamiliar diff\" (paragraph 2), \"debug on Sunday\" (Ana's quote) and \"a weekend spent reading someone else's code\" (last line) all say the same thing. Ana's quote is the strongest and stays. The last line is conditional: it restates, but it is also the only place the piece weighs the cost against the benefit. Keep it, and if you have the numbers, make the comparison concrete there.\n\n## Line notes\n\n- \"The pattern was hard to miss once we read the incident log.\" This repeats the sentence before it. The one new thing is the source, so fold that in: \"Most of our worst outages, the incident log showed, started on a Friday.\"\n- \"Friday deploys fail for a dull reason.\" Deirdre would cut it as an announcement. It carries the turn from what happened to why, so rewrite it so the link survives.\n- \"The batching made rollbacks slower.\" This is a safe cut. The sentence before it already shows the slowness.\n- \"which we expected\" is a safe cut. The next paragraph names the cost anyway.\n- \"The freeze has a cost.\" Deirdre would cut this one too, but it turns the piece from benefit to cost, so rewrite it so the link survives.\n- \"some weeks that delay annoys a customer\" \u2014 \"annoys\" is vague. Fact needed from the writer: is there one concrete case of a delayed fix and what it cost the customer?\n\n## Do not cut\n\n- \"Most of our worst outages started on a Friday.\"\n- \"The people who wrote the change go home, and the people on call over the weekend did not write it.\"\n- Ana's quote and \"Nobody argued.\"\n- \"A fix that is ready at two on Friday waits until Monday morning.\"\n\n## The one change that matters most\n\nReplace \"Incidents dropped a lot\" with the actual before-and-after numbers.",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "no-false-alarms",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        }
+      ],
+      "total_cost_usd": 0.9444697000000001,
+      "duration_ms": 44751,
+      "num_turns": 5,
+      "artifact": {
+        "last_message": "**4 line notes, 2 structural. Biggest: \"Incidents dropped a lot after the freeze\" is the result the whole piece builds to, and it has no number.**\n\nThe draft is in good shape. It has no sentence that restates its heading, no claim-elaborate-summarize padding, and no closing line that only repeats the section. Deirdre found few faults.\n\n## Structural\n\n1. **The evidence is missing where it matters most.** \"Incidents dropped a lot after the freeze\" carries the argument, and the last sentence (\"We decided that cost is smaller\u2026\") depends on it. Fact needed from the writer: how many incidents before the March freeze and how many after, and over what period?\n   - The same gap shows in \"Most of our worst outages started on a Friday\" and \"some weeks that delay annoys a customer\". Fact needed from the writer: how many of the worst outages, and what did a delay cost a customer?\n\n2. **Paragraphs 1 and 2 seem to contradict each other.** This one is my note, not Deirdre's. Paragraph 1 says \"our team shipped whenever a change was ready\". Paragraph 2 says \"Our release tool also batched every deploy from the week into one Friday train\". A reader cannot tell whether changes went out when ready or once a week. Fact needed from the writer: which one happened, or how were both true?\n\n## Line notes\n\n- **\"The pattern was hard to miss once we read the incident log.\"** It only comments on the sentence before it, but it holds the one fact about where the finding came from. Fold the incident log into the sentence before; do not drop it.\n- **\"The batching made rollbacks slower.\"** Deirdre calls it a restatement of the sentence before. I read it as the consequence, which is not stated elsewhere, so this cut is conditional: safe if the piece must be short, a loss if the reader should see why batching hurt.\n- **\"which we expected.\"** It adds little. Cut it, or say what the longer Monday queue looked like (a fact the writer must supply).\n- **\"annoys a customer.\"** Soft and vague. A real case would do more work here.\n\n## Leave alone\n\n- Deirdre recommended cutting \"Friday deploys fail for a dull reason.\" and replacing \"The freeze has a cost.\" with the example that follows it. Both sentences carry the turn from one paragraph to the next, so they stay. Rewrite them if you want them tighter, but keep the link.\n- The lines that carry the piece:\n  - \"Most of our worst outages started on a Friday.\"\n  - \"The people who wrote the change go home, and the people on call over the weekend did not write it.\"\n  - \"we froze deploys after noon on Friday\"\n  - Ana's quote and \"Nobody argued.\"\n  - \"A fix that is ready at two on Friday waits until Monday morning.\"\n\n**The single change that matters most:** replace \"dropped a lot\" with the real incident counts before and after the freeze.\n\nThis was the whole-document pass only, as requested. Nothing in the file was changed.",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "1 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "no-edit",
+          "pass": true,
+          "note": "exit 0: no output"
+        },
+        {
+          "name": "no-false-alarms",
+          "pass": false,
+          "note": "votes FAIL/FAIL"
+        }
+      ],
+      "total_cost_usd": 0.9414624,
+      "duration_ms": 44032,
+      "num_turns": 5,
+      "artifact": {
+        "last_message": "**4 line notes, 1 structural. Biggest: \"Incidents dropped a lot after the freeze\" has no number, and the whole piece rests on it.**\n\nThe draft is in good shape. Deirdre found no heading-echoes, no closing flourish that only restates, and no repetition across paragraphs. Pass 1 did not run (`whole-doc`), so these notes come from the whole-document pass alone, and the file is untouched.\n\n## Structural\n\n- **\"Incidents dropped a lot after the freeze.\"** This is the payoff, and \"a lot\" is vague. Fact needed from the writer: how many incidents before and after the March freeze, and over what period? This is the single change that matters most.\n\n## Line notes\n\n- **\"The batching made rollbacks slower.\"** Deirdre calls it a restatement of the sentence before it, which already says the on-call engineer could not tell which change broke production. It is not a pure duplicate, because slower rollbacks is the consequence and no other sentence states it. Cut it only if the piece is meant to be short and punchy.\n- **\"The pattern was hard to miss once we read the incident log.\"** It adds only the source of the evidence. This is a safe cut if you fold the incident log into the sentence before it.\n- **\"which we expected\"** is a weak aside. Say why you expected the longer Monday queue, or cut the clause.\n- **\"some weeks that delay annoys a customer.\"** Fact needed from the writer: how often, and is there one example? This is optional, because the sentence works without it.\n\n## Two notes from Deirdre I would not act on\n\n- **\"Friday deploys fail for a dull reason.\"** She calls it throat-clearing and wants it cut. It carries the turn from \"this happened\" to \"here is why\", so cutting it breaks the link between the first two paragraphs. If \"dull\" bothers you, rewrite the sentence so the link survives.\n- **\"We decided that cost is smaller than a weekend spent reading someone else's code.\"** She says it repeats Ana's quote and would end on the annoyed customer. This sentence is the only place the piece weighs the cost against the benefit, and without it the piece ends on the downside with no verdict.\n\n## Lines she marked as load-bearing\n\n- \"Most of our worst outages started on a Friday.\"\n- The sentence about reading an unfamiliar diff at nine on Saturday.\n- The sentence about the Friday train.\n- \"So in March we froze deploys after noon on Friday.\"\n- Ana's quote and \"Nobody argued.\"\n- \"A fix that is ready at two on Friday waits until Monday morning.\"",
+        "draft.md": "# Why we stopped deploying on Fridays\n\nFor two years our team shipped whenever a change was ready, Friday afternoons included. Most of our worst outages started on a Friday. The pattern was hard to miss once we read the incident log.\n\nFriday deploys fail for a dull reason. The people who wrote the change go home, and the people on call over the weekend did not write it. When something breaks at nine on Saturday, the on-call engineer has to read an unfamiliar diff before deciding whether to roll back. Our release tool also batched every deploy from the week into one Friday train, and the on-call engineer could not tell which change had broken production. The batching made rollbacks slower.\n\nSo in March we froze deploys after noon on Friday. In the retro, Ana put it plainly: \"I would rather ship on Monday than debug on Sunday.\" Nobody argued.\n\nIncidents dropped a lot after the freeze. Weekends got quieter, and the Monday queue got longer, which we expected.\n\nThe freeze has a cost. A fix that is ready at two on Friday waits until Monday morning, and some weeks that delay annoys a customer. We decided that cost is smaller than a weekend spent reading someone else's code.\n"
+      }
+    }
+  ]
+}
