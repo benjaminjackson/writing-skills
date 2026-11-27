@@ -1,0 +1,113 @@
+{
+  "case": "tighten-fixes-planted-faults-400",
+  "skill_sha": "8c80f9af8364475977adcb07e2aabd1fb60ed6eb",
+  "head_sha": "484c50bdd857d6314c1212f1b2c891d20c1408a4",
+  "date": "2026-11-26T22:44:06-05:00",
+  "judge_model": "claude-haiku-4-5-20251001",
+  "label": "chunked",
+  "runs": 3,
+  "pass_counts": {
+    "editor-ran": "3/3",
+    "faults-gone": "3/3",
+    "meaning-kept": "3/3",
+    "nothing-invented": "2/3"
+  },
+  "results": [
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "5 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "faults-gone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "meaning-kept",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "nothing-invented",
+          "pass": false,
+          "note": "exit 1: number: twice"
+        }
+      ],
+      "total_cost_usd": 1.9799205999999998,
+      "duration_ms": 140975,
+      "num_turns": 18,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "6 safe tightenings, 0 structural changes applied. `draft.md` went from 398 to 382 tokens.\n\n## How the rounds ended\n\nTwo rounds of edits ran. The run stopped because nothing was left open or worse. Each recheck went to one agent in two messages, as the skill specifies.\n\nOne edit is settled with its fault. I moved the Odile quote two times, and each recheck marked the move worse:\n\n- **Round one:** I moved it to the end of \"What changed\". The recheck said the sentence before it is about the author, and Odile speaks as a reviewer.\n- **Round two:** I moved it to the end of the first paragraph of \"The morning block\". The recheck said it interrupts the description of the rule.\n\nThe quote is back in its original position, at the end of the paragraph about the two adjustments. The fault it leaves: the quote supports neither adjustment. `In the retro, Odile said: \"I review better before I have written any code of my own.\"`\n\n## The six tightenings\n\nNo semantic-duplicate cuts were made, apart from \"after the change\", which repeated the heading \"What changed\". The rewritten sentences:\n\n- Most of the waiting was in review, not in CI.\n- We adjusted the rule twice in its first month.\n- And the block had to cover all review requests, including the small ones, or people would quietly route their small changes around it by asking a friend for a quick approval in chat.\n- In the retro, Odile said: \"I review better before I have written any code of my own.\"\n- Review waits got much shorter.\n- The missing slot made the late-day backlog worse.\n\n## Skipped\n\n- **\"The first hour of the day belongs to the queue\":** the editor called this a repeat of \"From nine to ten\". I kept it. It is the only place that says nine is the start of the day, and Odile's quote depends on that.\n- **\"kept a separate label\" to \"added a label\":** not applied. \"Added\" would state a fact that the draft does not state.\n- **The last line:** kept as written. The whole-document pass marked it as a line that must stay.\n\n## Facts needed from you\n\n- **\"Review waits got much shorter\":** the wait after the change, in the same units as \"a day and a half\". All three editor passes named this as the most important gap.\n- **\"while the change is still fresh\" against \"now waits until the next morning\":** the two sections disagree for a change finished at two in the afternoon. The draft does not say whether the average wait fell in spite of that case.\n- **\"moved the standup to ten\":** the draft does not say what the later standup cost. If it cost nothing, the clause can go.\n- **\"nobody has asked to drop it\":** this is next to \"a few people resented\". The draft does not say if those people changed their minds.",
+        "draft.md": "# Why we moved code review to the morning\n\n## The waiting problem\n\nLast spring our team of nine engineers measured where a change spent its time between the first commit and the merge. Most of the waiting was in review, not in CI. A typical pull request sat for a day and a half before anyone opened it, and by the time the comments arrived the author had usually moved on to other work.\n\n## The morning block\n\nFrom nine to ten each morning, nobody writes code. The first hour of the day belongs to the queue of open pull requests, oldest first, and anyone who empties the queue early can go back to their own work.\n\nWe adjusted the rule twice in its first month. Urgent fixes for production could not wait until the next morning, so we kept a separate label for them that anyone may review at any hour. And the block had to cover all review requests, including the small ones, or people would quietly route their small changes around it by asking a friend for a quick approval in chat. In the retro, Odile said: \"I review better before I have written any code of my own.\"\n\n## What changed\n\nReview waits got much shorter. A pull request opened in the afternoon is now usually reviewed by the end of the next morning's block, and the author gets the comments while the change is still fresh.\n\n## What it cost\n\nAn hour a day is an eighth of every engineer's working time, and a few people resented giving their sharpest hour to other people's code. The morning block also moved the standup to ten, and it left the afternoon with no review slot. The missing slot made the late-day backlog worse. A change finished at two in the afternoon now waits until the next morning, where before it might have been reviewed by four.\n\nWe have kept the block for five months, and nobody has asked to drop it.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "4 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "faults-gone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "meaning-kept",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "nothing-invented",
+          "pass": true,
+          "note": "exit 0: no output"
+        }
+      ],
+      "total_cost_usd": 2.0283822,
+      "duration_ms": 177971,
+      "num_turns": 14,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "7 safe tightenings, 2 structural changes applied to `draft.md`.\n\n## How the rounds ended\n\nOne round ran. The recheck marked all nine edits closed and none worse, so the run stopped. The recheck went to the same editor in two messages.\n\nOne sentence stays open because only you can fix it: \"Review waits got much shorter.\" It needs a number (see \"Facts needed\").\n\n## The edited paragraphs\n\n> Last spring our team of nine engineers measured where a change spent its time between the first commit and the merge. A change spent most of its waiting time in review, not in CI. A typical pull request sat for a day and a half before anyone opened it, and by the time the comments arrived the author had usually moved on to other work.\n\n> From nine to ten each morning, nobody writes code. That hour belongs to the queue of open pull requests, oldest first, and anyone who empties the queue early can go back to their own work. In the retro, Odile said: \"I review better before I have written any code of my own.\"\n\n> The block needed two adjustments in its first month. Urgent fixes for production could not wait until the next morning, so we kept a separate label for them, and anyone may review a labeled fix at any hour. And the block had to cover every pull request, including the small ones, or people would quietly route them around it by asking a friend for a quick approval in chat.\n\n> Review waits got much shorter. A pull request opened in the afternoon is now usually reviewed by the end of the next morning's block, and the author gets the comments while the change is still fresh.\n\n> An hour a day is an eighth of every engineer's working time, and a few people resented giving their sharpest hour to other people's code. The morning block also moved the standup to ten, and it left the afternoon with no review slot, which made the late-day backlog worse. A change finished at two now waits until the next morning, where before it might have been reviewed by four.\n\n## Duplicate cuts\n\n- \"after the change\" in \"Review waits got much shorter after the change.\" The heading \"What changed\" already says it.\n- \"The first hour of the day\" became \"That hour\". The sentence before it already says \"from nine to ten\".\n\n## Structural changes\n\n1. **Odile's quote moved.**\n   - Before: it closed the paragraph about the two adjustments, as \"In the retro, Odile said it best: \u2026\".\n   - After: it closes the first paragraph of \"The morning block\", as \"In the retro, Odile said: \u2026\".\n   - Why it was safe: the quote is the only reason the draft gives for the morning, and it now follows \"nobody writes code\". It supported nothing in the paragraph about adjustments.\n\n2. **\"This made the late-day backlog worse.\" joined to the sentence before it.**\n   - Before: \"\u2026and it left the afternoon with no review slot. This made the late-day backlog worse.\"\n   - After: \"\u2026and it left the afternoon with no review slot, which made the late-day backlog worse.\"\n   - Why it was safe: both editors wanted the sentence cut. I kept it because it is the only place that names the backlog. The join removes the \"This\" with no noun.\n\n## Skipped\n\n- \"a change\" and \"pull request\" stay as two words. One editor called them two names for one thing. I read \"change\" as the work from the first commit, before a pull request exists, so I did not merge them.\n\n## Facts needed\n\n- **\"Review waits got much shorter.\"** It needs the typical wait after the block, measured the same way as the \"day and a half\".\n- **The afternoon pull request is both a gain and a cost.** \"What changed\" counts review the next morning as the gain. \"What it cost\" counts the same wait as the loss. The draft needs how fast afternoon pull requests got reviewed before the block.\n- **\"so we kept a separate label\"**. Did the label exist before the block, or did you make it for the block?\n- **\"or people would quietly route them around it\"**. Did people do this in the first month, or did you only expect it?\n- **\"Odile\"**. Give her role if it matters to a reader outside the team.",
+        "draft.md": "# Why we moved code review to the morning\n\n## The waiting problem\n\nLast spring our team of nine engineers measured where a change spent its time between the first commit and the merge. A change spent most of its waiting time in review, not in CI. A typical pull request sat for a day and a half before anyone opened it, and by the time the comments arrived the author had usually moved on to other work.\n\n## The morning block\n\nFrom nine to ten each morning, nobody writes code. That hour belongs to the queue of open pull requests, oldest first, and anyone who empties the queue early can go back to their own work. In the retro, Odile said: \"I review better before I have written any code of my own.\"\n\nThe block needed two adjustments in its first month. Urgent fixes for production could not wait until the next morning, so we kept a separate label for them, and anyone may review a labeled fix at any hour. And the block had to cover every pull request, including the small ones, or people would quietly route them around it by asking a friend for a quick approval in chat.\n\n## What changed\n\nReview waits got much shorter. A pull request opened in the afternoon is now usually reviewed by the end of the next morning's block, and the author gets the comments while the change is still fresh.\n\n## What it cost\n\nAn hour a day is an eighth of every engineer's working time, and a few people resented giving their sharpest hour to other people's code. The morning block also moved the standup to ten, and it left the afternoon with no review slot, which made the late-day backlog worse. A change finished at two now waits until the next morning, where before it might have been reviewed by four.\n\nWe have kept the block for five months, and nobody has asked to drop it.\n"
+      }
+    },
+    {
+      "graders": [
+        {
+          "name": "editor-ran",
+          "pass": true,
+          "note": "5 matching call(s), wanted min=1 max=None"
+        },
+        {
+          "name": "faults-gone",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "meaning-kept",
+          "pass": true,
+          "note": "votes PASS/PASS"
+        },
+        {
+          "name": "nothing-invented",
+          "pass": true,
+          "note": "exit 0: no output"
+        }
+      ],
+      "total_cost_usd": 1.9787708999999998,
+      "duration_ms": 141666,
+      "num_turns": 23,
+      "timed_out": false,
+      "artifact": {
+        "last_message": "**5 safe tightenings, 0 structural changes applied.** One structural change (the move of Odile's quote) was tried and put back.\n\n## How the rounds ended\n\nTwo rounds ran. The run stopped because round two closed nothing. Each recheck went to one fresh editor agent in two messages.\n\n- **Settled, with its fault:** `In the retro, Odile said: \"I review better before I have written any code of my own.\"` I moved this quote to the end of \"What changed\". The round-one recheck marked the move worse: the quote is about review quality, that section is about speed, and it then sat against \"their sharpest hour\" in the next section. I put the quote back where you had it. The fault that stays: the quote ends a paragraph about the two rule adjustments, and it belongs to neither one. Only you can say what the quote answers.\n- **Still open:** `Review waits got much shorter.` The phrase \"much shorter\" is vague next to \"a day and a half\". It needs a number from you (see below).\n\n## The rewritten paragraphs\n\n> Last spring our team of nine engineers measured where a change spent its time between the first commit and the merge. Most of the waiting was in review, not in CI. A typical pull request sat for a day and a half before anyone opened it, and by the time the comments arrived the author had usually moved on to other work.\n\n> From nine to ten each morning, nobody writes code. That hour belongs to the queue of open pull requests, oldest first, and anyone who empties the queue early can go back to their own work.\n\n> The rule needed two adjustments in its first month. Urgent fixes for production could not wait until the next morning, so we kept a separate label for them that anyone may review at any hour. And the block had to cover every review request, including the small ones, or people would quietly route their small changes around it by asking a friend for a quick approval in chat. In the retro, Odile said: \"I review better before I have written any code of my own.\"\n\n> Review waits got much shorter. A pull request opened in the afternoon is now usually reviewed by the end of the next morning's block, and the author gets the comments while the change is still fresh.\n\n> An hour a day is an eighth of every engineer's working time, and a few people resented giving their sharpest hour to other people's code. The morning block also moved the standup to ten, and it left the afternoon with no review slot. The missing slot made the late-day backlog worse. A change finished at two in the afternoon now waits until the next morning, where before it might have been reviewed by four.\n\nThe five tightenings are:\n\n- \"It is worth pointing out that\" is gone, and the sentence after it is shorter.\n- \"The first hour of the day\" is now \"That hour\".\n- \"any and all review requests\" is now \"every review request\".\n- \"said it best\" is now \"said\".\n- \"This made\" is now \"The missing slot made\".\n\nOne more cut sits inside those paragraphs: \"after the change\" is gone from the first sentence of \"What changed\", because the heading says it.\n\n## Skipped on purpose\n\n- **The closing line**, \"We have kept the block for five months, and nobody has asked to drop it.\" The editor wanted it cut or trimmed as a flourish. I kept it. It gives two facts that appear nowhere else, and it is the last line of the piece.\n- **The first sentence of \"What changed\".** The editor wanted it cut because it repeats the heading. It stays because it is the place for the missing number.\n- **A merge of \"What changed\" and \"What it cost\".** The editor called this optional. I did not make it.\n\n## Facts needed from you\n\n- `Review waits got much shorter.` Give the typical review wait now, measured the same way as the day and a half.\n- `is now usually reviewed` Say how often this is true, if you have the number.\n- `we kept a separate label` Say if the label was new or if it existed before.\n\nThe editors also saw one thing that I could not fix without new facts. \"What changed\" says afternoon pull requests get faster reviews. \"What it cost\" says a change finished at two now waits longer. The draft does not say which effect is larger.",
+        "draft.md": "# Why we moved code review to the morning\n\n## The waiting problem\n\nLast spring our team of nine engineers measured where a change spent its time between the first commit and the merge. Most of the waiting was in review, not in CI. A typical pull request sat for a day and a half before anyone opened it, and by the time the comments arrived the author had usually moved on to other work.\n\n## The morning block\n\nFrom nine to ten each morning, nobody writes code. That hour belongs to the queue of open pull requests, oldest first, and anyone who empties the queue early can go back to their own work.\n\nThe rule needed two adjustments in its first month. Urgent fixes for production could not wait until the next morning, so we kept a separate label for them that anyone may review at any hour. And the block had to cover every review request, including the small ones, or people would quietly route their small changes around it by asking a friend for a quick approval in chat. In the retro, Odile said: \"I review better before I have written any code of my own.\"\n\n## What changed\n\nReview waits got much shorter. A pull request opened in the afternoon is now usually reviewed by the end of the next morning's block, and the author gets the comments while the change is still fresh.\n\n## What it cost\n\nAn hour a day is an eighth of every engineer's working time, and a few people resented giving their sharpest hour to other people's code. The morning block also moved the standup to ten, and it left the afternoon with no review slot. The missing slot made the late-day backlog worse. A change finished at two in the afternoon now waits until the next morning, where before it might have been reviewed by four.\n\nWe have kept the block for five months, and nobody has asked to drop it.\n"
+      }
+    }
+  ]
+}
