@@ -87,7 +87,7 @@ This is the line that keeps meaning intact.
 **Surgical (preserves all meaning):**
 - Cut throat-clearing and "this is / there is" padding.
 - Weak verb → strong; Latinate → Saxon (utilize→use, prior to→before).
-- Kill intensifiers and hedges (very, really, genuinely, completely, quite).
+- Kill intensifiers and hedges that add nothing to the claim. A word that sets a claim's scope or strength is not one of them; which words count is set by the claim rule in step 5 of [../skills/tighten/SKILL.md](../skills/tighten/SKILL.md).
 - Passive → active when the actor is known.
 - Collapse a doublet or elegant variation to one word.
 - Trim a sentence or clause whose idea already lives elsewhere in the piece — a **verbatim or
@@ -97,7 +97,7 @@ This is the line that keeps meaning intact.
   the idea survives in the other spot — no meaning is lost. Check the emotional/cadence guard
   and the keep-list (Reading rules) first: a closer that restates but lands the feeling, the
   rhythm, or is the section's one line with teeth is the payload, not a duplicate. When it
-  isn't clearly a duplicate, treat it as substantive.
+  isn't clearly a duplicate, treat it as substantive. A general claim and an example of it are not duplicates of each other: the example shows one case, and the general sentence claims a pattern ("each spring", "mostly lost"), so cutting either one loses something.
 
 **Substantive (changes what it says or its shape):**
 - Delete a numbered or bulleted list item.
@@ -108,6 +108,7 @@ This is the line that keeps meaning intact.
   examples plus summary → keep one) is the canonical purpose-gated call (see "read the
   document's purpose").
 - Reduce a phrase repeated for emphasis across sections.
+- Cut, add or swap a word that states part of a claim. Tighten keeps such words; the rule is in step 5 of `draft/skills/tighten/SKILL.md`.
 - Any restructure.
 
 ## Reading rules
@@ -121,20 +122,7 @@ This is the line that keeps meaning intact.
   for a style/voice guide (e.g. `docs/voice-and-tone.md`, `STYLE.md`, a section in
   `CLAUDE.md`). If one exists, also enforce its mechanicals (things like em-dash rules or a
   house cadence) on the documents it covers. If no such guide exists, skip this step.
-- **Read the document's purpose before deciding how hard to cut.** Semantic duplicates go
-  regardless — the idea survives elsewhere. But concreteness-for-brevity cuts (trimming an
-  example stack to one, pruning elaboration that is dispensable but not redundant) depend on
-  whether the reader will *use* this document or *study* it. Reference doc, one-pager, or an
-  explicit "make it punchy": cut hard. Manifesto, speech, narrative, marketing where the last
-  line is the payload: preserve rhythm and deliberate repetition. Whatever the purpose, never
-  trim past the **keep-list**: a concrete list that gives an abstraction meaning, the one line
-  with teeth in a section, the sharpest concrete image, and defined terms or real
-  distinctions all stay. A piece written to get the reader to do something (a case for
-  support, a pitch, a proposal, a fundraising email) has one more purpose test: every fact
-  answers how it makes the reader more likely to do it, and a fact with no answer is a
-  substantive cut. The ones to hunt are the true facts
-  that undermine the case: a number that shrinks the problem, a figure that makes the ask look
-  wrong, a limit stated as a confession. See [abt-beats.md](abt-beats.md).
+- **Read the document's purpose before deciding how hard to cut.** Semantic duplicates go regardless — the idea survives elsewhere. But concreteness-for-brevity cuts (trimming an example stack to one, pruning elaboration that is dispensable but not redundant) depend on whether the reader will *use* this document or *study* it. Reference doc, one-pager, or an explicit "make it punchy": cut hard. Manifesto, speech, narrative, marketing where the last line is the payload: preserve rhythm and deliberate repetition. When `tighten` may apply a cut that depends on purpose is set in step 5 of [../skills/tighten/SKILL.md](../skills/tighten/SKILL.md). Whatever the purpose, never trim past the **keep-list**: a concrete list that gives an abstraction meaning, the one line with teeth in a section, the sharpest concrete image, and defined terms or real distinctions all stay. A piece written to get the reader to do something (a case for support, a pitch, a proposal, a fundraising email) has one more purpose test: every fact answers how it makes the reader more likely to do it, and a fact with no answer is a substantive cut. The ones to hunt are the true facts that undermine the case: a number that shrinks the problem, a figure that makes the ask look wrong, a limit stated as a confession. See [abt-beats.md](abt-beats.md).
 - **Keep the spine intact.** After applying edits, read the first sentence of every paragraph
   in order, aloud. An edit that cut a name a later sentence leaned on, or the echo word that
   joined two paragraphs, broke the argument while tightening the prose. Put the word back.
