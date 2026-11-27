@@ -21,7 +21,8 @@ EVALS = Path(__file__).resolve().parent
 PLUGIN = EVALS.parent
 REPO = PLUGIN.parent
 JUDGE_MODEL = "claude-haiku-4-5-20251001"
-# How many judge replies with no PASS or FAIL line one grader asks again before it gives up.
+# A grader gives up when this many judge replies have had no PASS or FAIL line,
+# so it asks the judge again at most NO_VERDICT_LIMIT - 1 times.
 NO_VERDICT_LIMIT = 3
 
 # The caveman and ponytail SessionStart hooks fire in headless runs too, and
@@ -187,6 +188,12 @@ def run_script(grader, input_path, output_path, cwd):
 
 
 def grade_llm(g, rubric, artifact, workdir, log_name=None):
+    """Ask the judge until 2 of 3 votes agree, stopping early once 2 do. Returns (passed, note).
+
+    A reply with no PASS or FAIL line is not a vote; the judge is asked again.
+    After NO_VERDICT_LIMIT such replies, passed is None and the note says the
+    judge gave no verdict, so callers can tell a broken judge from a FAIL.
+    """
     if g["type"] == "baseline":
         base = (REPO / "draft" / "evals" / g["baseline_file"]).read_text()
         artifact = f"# BASELINE (before)\n\n{base}\n\n# PRODUCED (after)\n\n{artifact}"
@@ -195,8 +202,8 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
               "with a final line that is exactly PASS or exactly FAIL.")
     # A single judge sample is unstable: calibration caught the same artifact
     # scoring FAIL then PASS. The real harness votes 2 of 3, so this does too.
-    # A reply with no PASS or FAIL line is not a vote. It is asked again, up to
-    # NO_VERDICT_LIMIT times per grader, and never guessed as PASS or FAIL.
+    # A reply with no PASS or FAIL line is not a vote and is never guessed as PASS
+    # or FAIL. The grader gives up on the NO_VERDICT_LIMIT-th such reply.
     votes = []
     no_verdict = 0
     replies = 0
@@ -209,7 +216,7 @@ def grade_llm(g, rubric, artifact, workdir, log_name=None):
         if verdict is None:
             no_verdict += 1
             if no_verdict >= NO_VERDICT_LIMIT:
-                return False, f"judge gave no verdict in {no_verdict} replies; votes {'/'.join(votes) or 'none'}"
+                return None, f"judge gave no verdict in {no_verdict} replies; votes {'/'.join(votes) or 'none'}"
             continue
         votes.append(verdict)
         if votes.count("PASS") == 2 or votes.count("FAIL") == 2:
@@ -265,6 +272,9 @@ def run_once(case_dir, prompt, meta, cfg):
         else:
             target = focus or {"source": "file", "path": "post.md"}
             ok, note = grade_llm(grader, rubric, read_target(target, work, last), work, grader_file.stem)
+            # None means the judge gave no verdict; the run records a failure, and the note says why.
+            if ok is None:
+                ok = False
         results.append((grader_file.stem, ok, note))
     return results, work, artifact, cost
 
@@ -378,9 +388,14 @@ def calibrate():
             want_pass = suffix.startswith("good")
             artifact_text = (EVALS / "calibration" / f"{stem}-{suffix}.md").read_text()
             got, note = grade_llm(grader, rubric, artifact_text, work)
-            ok = got == want_pass
+            if got is None:
+                # A judge that gives no verdict is broken for good and bad pairs alike.
+                ok = False
+                verdict = f"no verdict ({note})"
+            else:
+                ok = got == want_pass
+                verdict = "PASS" if got else "FAIL"
             allok &= ok
-            verdict = "PASS" if got else "FAIL"
             print(f"  {'ok  ' if ok else 'BAD '} {stem}-{suffix}: judge said {verdict}, "
                   f"wanted {'PASS' if want_pass else 'FAIL'}")
     for grader_path, stem, suffixes in script_pairs:
