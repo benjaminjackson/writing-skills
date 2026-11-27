@@ -1,0 +1,22 @@
+---
+type: baseline
+baseline_file: fixtures/review-planted-400.md
+focus: {source: file, path: draft.md}
+weight: 2
+---
+The baseline is a short post on why a team moved code review to the morning. The produced version is the same post after a line edit for economy. A line edit may cut words, merge sentences and reword. It must not change what the post claims.
+
+Do not judge whether the edit is good. Do one extraction task:
+
+**List every claim in the baseline that the produced version drops, reverses, weakens into something different, or makes stronger than the baseline supports.** Check at least these: the team of nine measured where a change spent its time, and most of the waiting was in review, not in CI; a pull request sat a day and a half before anyone opened it; the team blocked nine to ten each morning for the review queue, oldest first; urgent production fixes kept a separate label, and the block covered every review request, small ones included; Odile's quotation, word for word; review waits got shorter, with no figure given, and a pull request opened in the afternoon is usually reviewed by the end of the next morning's block; the block costs an eighth of working time, moved the standup to ten and left the afternoon with no review slot, which made the late-day backlog worse; the team kept the block for five months.
+
+Cutting a word that repeats what another word already says is not a change of meaning. Replacing the bare "This" in "This made the late-day backlog worse." with a noun for what made the backlog worse is the edit the post needed, not a change of meaning, whichever of the two things before it the noun names. Turning "much shorter" into a figure is a change of meaning.
+
+Changing the words that introduce a quotation is not a change of meaning when the quoted words stay the same. "Odile said it best:" and "Odile said:" make the same claim, because the quotation itself shows how she put it.
+
+For each item that changed, quote the baseline and the produced version side by side. Write NONE if nothing changed.
+
+Then end with a verdict line. Writing NONE is not the verdict.
+
+PASS if you wrote NONE.
+FAIL if you listed one or more.

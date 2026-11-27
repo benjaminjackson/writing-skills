@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: critique-flags-planted-faults-400
+context:
+  scaffold_script: cp "$EVAL_FIXTURES/review-planted-400.md" draft.md
