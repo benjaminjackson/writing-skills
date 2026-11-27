@@ -39,11 +39,8 @@ apply step.
 
 ## The workflow
 
-1. **Read & chunk.** Read each document, note its purpose (see "read the document's purpose"
-   in the shared method file), measure tokens with `tks`, and split it into Pass 1 chunks per
-   the chunking rules in the shared method file.
-2. **Pass 1 — line by line.** Launch one `editor` agent per chunk (parallel batches) with the
-   granular prompt. Collect the line-by-line notes.
+1. **Read & chunk.** Read each document, note its purpose (see "read the document's purpose" in the shared method file), measure tokens with `tks`, and split it into Pass 1 chunks per the chunking rules in the shared method file. A document at or under the Pass 1 limit in the shared method file skips Pass 1 and goes straight to Pass 2, unless the request ends with `chunked`.
+2. **Pass 1 — line by line.** Unless the document skips Pass 1, launch one `editor` agent per chunk (parallel batches) with the granular prompt. Collect the line-by-line notes.
 3. **Pass 2 — whole doc.** Launch the holistic pass with the whole-doc prompt.
 4. **Triage.** Merge Pass 1 + Pass 2 findings, dedupe overlaps, and sort each into surgical or
    substantive per the shared method file. When a note that contains
@@ -78,7 +75,7 @@ apply step.
 8. **Report.** Present findings per **Reporting** below. There's nothing left to approve —
    this is a summary of what changed, not a request for sign-off.
 
-**whole-doc.** If the request ends with the argument `whole-doc`, still read the document, note its purpose and measure it with `tks`, but do not split it into Pass 1 chunks and do not run Pass 1: run only Pass 2, the whole-document pass, and send its prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those.", since no other pass runs. Triage and apply from that pass alone; the recheck rounds run as usual. The switch exists to measure whether Pass 1 earns its cost; without it, run every step.
+**Switches: `chunked` and `whole-doc`.** They exist to measure whether Pass 1 earns its cost, and each overrides the size limit in the shared method file. If the request ends with the argument `chunked`, run Pass 1 at any size, then Pass 2 with its prompt as written. If it ends with `whole-doc`, run only Pass 2 at any size: still read the document, note its purpose and measure it with `tks`, but do not split it into chunks or run Pass 1, and send the Pass 2 prompt without the sentence "You don't need to re-flag every small word fix; another pass handles those.", since no other pass runs. Triage and apply from that pass alone. The recheck rounds run as usual with either argument or with none. With neither argument, the size limit decides.
 
 **Recheck prompt (every round)**: send the texts and the list inline, delimited, in two messages to the same agent.
 

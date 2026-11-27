@@ -49,12 +49,7 @@ def run_claude(prompt, cwd, allowed_tools, stream=False, plugin=True, model=None
         cmd += ["--allowedTools", ",".join(allowed_tools)]
     if stream:
         cmd += ["--output-format", "stream-json", "--verbose"]
-    try:
-        proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
-    except subprocess.TimeoutExpired as e:
-        # A run that hangs is graded on what it wrote so far instead of stopping the batch.
-        out = e.stdout or ""
-        return out.decode() if isinstance(out, bytes) else out
+    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
     return proc.stdout
 
 
@@ -212,8 +207,18 @@ def run_once(case_dir, prompt, meta, cfg):
         subprocess.run(scaffold, shell=True, cwd=work, check=True,
                        env={**os.environ, "EVAL_FIXTURES": str(EVALS / "fixtures")})
 
-    raw = run_claude(prompt, work, meta.get("allowed_tools"), stream=True, timeout=1800)
+    timed_out = False
+    try:
+        raw = run_claude(prompt, work, meta.get("allowed_tools"), stream=True,
+                         timeout=meta.get("timeout_seconds", 900))
+    except subprocess.TimeoutExpired as error:
+        # A run that hangs is graded on what it wrote so far instead of stopping the batch.
+        # The partial output comes back as bytes or str depending on the Python version.
+        partial = error.stdout or ""
+        raw = partial.decode() if isinstance(partial, bytes) else partial
+        timed_out = True
     last, tools, cost = parse_stream(raw)
+    cost["timed_out"] = timed_out
     (Path(work) / "_transcript.jsonl").write_text(raw)
     (Path(work) / "_last_message.txt").write_text(last)
 
@@ -287,7 +292,7 @@ def save_results(name, runs, label=""):
         for grader_name, ok, note in results:
             graders.append({"name": grader_name, "pass": ok, "note": note})
             passes[grader_name] = passes.get(grader_name, 0) + (1 if ok else 0)
-        out["results"].append({"graders": graders, "total_cost_usd": cost.get("total_cost_usd"), "duration_ms": cost.get("duration_ms"), "num_turns": cost.get("num_turns"), "artifact": artifact})
+        out["results"].append({"graders": graders, "total_cost_usd": cost.get("total_cost_usd"), "duration_ms": cost.get("duration_ms"), "num_turns": cost.get("num_turns"), "timed_out": cost.get("timed_out"), "artifact": artifact})
     for grader_name, count in passes.items():
         out["pass_counts"][grader_name] = f"{count}/{len(runs)}"
     path = EVALS / "results" / (f"{name}.{label}.json" if label else f"{name}.json")
@@ -376,13 +381,24 @@ def main():
     ap.add_argument("--runs", type=positive_int, default=None,
                     help="agent runs per case, each in a new temp dir, saved to "
                          "results/<case>.json (without it: one run, nothing saved)")
-    ap.add_argument("--whole-doc", action="store_true", help="end each prompt with the skill argument whole-doc, so critique and tighten skip Pass 1; saves to results/<case>.whole-doc.json")
+    ap.add_argument("--whole-doc", action="store_true", help="end each prompt with the skill argument whole-doc, so critique and tighten run only Pass 2 at any size; saves to results/<case>.whole-doc.json")
+    ap.add_argument("--chunked", action="store_true", help="end each prompt with the skill argument chunked, so critique and tighten run Pass 1 at any size; saves to results/<case>.chunked.json")
     ap.add_argument("--label", default="", help="save results to results/<case>.<label>.json instead of results/<case>.json")
     args = ap.parse_args()
-    label = args.label or ("whole-doc" if args.whole_doc else "")
+    if args.whole_doc and args.chunked:
+        ap.error("--whole-doc and --chunked cannot be used together")
+    mode = ""
+    if args.whole_doc:
+        mode = "whole-doc"
+    elif args.chunked:
+        mode = "chunked"
+    if mode and args.label and args.label != mode:
+        ap.error(f"--{mode} saves to results/<case>.{mode}.json; leave out --label or pass --label {mode}")
+    label = args.label or mode
     if label and not re.fullmatch(r"[A-Za-z0-9_-]+", label):
         ap.error("--label takes letters, digits, - and _ only")
-    append = "whole-doc" if args.whole_doc else ""
+    # The mode is also the skill argument the prompt ends with.
+    append = mode
 
     if args.calibrate:
         sys.exit(calibrate())
@@ -390,6 +406,17 @@ def main():
     cases = sorted(d for d in EVALS.iterdir()
                    if (d / "prompt.md").exists()
                    and (not args.case or d.name == args.case))
+    if mode:
+        # Only critique and tighten take the argument, so every case that will run must be an editor case.
+        not_editor = []
+        for case_dir in cases:
+            case_tags = split_front_matter(case_dir / "prompt.md")[0].get("tags", [])
+            if args.tag and not (set(args.tag) & set(case_tags)):
+                continue
+            if "editor" not in case_tags:
+                not_editor.append(case_dir.name)
+        if not_editor:
+            ap.error(f"--{mode} works only on editor cases; not editor: {', '.join(not_editor)}")
     # Results are saved only when --runs is given. A saved result is only worth
     # keeping if it says what it measured, so uncommitted changes to the skill
     # or the suite mean the run is not saved.
@@ -410,7 +437,7 @@ def main():
             for grader_name, ok, note in results:
                 print(f"  {'ok  ' if ok else 'FAIL'} {name} [run {run_number}] / {grader_name}: {note}")
                 failed += 0 if ok else 1
-            print(f"       artifacts: {work}  cost: {cost.get('total_cost_usd')} USD, {cost.get('duration_ms')} ms")
+            print(f"       artifacts: {work}  cost: {cost.get('total_cost_usd')} USD, {cost.get('duration_ms')} ms, timed out: {cost.get('timed_out')}")
         if save:
             print(f"       saved: {save_results(name, runs, label).relative_to(REPO)}")
     print(f"\n{failed} grader failure(s)")
